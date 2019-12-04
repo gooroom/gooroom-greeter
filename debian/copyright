@@ -1,5 +1,5 @@
-Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Source: http://git.gooroom.kr/gooroom-greeter/
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Source: https://github.com/gooroom/gooroom-greeter/
 
 Files: *
 Copyright: Sean Davis
@@ -33,9 +33,9 @@ Files: src/indicator-button.*
 Copyright: 2012-2013 Andrzej <ndrwrdck@gmail.com>
 License: GPL-2+
 
-Files: debian/*
-Copyright: © 2010-2018 Yves-Alexis Perez <corsac@debian.org>
-License: GPL-2
+Files: data/images/*.png
+Copyright: 2015-2019 Gooroom <gooroom@gooroom.kr>
+License: GPL-2+
 
 License: GPL-2+
  This package is free software; you can redistribute it and/or modify
