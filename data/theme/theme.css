@@ -11,45 +11,240 @@ For more fine-grain control, you can also use the named widgets. Those are being
  *************************/
 
 * {
+  -GtkDialog-button-spacing: 8;
   outline-color: transparent;
   font-family: Sans Regular;
   text-shadow: none;
   -gtk-icon-effect: none;
   -gtk-icon-shadow: none; }
 
+.title-label {
+  font-weight: bold;
+  font-size: 170%; }
 
-#panel_box {
+.subtitle-label {
+  font-size: 110%; }
+
+.bold-label {
+  font-size: 110%;
+  font-weight: bold; }
+
+.dialog-title-label {
+  font-size: 130%;
+  font-weight: bold; }
+
+.dialog-message-label {
+  font-size: 110%; }
+
+.splash-message-label {
+  font-size: 120%;
+  font-weight: bold; }
+
+spinner {
+  color: #000000;
+  background: none;
+  -gtk-icon-source: -gtk-icontheme("splash-spinner-symbolic"); }
+  spinner:checked {
+    opacity: 0.6;
+    animation: spin 1s linear infinite; }
+    spinner:checked:disabled {
+      opacity: 0.2; }
+
+.assistant {
+  border-radius: 16px;
+  border-color: #FFFF00;
+  background-color: #1c1c1c;
+/*  box-shadow: 0 2px 8px 3px rgba(0, 0, 0, 0.85);*/}
+  .assistant .left-box {
+    padding: 40px; }
+  .assistant .right-box {
+    padding: 40px;
+    color: #000000;
+    border-radius: 0 16px 16px 0;
+    background-color: #ffffff; }
+
+/*
+button.suggested-action {
+  color: #ffffff;
+  background-color: #d0021b;
+  border-color: #d0021b; }
+  button.suggested-action:hover {
+    background-color: #af0217;
+    border-color: #af0217; }
+  button.suggested-action:active, button.suggested-action:checked {
+    background-color: #af0217;
+    border-color: #af0217; }
+  button.suggested-action:disabled {
+    border-color: #9b9b9b;
+    background-color: #9b9b9b; }
+  button.suggested-action:disabled label, button.suggested-action:disabled {
+    opacity: 0.6;
+    color: #ffffff; }
+*/
+
+
+.mode-button {
+  color: #000000;
+  border-radius: 5px;
+  padding: 19px 30px 19px 32px;
+  background-color: transparent;}
+  .mode-button:hover {
+    color: #ffffff;
+    border-color: #3b61bd;
+    background-color: #3b61bd; }
+  .mode-button:active, .mode-button:checked {
+    color: #ffffff;
+    border-color: #4a73d6;
+    background-color: #4a73d6; }
+  .mode-button:disabled {
+    color: #ffffff;
+    border-color: #9b9b9b;
+    background-color: #9b9b9b; }
+  .mode-button:disabled label, button:disabled {
+    opacity: 0.6;
+    color: #ffffff; }
+
+.assistant-button {
   border: none;
+  color: #ffffff;
+  padding: 8px 48px;
+  border-radius: 5px;
+  border-color: #4a73d6;
+  background-color: #4a73d6; }
+  .assistant-button:active {
+    border-color: #3b61bd;
+    background-color: #3b61bd; }
+  .assistant-button:disabled {
+    border-color: #9b9b9b;
+    background-color: #9b9b9b; }
+  .assistant-button:disabled label, button:disabled {
+    opacity: 0.6;
+    color: #ffffff; }
+
+.login-button {
+  padding: 0 5px;
+  color: #ffffff;
+  border-color: #4a73d6;
+  background-color: #4a73d6;}
+  .login-button:active, .login-button:checked {
+    border-color: #3b61bd;
+    background-color: #3b61bd; }
+  .login-button:disabled {
+    border-color: #9b9b9b;
+    background-color: #9b9b9b; }
+  .login-button:disabled label, button:disabled {
+    opacity: 0.6;
+    color: #ffffff; }
+
+.splash-window-box {
+  border: none;
+  padding: 24px;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 1.0);
+  box-shadow: 0 2px 5px 3px rgba(0, 0, 0, 0.35); }
+
+.message-dialog-box {
+  padding: 24px;
+  border-radius: 8px;
+  border-color: #ffffff;
+  background-color: #ffffff;
+  box-shadow: 0 2px 5px 3px rgba(0, 0, 0, 0.35); }
+/*
+  .message-dialog-box .dialog-action-area {
+    background-color: #1c1c1c; }
+*/
+  .message-dialog-box .dialog-action-area button {
+    color: #ffffff;
+    padding: 4px 8px;
+    border-radius: 5px;
+    border-color: #4a73d6;
+    background-color: #4a73d6; }
+  .message-dialog-box .dialog-action-area button:active {
+    border-color: #3b61bd;
+    background-color: #3b61bd; }
+  .message-dialog-box .dialog-action-area button:checked {
+    border-color: #3b61bd;
+    background-color: #3b61bd; }
+  .message-dialog-box .dialog-action-area button:disabled {
+    border-color: #9b9b9b;
+    background-color: #9b9b9b; }
+  .message-dialog-box .dialog-action-area button:disabled label {
+    opacity: 0.6;
+    color: #ffffff; }
+
+.panel-box {
+  border: none;
+  opacity: 0.8;
   box-shadow: none;
   background-image: none;
-  background-color: rgba(0, 0, 0, 0.8);
-  min-height: 40px; }
-  #panel_box #panel_button {
+  background-color: #000000;
+  min-height: 48px; }
+  .panel-box .panel-button {
     color: #ffffff;
     border: none;
     border-radius: 0;
     box-shadow: none;
     background-image: none;
     background-color: transparent; }
-    #panel_box #panel_button:hover {
-      background: rgba(255, 255, 255, 0.4); }
-    #panel_box #panel_button:active,
-    #panel_box #panel_button:checked  {
-      background: rgba(0, 255, 255, 0.6); }
-    #panel_box #panel_button:disabled {
-      color: @insensitive_fg_color; }
-  #panel_box #indicator_button {
-    color: #ffffff;
+    .panel-box .panel-button:hover {
+      background-color: #3b61bd; }
+    .panel-box .panel-button:active, .panel-box .panel-button:checked  {
+      background-color: #4a73d6; }
+    .panel-box .panel-button:disabled {
+      background-color: #9b9b9b; }
+    .panel-box .panel-button:disabled label, button:disabled {
+      color: #ffffff; }
+  .panel-box .indicator-button {
     padding: 0;
-    border-radius: 0;
     border: none;
+    color: #ffffff;
+    border-radius: 0;
+    box-shadow: none;
+    background-image: none;
     background-color: transparent; }
-    #panel_box #indicator_button:hover {
-      border: none;
-      background-color: rgba(255, 255, 255, 0.5); }
-    #panel_box #indicator_button:active,
-    #panel_box #indicator_button:checked {
-      background-color: rgba(0, 255, 255, 0.6); }
+    .panel-box .indicator-button:hover {
+      opacity: 0.8;
+      background-color: #3b61bd; }
+    .panel-box .indicator-button:active, .panel-box .panel-button:checked  {
+      opacity: 0.8;
+      background-color: #4a73d6; }
+    .panel-box .indicator-button:disabled {
+      opacity: 0.6;
+      background-color: #9b9b9b; }
+    .panel-box .indicator-button:disabled label, button:disabled {
+      opacity: 0.6;
+      color: #ffffff; }
+
+
+/*
+  #login_window #login_button {
+    padding: 5px;
+    border: none;
+    border-radius: 5px;
+    color: #ffffff;
+    box-shadow: none;
+    background-image: none;
+    background-color: #4a73d6;}
+    #login_window #login_button:hover {
+      background-color: #69d3ff; }
+    #login_window #login_button:active, #login_window #login_button:checked {
+      background-color: #00b3fe; }
+  #login_window #prompt_entry {
+    min-height: 34px;
+    padding: 0 34px 0 6px;
+    color: #000000;
+    border: 1px solid rgba(201, 201, 201, 0.6);
+    border-radius: 5px;
+    background-image: none;
+    background-color: rgba(201, 201, 201, 0.6);
+    box-shadow: none; }
+    #login_window #prompt_entry:focus,
+    #login_window #prompt_entry:hover {
+      border-color: #4a90e2;
+      background-color: #ffffff; }
+*/
+
+/*
 
 #dialog {
   min-width: 320px;
@@ -100,7 +295,7 @@ For more fine-grain control, you can also use the named widgets. Those are being
     color: #ffffff;
     box-shadow: none;
     background-image: none;
-    background-color: #3986e1;}
+    background-color: #4a73d6;}
     #login_window #login_button:hover {
       background-color: #69d3ff; }
     #login_window #login_button:active, #login_window #login_button:checked {
@@ -118,6 +313,13 @@ For more fine-grain control, you can also use the named widgets. Those are being
     #login_window #prompt_entry:hover {
       border-color: #4a90e2;
       background-color: #ffffff; }
+*/
+
+/*
+#webview {
+  border-radius: 26px;
+  background-color: transparent; }
+*/
 
 #greeter_infobar {
   background-color: transparent;

@@ -143,7 +143,9 @@ xfce_indicator_button_toggled (GtkToggleButton *widget)
 static void
 xfce_indicator_button_init (XfceIndicatorButton *button)
 {
-	gtk_widget_set_name (GTK_WIDGET (button), "indicator_button");
+//	gtk_widget_set_name (GTK_WIDGET (button), "indicator_button");
+    gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (button)),
+                                 "indicator-button");
 
 	gtk_widget_set_can_focus(GTK_WIDGET(button), FALSE);
 	gtk_widget_set_can_default (GTK_WIDGET (button), FALSE);

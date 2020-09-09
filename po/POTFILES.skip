@@ -1,0 +1,6 @@
+src/libars/gooroom-ars-auth.c
+src/greeter-ars-dialog.c
+src/greeter-gpki-page.c
+src/greeter-ars-page.c
+src/greeter-ars-dialog.ui
+src/greeter-ars-page.ui

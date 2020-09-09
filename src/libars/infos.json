@@ -1,0 +1,20 @@
+{
+    "url" :
+    {
+        "authURL" : "https://aspservice.thinkcall.net/aspService/authRequestJson.do",
+        "authTestURL" : "https://aspservice.thinkcall.kr/aspService/authRequestJson.do",
+        "confirmURL" : "https://aspservice.thinkcall.net/aspService/authInquiryJson.do",
+        "confirmTestURL" : "https://aspservice.thinkcall.kr/aspService/authInquiryJson.do"
+    },
+    "request" :
+    {
+        "orgCd" : "W0025",
+        "siteCd" : "01",
+        "svcTypeCd" : "01",
+        "arsMentCd" : "01",
+        "responseResultURL" : "",
+        "authNoMethod" : "2",
+        "authNo" : "2"
+    }
+}
+

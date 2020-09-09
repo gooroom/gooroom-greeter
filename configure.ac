@@ -18,6 +18,10 @@ dnl ###########################################################################
 PKG_CHECK_MODULES([GTK], [gtk+-3.0])
 PKG_CHECK_MODULES([GLIB], [glib-2.0])
 PKG_CHECK_MODULES([GIO], [gio-2.0])
+PKG_CHECK_MODULES([CURL], [libcurl])
+PKG_CHECK_MODULES([JSON_GLIB], [json-glib-1.0 >= 1.2.0])
+PKG_CHECK_MODULES([LIBNM], [libnm >= 1.2])
+PKG_CHECK_MODULES([LIBNMA], [libnma >= 1.0])
 PKG_CHECK_MODULES([GMODULE], [gmodule-export-2.0])
 PKG_CHECK_MODULES([UPOWER], [upower-glib >= 0.99.4])
 PKG_CHECK_MODULES([LIGHTDMGOBJECT], [liblightdm-gobject-1 >= 1.19.2],

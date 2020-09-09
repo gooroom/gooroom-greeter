@@ -1,3 +1,16 @@
 src/gooroom-greeter.c
+src/greeter-assistant.c
+src/greeter-mode-page.c
+src/greeter-network-page.c
+src/greeter-vpn-page.c
+src/greeter-login-page.c
+src/greeter-password-settings-dialog.c
 src/greeterbackground.c
 [type: gettext/glade]src/gooroom-greeter.ui
+[type: gettext/glade]src/greeter-assistant.ui
+[type: gettext/glade]src/greeter-mode-page.ui
+[type: gettext/glade]src/greeter-network-page.ui
+[type: gettext/glade]src/greeter-vpn-page.ui
+[type: gettext/glade]src/greeter-login-page.ui
+[type: gettext/glade]src/splash-window.ui
+[type: gettext/glade]src/greeter-message-dialog.ui
