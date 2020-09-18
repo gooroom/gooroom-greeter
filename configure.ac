@@ -24,6 +24,7 @@ PKG_CHECK_MODULES([LIBNM], [libnm >= 1.2])
 PKG_CHECK_MODULES([LIBNMA], [libnma >= 1.0])
 PKG_CHECK_MODULES([GMODULE], [gmodule-export-2.0])
 PKG_CHECK_MODULES([UPOWER], [upower-glib >= 0.99.4])
+PKG_CHECK_MODULES(PWQUALITY, [pwquality])
 PKG_CHECK_MODULES([LIGHTDMGOBJECT], [liblightdm-gobject-1 >= 1.19.2],
   [AC_DEFINE([HAVE_LIBLIGHTDMGOBJECT_1_19_2], [1], [Building with liblightdmgobject 1.19.2])],
   [PKG_CHECK_MODULES([LIGHTDMGOBJECT], [liblightdm-gobject-1 >= 1.3.5])]

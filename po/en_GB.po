@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gooroom-greeter\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-23 14:22+0900\n"
+"POT-Creation-Date: 2020-12-07 17:00+0900\n"
 "PO-Revision-Date: 2019-09-04 17:37-0400\n"
 "Last-Translator: Gooroom <gooroom@gooroom.kr>\n"
 "Language-Team: Gooroom <gooroom@gooroom.kr>\n"
@@ -17,62 +17,290 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/gooroom-greeter.c:528
+#: ../src/gooroom-greeter.c:365
 #, c-format
 msgid "Warning: There is still %d user logged in."
 msgid_plural "Warning: There are still %d users logged in."
 msgstr[0] "Warning: There is still %d user logged in."
 msgstr[1] "Warning: There are still %d users logged in."
 
-#: ../src/gooroom-greeter.c:563
+#: ../src/gooroom-greeter.c:383 ../src/greeter-assistant.c:251
+#: ../src/greeter-vpn-page.c:197 ../src/greeter-login-page.c:242
+#: ../src/greeter-login-page.c:358 ../src/greeter-login-page.c:530
+#: ../src/greeter-login-page.c:550 ../src/greeter-login-page.c:570
+#: ../src/greeter-login-page.c:599 ../src/greeter-login-page.c:678
+#: ../src/greeter-login-page.c:964
+msgid "_Ok"
+msgstr "_Ok"
+
+#: ../src/gooroom-greeter.c:384 ../src/greeter-assistant.c:252
+#: ../src/greeter-login-page.c:359
+msgid "_Cancel"
+msgstr "_Cancel"
+
+#: ../src/gooroom-greeter.c:429
 msgid "System Shutdown"
 msgstr "System Shutdown"
 
-#: ../src/gooroom-greeter.c:564
+#: ../src/gooroom-greeter.c:430
 msgid "Are you sure you want to close all programs and shut down the computer?"
 msgstr ""
 "Are you sure you want to close all programs and shut down the computer?"
 
-#: ../src/gooroom-greeter.c:569
+#: ../src/gooroom-greeter.c:435
 msgid "System Restart"
 msgstr "System Restart"
 
-#: ../src/gooroom-greeter.c:570
+#: ../src/gooroom-greeter.c:436
 msgid "Are you sure you want to close all programs and restart the computer?"
 msgstr "Are you sure you want to close all programs and restart the computer?"
 
-#: ../src/gooroom-greeter.c:575
+#: ../src/gooroom-greeter.c:441
 msgid "System Suspend"
 msgstr "System Suspend"
 
-#: ../src/gooroom-greeter.c:576
+#: ../src/gooroom-greeter.c:442
 msgid "Are you sure you want to suspend the computer?"
 msgstr "Are you sure you want to suspend the computer?"
 
-#: ../src/gooroom-greeter.c:581
+#: ../src/gooroom-greeter.c:447
 msgid "System Hibernate"
 msgstr "System Hibernate"
 
-#: ../src/gooroom-greeter.c:582
+#: ../src/gooroom-greeter.c:448
 msgid "Are you sure you want to hibernate the computer?"
 msgstr "Are you sure you want to hibernate the computer?"
 
-#: ../src/gooroom-greeter.c:1069
+#: ../src/greeter-assistant.c:240
+msgid "VPN Connection Termination Warning"
+msgstr "VPN Connection Termination Warning"
+
+#: ../src/greeter-assistant.c:241
+msgid ""
+"If you return to the first step, the VPN connection is terminated and you "
+"need to proceed with the authentication process again.Would you like to "
+"continue anyway?"
+msgstr ""
+"If you return to the first step, the VPN connection is terminated and you "
+"need to proceed with the authentication process again.Would you like to "
+"continue anyway?"
+
+#: ../src/greeter-mode-page.c:156
+msgid "System operation mode setting"
+msgstr "System operation mode setting"
+
+#: ../src/greeter-network-page.c:393
+msgctxt "Wireless access point"
+msgid "Other…"
+msgstr "Other…"
+
+#: ../src/greeter-network-page.c:506 ../src/greeter-network-page.c:767
+msgid "Wireless - No Use"
+msgstr "Wireless - No Use"
+
+#: ../src/greeter-network-page.c:512 ../src/greeter-network-page.c:767
+msgid "Wireless - Use"
+msgstr "Wireless - Use"
+
+#: ../src/greeter-network-page.c:713 ../src/greeter-network-page.c:759
+msgid "Wired - Connected"
+msgstr "Wired - Connected"
+
+#: ../src/greeter-network-page.c:713 ../src/greeter-network-page.c:759
+msgid "Wired - Not Connected"
+msgstr "Wired - Not Connected"
+
+#: ../src/greeter-network-page.c:761
+msgid "Wired - No Device"
+msgstr "Wired - No Device"
+
+#: ../src/greeter-network-page.c:769
+msgid "Wireless - No Device"
+msgstr "Wireless - No Device"
+
+#: ../src/greeter-network-page.c:1229
+msgid "Network Settings"
+msgstr "Network Settings"
+
+#: ../src/greeter-vpn-page.c:217
+msgid ""
+"An error has occurred in the system's VPN service.\n"
+"Reboot your system and try again."
+msgstr ""
+"An error has occurred in the system's VPN service.\n"
+"Reboot your system and try again."
+
+#: ../src/greeter-vpn-page.c:222
+msgid ""
+"VPN login request failed.\n"
+"Reboot your system and try again."
+msgstr ""
+"VPN login request failed.\n"
+"Reboot your system and try again."
+
+#: ../src/greeter-vpn-page.c:226
+msgid ""
+"VPN login request failed.\n"
+"There is no reponse from server."
+msgstr ""
+"VPN login request failed.\n"
+"There is no reponse from server."
+
+#: ../src/greeter-vpn-page.c:230 ../src/greeter-vpn-page.c:694
+msgid ""
+"VPN connection information is incorrect.\n"
+"Check the configuration file and try again."
+msgstr ""
+"VPN connection information is incorrect.\n"
+"Check the configuration file and try again."
+
+#: ../src/greeter-vpn-page.c:235
+msgid ""
+"User authentication failed.\n"
+"If authentication fails more than 5 times, you can no longer log in."
+msgstr ""
+"User authentication failed.\n"
+"If authentication fails more than 5 times, you can no longer log in."
+
+#: ../src/greeter-vpn-page.c:241
+msgid ""
+"Login is not possible because user authentication has failed more than 5 "
+"times.\n"
+"Please contact the administrator."
+msgstr ""
+"Login is not possible because user authentication has failed more than 5 "
+"times.\n"
+"Please contact the administrator."
+
+#: ../src/greeter-vpn-page.c:247
+msgid ""
+"The server cannot be reached due to network problems.\n"
+"Please check the network status and try again."
+msgstr ""
+"The server cannot be reached due to network problems.\n"
+"Please check the network status and try again."
+
+#: ../src/greeter-vpn-page.c:252
+msgid ""
+"The connection to the server has been lost. Check the network status and "
+"connect again."
+msgstr ""
+"The connection to the server has been lost. Check the network status and "
+"connect again."
+
+#: ../src/greeter-vpn-page.c:257
+msgid ""
+"Login failed due to an unknown error.\n"
+"Please try again later or contact the administrator."
+msgstr ""
+"Login failed due to an unknown error.\n"
+"Please try again later or contact the administrator."
+
+#: ../src/greeter-vpn-page.c:308
+msgid "VPN Login Success"
+msgstr "VPN Login Success"
+
+#: ../src/greeter-vpn-page.c:309
+msgid ""
+"You have successfully login to the VPN.\n"
+"Click the 'OK' button and proceed with system login."
+msgstr ""
+"You have successfully login to the VPN.\n"
+"Click the 'OK' button and proceed with system login."
+
+#: ../src/greeter-vpn-page.c:326
+msgid "Success Of Changing VPN Password"
+msgstr "Success Of Changing VPN Password"
+
+#: ../src/greeter-vpn-page.c:327
+msgid ""
+"You have completed the password change.\n"
+"Please login again after clicking the 'OK' button."
+msgstr ""
+"You have completed the password change.\n"
+"Please login again after clicking the 'OK' button."
+
+#: ../src/greeter-vpn-page.c:338
+msgid "Failure Of Changing VPN Password"
+msgstr "Failure Of Changing VPN Password"
+
+#: ../src/greeter-vpn-page.c:339
+msgid ""
+"Password change failed.\n"
+"You must change your password the first time you connect to the VPN."
+msgstr ""
+"Password change failed.\n"
+"You must change your password the first time you connect to the VPN."
+
+#: ../src/greeter-vpn-page.c:376
+msgid ""
+"Authentication is in progress.\n"
+"Please wait..."
+msgstr ""
+"Authentication is in progress.\n"
+"Please wait..."
+
+#: ../src/greeter-vpn-page.c:477
+msgid ""
+"Initializing Settings for VPN.\n"
+"Please wait..."
+msgstr ""
+"Initializing Settings for VPN.\n"
+"Please wait..."
+
+#: ../src/greeter-vpn-page.c:578
+#, fuzzy
+msgid "Cancelling VPN Password Change"
+msgstr "Changing Password"
+
+#: ../src/greeter-vpn-page.c:579
+#, fuzzy
+msgid ""
+"The password change has been cancelled.\n"
+"Please be sure to change your password for VPN access."
+msgstr ""
+"Your password has expired.\n"
+"Please change your password immediately."
+
+#: ../src/greeter-vpn-page.c:626 ../src/greeter-vpn-page.c:684
+#: ../src/greeter-vpn-page.c:693
+msgid "VPN Service Error"
+msgstr "VPN Service Error"
+
+#: ../src/greeter-vpn-page.c:627 ../src/greeter-vpn-page.c:685
+msgid "VPN service is down. Please enable VPN service and try again."
+msgstr "VPN service is down. Please enable VPN service and try again."
+
+#: ../src/greeter-vpn-page.c:878
+msgid "Connecting VPN"
+msgstr "Connecting VPN"
+
+#: ../src/greeter-login-page.c:153
+msgid ""
+"In offline mode, only system (local) users can log in. Please try again."
+msgstr ""
+"In offline mode, only system (local) users can log in. Please try again."
+
+#: ../src/greeter-login-page.c:158
+msgid "In online mode, only online users can log in. Please try again."
+msgstr "In online mode, only online users can log in. Please try again."
+
+#: ../src/greeter-login-page.c:455
 msgid ""
 "You are required to change your password immediately (administrator enforced)"
 msgstr ""
 "You are required to change your password immediately (administrator enforced)"
 
-#: ../src/gooroom-greeter.c:1070
+#: ../src/greeter-login-page.c:456
 msgid "You are required to change your password immediately (password expired)"
 msgstr ""
 "You are required to change your password immediately (password expired)"
 
-#: ../src/gooroom-greeter.c:1092
+#: ../src/greeter-login-page.c:477
 msgid "Password Expiration"
 msgstr "Password Expiration"
 
-#: ../src/gooroom-greeter.c:1093
+#: ../src/greeter-login-page.c:478
 msgid ""
 "Your password has expired.\n"
 "Please change your password immediately."
@@ -80,19 +308,19 @@ msgstr ""
 "Your password has expired.\n"
 "Please change your password immediately."
 
-#: ../src/gooroom-greeter.c:1094 ../src/gooroom-greeter.c:1100
+#: ../src/greeter-login-page.c:479 ../src/greeter-login-page.c:484
 msgid "Changing Password"
 msgstr "Changing Password"
 
-#: ../src/gooroom-greeter.c:1094 ../src/gooroom-greeter.c:1100
+#: ../src/greeter-login-page.c:479 ../src/greeter-login-page.c:484
 msgid "Cancel"
 msgstr "Cancel"
 
-#: ../src/gooroom-greeter.c:1098
+#: ../src/greeter-login-page.c:482
 msgid "Temporary Password Warning"
 msgstr "Temporary Password Warning"
 
-#: ../src/gooroom-greeter.c:1099
+#: ../src/greeter-login-page.c:483
 msgid ""
 "Your password has been issued temporarily.\n"
 "For security reasons, please change your password immediately."
@@ -100,7 +328,7 @@ msgstr ""
 "Your password has been issued temporarily.\n"
 "For security reasons, please change your password immediately."
 
-#: ../src/gooroom-greeter.c:1107
+#: ../src/greeter-login-page.c:491
 #, c-format
 msgid ""
 "Please change your password for security.\n"
@@ -113,7 +341,7 @@ msgstr ""
 "can no longer log in.\n"
 "Do you want to change password now?"
 
-#: ../src/gooroom-greeter.c:1112
+#: ../src/greeter-login-page.c:496
 #, c-format
 msgid ""
 "Please change your password for security.\n"
@@ -126,7 +354,7 @@ msgstr ""
 "can no longer log in.\n"
 "Do you want to change password now?"
 
-#: ../src/gooroom-greeter.c:1118
+#: ../src/greeter-login-page.c:502
 msgid ""
 "Please change your password for security.\n"
 "If you do not change your password within a few days, your password expires."
@@ -138,19 +366,19 @@ msgstr ""
 "You can no longer log in.\n"
 "Do you want to change password now?"
 
-#: ../src/gooroom-greeter.c:1125
+#: ../src/greeter-login-page.c:509
 msgid "Password Maxday Warning"
 msgstr "Password Expiration Warning"
 
-#: ../src/gooroom-greeter.c:1126
+#: ../src/greeter-login-page.c:510
 msgid "Change now"
 msgstr "Change now"
 
-#: ../src/gooroom-greeter.c:1126
+#: ../src/greeter-login-page.c:510
 msgid "Later"
 msgstr "Later"
 
-#: ../src/gooroom-greeter.c:1135
+#: ../src/greeter-login-page.c:519
 #, c-format
 msgid ""
 "Your account will not be available after %s.\n"
@@ -159,7 +387,7 @@ msgstr ""
 "Your account will not be available after %s.\n"
 "Your account will expire in %s day"
 
-#: ../src/gooroom-greeter.c:1139
+#: ../src/greeter-login-page.c:523
 #, c-format
 msgid ""
 "Your account will not be available after %s.\n"
@@ -168,18 +396,11 @@ msgstr ""
 "Your account will not be available after %s.\n"
 "Your account will expire in %s days"
 
-#: ../src/gooroom-greeter.c:1146
+#: ../src/greeter-login-page.c:530
 msgid "Account Expiration Warning"
 msgstr "Account Expiration Warning"
 
-#: ../src/gooroom-greeter.c:1147 ../src/gooroom-greeter.c:1168
-#: ../src/gooroom-greeter.c:1189 ../src/gooroom-greeter.c:1218
-#: ../src/gooroom-greeter.c:1297 ../src/gooroom-greeter.c:1870
-#: ../src/gooroom-greeter.ui.h:1
-msgid "Ok"
-msgstr "Ok"
-
-#: ../src/gooroom-greeter.c:1156
+#: ../src/greeter-login-page.c:539
 #, c-format
 msgid ""
 "Your organization will not be available after %s.\n"
@@ -188,7 +409,7 @@ msgstr ""
 "Your organization will not be available after %s.\n"
 "Your organization will expire in %s day"
 
-#: ../src/gooroom-greeter.c:1160
+#: ../src/greeter-login-page.c:543
 #, c-format
 msgid ""
 "Your organization will not be available after %s.\n"
@@ -197,11 +418,11 @@ msgstr ""
 "Your organization will not be available after %s.\n"
 "Your organization will expire in %s days"
 
-#: ../src/gooroom-greeter.c:1167
+#: ../src/greeter-login-page.c:550
 msgid "Division Expiration Warning"
 msgstr "Division Expiration Warning"
 
-#: ../src/gooroom-greeter.c:1177
+#: ../src/greeter-login-page.c:559
 #, c-format
 msgid ""
 "Your password will not be available after %s.\n"
@@ -210,7 +431,7 @@ msgstr ""
 "Your password will not be available after %s.\n"
 "Your password will expire in %s day"
 
-#: ../src/gooroom-greeter.c:1181
+#: ../src/greeter-login-page.c:563
 #, c-format
 msgid ""
 "Your password will not be available after %s.\n"
@@ -219,35 +440,35 @@ msgstr ""
 "Your password will not be available after %s.\n"
 "Your password will expire in %s days"
 
-#: ../src/gooroom-greeter.c:1188
+#: ../src/greeter-login-page.c:570
 msgid "Passowrd Expiration Warning"
 msgstr "Password Expiration Warning"
 
-#: ../src/gooroom-greeter.c:1194
+#: ../src/greeter-login-page.c:575
 msgid "Duplicate logins detected with the same ID."
 msgstr "Duplicate logins detected with the same ID."
 
-#: ../src/gooroom-greeter.c:1197
+#: ../src/greeter-login-page.c:578
 msgid "Client ID"
 msgstr "Client ID"
 
-#: ../src/gooroom-greeter.c:1202
+#: ../src/greeter-login-page.c:583
 msgid "Client Name"
 msgstr "Client Name"
 
-#: ../src/gooroom-greeter.c:1207
+#: ../src/greeter-login-page.c:588
 msgid "IP"
 msgstr "IP"
 
-#: ../src/gooroom-greeter.c:1212
+#: ../src/greeter-login-page.c:593
 msgid "Local IP"
 msgstr "Local IP"
 
-#: ../src/gooroom-greeter.c:1217
+#: ../src/greeter-login-page.c:598
 msgid "Duplicate Login Notification"
 msgstr "Duplicate Login Notification"
 
-#: ../src/gooroom-greeter.c:1226
+#: ../src/greeter-login-page.c:607
 #, c-format
 msgid ""
 "Authentication Failure\n"
@@ -262,12 +483,12 @@ msgstr ""
 "You can no longer log in when the maximum number of login attempts is "
 "exceeded."
 
-#: ../src/gooroom-greeter.c:1229 ../src/gooroom-greeter.c:1857
+#: ../src/greeter-login-page.c:610 ../src/greeter-login-page.c:946
 #, c-format
 msgid "Login Failure (Authentication Failure)"
 msgstr "Login Failure (Authentication Failure)"
 
-#: ../src/gooroom-greeter.c:1236
+#: ../src/greeter-login-page.c:617
 #, c-format
 msgid ""
 "Your account has been locked because you have exceeded the number of login "
@@ -278,7 +499,7 @@ msgstr ""
 "attempts.\n"
 "Please try again in a moment."
 
-#: ../src/gooroom-greeter.c:1242
+#: ../src/greeter-login-page.c:623
 #, c-format
 msgid ""
 "This account has expired and is no longer available.\n"
@@ -287,7 +508,7 @@ msgstr ""
 "This account has expired and is no longer available.\n"
 "Please contact the administrator."
 
-#: ../src/gooroom-greeter.c:1248
+#: ../src/greeter-login-page.c:629
 #, c-format
 msgid ""
 "The password for your account has expired.\n"
@@ -296,12 +517,12 @@ msgstr ""
 "The password for your account has expired.\n"
 "Please contact the administrator."
 
-#: ../src/gooroom-greeter.c:1254
+#: ../src/greeter-login-page.c:635
 #, c-format
 msgid "Login Failure (Duplicate Login)"
 msgstr "Login Failure (Duplicate Login)"
 
-#: ../src/gooroom-greeter.c:1259
+#: ../src/greeter-login-page.c:640
 #, c-format
 msgid ""
 "Due to the expiration of your organization, this account is no longer "
@@ -312,7 +533,7 @@ msgstr ""
 "available.\n"
 "Please contact the administrator."
 
-#: ../src/gooroom-greeter.c:1264
+#: ../src/greeter-login-page.c:645
 #, c-format
 msgid ""
 "Login attempts exceeded the number of times, so you cannot login for a "
@@ -323,19 +544,17 @@ msgstr ""
 "certain period of time.\n"
 "Please try again in a moment."
 
-#: ../src/gooroom-greeter.c:1269
+#: ../src/greeter-login-page.c:650
 #, c-format
 msgid "Trial period has expired."
-msgstr ""
+msgstr "Trial period has expired."
 
-#: ../src/gooroom-greeter.c:1274
+#: ../src/greeter-login-page.c:655
 #, c-format
 msgid "Time error occurred."
-msgstr ""
-"Couldn't get the time from the internet.\n"
-"Please check the network connection and try again."
+msgstr "Time error occurred."
 
-#: ../src/gooroom-greeter.c:1283
+#: ../src/greeter-login-page.c:664
 #, c-format
 msgid ""
 "The trial period is up to %s days.\n"
@@ -344,7 +563,7 @@ msgstr ""
 "The trial period is up to %s days.\n"
 "The trial period expires today."
 
-#: ../src/gooroom-greeter.c:1286
+#: ../src/greeter-login-page.c:667
 #, c-format
 msgid ""
 "The trial period is up to %s days.\n"
@@ -353,7 +572,7 @@ msgstr ""
 "The trial period is up to %s days.\n"
 "%s day left to expire."
 
-#: ../src/gooroom-greeter.c:1289
+#: ../src/greeter-login-page.c:670
 #, c-format
 msgid ""
 "The trial period is up to %s days.\n"
@@ -362,63 +581,63 @@ msgstr ""
 "The trial period is up to %s days.\n"
 "%s days left to expire."
 
-#: ../src/gooroom-greeter.c:1293
+#: ../src/greeter-login-page.c:674
 msgid "The trial period is unknown."
 msgstr "The trial period is unknown"
 
-#: ../src/gooroom-greeter.c:1297
+#: ../src/greeter-login-page.c:678
 msgid "Trial Period Notification"
 msgstr "Trial Period Notification"
 
-#: ../src/gooroom-greeter.c:1320
+#: ../src/greeter-login-page.c:704
 msgid "Current password: "
 msgstr "Current password: "
 
-#: ../src/gooroom-greeter.c:1321
+#: ../src/greeter-login-page.c:705
 msgid "Changing Password - [Step 1]"
 msgstr "Changing Password - [Step 1]"
 
-#: ../src/gooroom-greeter.c:1322
+#: ../src/greeter-login-page.c:706
 msgid "Enter current password :"
 msgstr "Enter current password :"
 
-#: ../src/gooroom-greeter.c:1324
+#: ../src/greeter-login-page.c:708
 msgid "New password: "
 msgstr "New password: "
 
-#: ../src/gooroom-greeter.c:1325
+#: ../src/greeter-login-page.c:709
 msgid "Changing Password - [Step 2]"
 msgstr "Changing Password - [Step 2]"
 
-#: ../src/gooroom-greeter.c:1326
+#: ../src/greeter-login-page.c:710
 msgid "Enter new password :"
 msgstr "Enter new password :"
 
-#: ../src/gooroom-greeter.c:1328
+#: ../src/greeter-login-page.c:712
 msgid "Retype new password: "
 msgstr "Retype new password: "
 
-#: ../src/gooroom-greeter.c:1329
+#: ../src/greeter-login-page.c:713
 msgid "Changing Password - [Step 3]"
 msgstr "Changing Password - [Step 3]"
 
-#: ../src/gooroom-greeter.c:1330
+#: ../src/greeter-login-page.c:714
 msgid "Retype new password :"
 msgstr "Retype new password :"
 
-#: ../src/gooroom-greeter.c:1457
+#: ../src/greeter-login-page.c:854
 msgid "Failed to start session"
 msgstr "Failed to start session"
 
-#: ../src/gooroom-greeter.c:1864
+#: ../src/greeter-login-page.c:953
 msgid "Failed to authenticate"
 msgstr "Failed to authenticate"
 
-#: ../src/gooroom-greeter.c:1868
+#: ../src/greeter-login-page.c:962
 msgid "Failure Of Changing Password"
 msgstr "Failure Of Changing Password"
 
-#: ../src/gooroom-greeter.c:1869
+#: ../src/greeter-login-page.c:963
 msgid ""
 "Failed to change password.\n"
 "Please try again."
@@ -426,46 +645,335 @@ msgstr ""
 "Failed to change password.\n"
 "Please try again."
 
-#: ../src/gooroom-greeter.ui.h:2
-msgid "<span font='18px'><b>Login Gooroom</b></span>"
-msgstr "<span font='18px'><b>Login Gooroom</b></span>"
+#: ../src/greeter-login-page.c:1273
+msgid "Login System"
+msgstr "Login System"
 
-#: ../src/gooroom-greeter.ui.h:3
-msgid "Enter your username"
-msgstr "Enter your username"
+#: ../src/greeter-vpn-passwd-dialog.c:132
+msgid "The old passwords do not match."
+msgstr "The old passwords do not match."
 
-#: ../src/gooroom-greeter.ui.h:4
-msgid "Enter your password"
-msgstr "Enter your password"
+#: ../src/greeter-vpn-passwd-dialog.c:161
+msgid "The passwords do not match."
+msgstr "The passwords do not match."
 
-#: ../src/gooroom-greeter.ui.h:5
+#: ../src/pw-utils.c:81
+msgctxt "Password hint"
+msgid "The new password needs to be different from the old one."
+msgstr "The new password needs to be different from the old one."
+
+#: ../src/pw-utils.c:83
+msgctxt "Password hint"
+msgid ""
+"This password is very similar to your last one. Try changing some letters "
+"and numbers."
+msgstr ""
+"This password is very similar to your last one. Try changing some letters "
+"and numbers."
+
+#: ../src/pw-utils.c:85 ../src/pw-utils.c:93
+msgctxt "Password hint"
+msgid ""
+"This password is very similar to your last one. Try changing the password a "
+"bit more."
+msgstr ""
+"This password is very similar to your last one. Try changing the password a "
+"bit more."
+
+#: ../src/pw-utils.c:87
+msgctxt "Password hint"
+msgid ""
+"This is a weak password. A password without your user name would be stronger."
+msgstr ""
+"This is a weak password. A password without your user name would be stronger."
+
+#: ../src/pw-utils.c:89
+msgctxt "Password hint"
+msgid "This is a weak password. Try to avoid using your name in the password."
+msgstr "This is a weak password. Try to avoid using your name in the password."
+
+#: ../src/pw-utils.c:91
+msgctxt "Password hint"
+msgid ""
+"This is a weak password. Try to avoid some of the words included in the "
+"password."
+msgstr ""
+"This is a weak password. Try to avoid some of the words included in the "
+"password."
+
+#: ../src/pw-utils.c:95
+msgctxt "Password hint"
+msgid "This is a weak password. Try to avoid common words."
+msgstr "This is a weak password. Try to avoid common words."
+
+#: ../src/pw-utils.c:97
+msgctxt "Password hint"
+msgid "This is a weak password. Try to avoid reordering existing words."
+msgstr "This is a weak password. Try to avoid reordering existing words."
+
+#: ../src/pw-utils.c:99
+msgctxt "Password hint"
+msgid "This is a weak password. Try to use more numbers."
+msgstr "This is a weak password. Try to use more numbers."
+
+#: ../src/pw-utils.c:101
+msgctxt "Password hint"
+msgid "This is a weak password. Try to use more uppercase letters."
+msgstr "This is a weak password. Try to use more uppercase letters."
+
+#: ../src/pw-utils.c:103
+msgctxt "Password hint"
+msgid "This is a weak password. Try to use more lowercase letters."
+msgstr "This is a weak password. Try to use more lowercase letters."
+
+#: ../src/pw-utils.c:105
+msgctxt "Password hint"
+msgid ""
+"This is a weak password. Try to use more special characters, like "
+"punctuation."
+msgstr ""
+"This is a weak password. Try to use more special characters, like "
+"punctuation."
+
+#: ../src/pw-utils.c:107
+msgctxt "Password hint"
+msgid ""
+"This is a weak password. Try to use a mixture of letters, numbers and "
+"punctuation."
+msgstr ""
+"This is a weak password. Try to use a mixture of letters, numbers and "
+"punctuation."
+
+#: ../src/pw-utils.c:109
+msgctxt "Password hint"
+msgid "This is a weak password. Try to avoid repeating the same character."
+msgstr "This is a weak password. Try to avoid repeating the same character."
+
+#: ../src/pw-utils.c:111
+msgctxt "Password hint"
+msgid ""
+"This is a weak password. Try to avoid repeating the same type of character: "
+"you need to mix up letters, numbers and punctuation."
+msgstr ""
+"This is a weak password. Try to avoid repeating the same type of character: "
+"you need to mix up letters, numbers and punctuation."
+
+#: ../src/pw-utils.c:113
+msgctxt "Password hint"
+msgid "This is a weak password. Try to avoid sequences like 1234 or abcd."
+msgstr "This is a weak password. Try to avoid sequences like 1234 or abcd."
+
+#: ../src/pw-utils.c:115
+msgctxt "Password hint"
+msgid ""
+"This is a weak password. Try to add more letters, numbers and punctuation."
+msgstr ""
+"This is a weak password. Try to add more letters, numbers and punctuation."
+
+#: ../src/pw-utils.c:117
+msgctxt "Password hint"
+msgid "Mix uppercase and lowercase and try to use a number or two."
+msgstr "Mix uppercase and lowercase and try to use a number or two."
+
+#: ../src/pw-utils.c:119
+msgctxt "Password hint"
+msgid ""
+"Adding more letters, numbers and punctuation will make the password stronger."
+msgstr ""
+"Adding more letters, numbers and punctuation will make the password stronger."
+
+#: ../src/gooroom-greeter.ui.h:1
 msgid "Shutdown system"
 msgstr "Shutdown system"
 
-#: ../src/gooroom-greeter.ui.h:6
-msgid "<b>Shutdown</b>"
-msgstr "<b>Shutdown</b>"
+#: ../src/gooroom-greeter.ui.h:2
+msgid "Shutdown"
+msgstr "Shutdown"
 
-#: ../src/gooroom-greeter.ui.h:7
+#: ../src/gooroom-greeter.ui.h:3
 msgid "Hibernate system"
 msgstr "Hibernate system"
 
-#: ../src/gooroom-greeter.ui.h:8
-msgid "<b>Hibernate</b>"
-msgstr "<b>Hibernate</b>"
+#: ../src/gooroom-greeter.ui.h:4
+msgid "Hibernate"
+msgstr "Hibernate"
 
-#: ../src/gooroom-greeter.ui.h:9
+#: ../src/gooroom-greeter.ui.h:5
 msgid "Suspend system"
 msgstr "Suspend system"
 
-#: ../src/gooroom-greeter.ui.h:10
-msgid "<b>Suspend</b>"
-msgstr "<b>Suspend</b>"
+#: ../src/gooroom-greeter.ui.h:6
+msgid "Suspend"
+msgstr "Suspend"
 
-#: ../src/gooroom-greeter.ui.h:11
+#: ../src/gooroom-greeter.ui.h:7
 msgid "Restart system"
 msgstr "Restart system"
 
-#: ../src/gooroom-greeter.ui.h:12
-msgid "<b>Restart</b>"
-msgstr "<b>Restart</b>"
+#: ../src/gooroom-greeter.ui.h:8
+msgid "Restart"
+msgstr "Restart"
+
+#: ../src/greeter-assistant.ui.h:1
+msgid "First"
+msgstr "First"
+
+#: ../src/greeter-assistant.ui.h:2
+msgid ""
+"Return to the operation mode selection page, the first step of logging in, "
+"and perform the login process again. If you are already connected to a VPN, "
+"disconnect and reconnect."
+msgstr ""
+"Return to the operation mode selection page, the first step of logging in, "
+"and perform the login process again. If you are already connected to a VPN, "
+"disconnect and reconnect."
+
+#: ../src/greeter-assistant.ui.h:3
+msgid "Next"
+msgstr "Next"
+
+#: ../src/greeter-assistant.ui.h:4
+msgid "Prev"
+msgstr "Prev"
+
+#: ../src/greeter-mode-page.ui.h:1
+msgid ""
+"Select the default behavior of the system. Online mode provides a safe work "
+"environment by connecting to the network through a security network.Offline "
+"mode protects the system from intrusion by completely blocking the network "
+"connection."
+msgstr ""
+"Select the default behavior of the system. Online mode provides a safe work "
+"environment by connecting to the network through a security network.Offline "
+"mode protects the system from intrusion by completely blocking the network "
+"connection."
+
+#: ../src/greeter-mode-page.ui.h:2
+msgid "Use Online"
+msgstr "Use Online"
+
+#: ../src/greeter-mode-page.ui.h:3
+msgid ""
+"For a secure network connection, log in online to use the system after "
+"connecting to the security network."
+msgstr ""
+"For a secure network connection, log in online to use the system after "
+"connecting to the security network."
+
+#: ../src/greeter-mode-page.ui.h:4
+msgid "Use Offline"
+msgstr "User Offline"
+
+#: ../src/greeter-mode-page.ui.h:5
+msgid ""
+"With the network connection completely blocked, log in with a local account "
+"to use the system."
+msgstr ""
+"With the network connection completely blocked, log in with a local account "
+"to use the system."
+
+#: ../src/greeter-network-page.ui.h:1
+msgid ""
+"The system is currently not connected to the network. In order for the "
+"system to operate in online mode, it must be connected to the network. "
+"Connect to the network using LAN or Wifi."
+msgstr ""
+"The system is currently not connected to the network. In order for the "
+"system to operate in online mode, it must be connected to the network. "
+"Connect to the network using LAN or Wifi."
+
+#: ../src/greeter-network-page.ui.h:2
+msgid ""
+"No network device\n"
+"Please contact the administrator."
+msgstr ""
+"No network device\n"
+"Please contact the administrator."
+
+#: ../src/greeter-network-page.ui.h:4
+msgid "Exit"
+msgstr "Exit"
+
+#: ../src/greeter-network-page.ui.h:5
+msgid ""
+"Network information could not be found.\n"
+"Please contact the administrator."
+msgstr ""
+"Network information could not be found.\n"
+"Please contact the administrator."
+
+#: ../src/greeter-network-page.ui.h:7
+msgid ""
+"The system's network is inactive.\n"
+"Please click the button below to enable networking."
+msgstr ""
+"The system's network is inactive.\n"
+"Please click the button below to enable networking."
+
+#: ../src/greeter-network-page.ui.h:9
+msgid "Enable Networking"
+msgstr "Enable Networking"
+
+#: ../src/greeter-vpn-page.ui.h:1
+msgid ""
+"Access the security network for a secure network connection. First, after ID "
+"and password authentication, ARS authentication proceeds. Follow the "
+"instructions and enter the two-digit authentication number on the phone "
+"keypad. Please note that login is restricted if authentication fails more "
+"than 5 times."
+msgstr ""
+"Access the security network for a secure network connection. First, after ID "
+"and password authentication, ARS authentication proceeds. Follow the "
+"instructions and enter the two-digit authentication number on the phone "
+"keypad. Please note that login is restricted if authentication fails more "
+"than 5 times."
+
+#: ../src/greeter-vpn-page.ui.h:2 ../src/greeter-login-page.ui.h:2
+msgid "Enter your username"
+msgstr "Enter your username"
+
+#: ../src/greeter-vpn-page.ui.h:3 ../src/greeter-login-page.ui.h:3
+msgid "Enter your password"
+msgstr "Enter your password"
+
+#: ../src/greeter-login-page.ui.h:1
+msgid ""
+"Proceed with system login. When operating in online mode, use an online "
+"account, and when operating in offline mode, use a local account."
+msgstr ""
+"Proceed with system login. When operating in online mode, use an online "
+"account, and when operating in offline mode, use a local account."
+
+#: ../src/splash-window.ui.h:1
+msgid ""
+"Authentication is is progress\n"
+"please wait..."
+msgstr ""
+"Authentication is is progress\n"
+"please wait..."
+
+#: ../src/greeter-vpn-passwd-dialog.ui.h:1
+msgid "Changing password for VPN"
+msgstr "Changing Password for VPN"
+
+#: ../src/greeter-vpn-passwd-dialog.ui.h:2
+msgid ""
+"This is the first user to connect to the VPN. For security, you need to "
+"change your password. If you do not change the password, you will not be "
+"able to connect to the VPN, so be sure to change it."
+msgstr ""
+"This is the first user to connect to the VPN. For security, you need to "
+"change your password. If you do not change the password, you will not be "
+"able to connect to the VPN, so be sure to change it."
+
+#: ../src/greeter-vpn-passwd-dialog.ui.h:3
+msgid "Old Password"
+msgstr "Old Password"
+
+#: ../src/greeter-vpn-passwd-dialog.ui.h:4
+msgid "New Password"
+msgstr "New password"
+
+#: ../src/greeter-vpn-passwd-dialog.ui.h:5
+msgid "Retype Password"
+msgstr "Retype password"

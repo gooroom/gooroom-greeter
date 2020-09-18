@@ -20,6 +20,7 @@
 
 #include "config.h"
 #include "greeter-mode-page.h"
+#include "greeter-message-dialog.h"
 
 #include <glib/gi18n.h>
 #include <gio/gio.h>
@@ -33,6 +34,32 @@ struct _GreeterModePagePrivate {
 G_DEFINE_TYPE_WITH_PRIVATE (GreeterModePage, greeter_mode_page, GREETER_TYPE_PAGE);
 
 
+static void
+set_networking_enable (void)
+{
+	g_spawn_command_line_sync ("/usr/bin/nmcli networking on", NULL, NULL, NULL, NULL);
+
+#if 0
+	gchar *cmd;
+
+	cmd = g_strdup_printf ("%s --action on", GREETER_NETWORK_CONTROL_HELPER);
+	g_spawn_command_line_sync (cmd, NULL, NULL, NULL, NULL);
+	g_free (cmd);
+#endif
+
+
+#if 0
+	gboolean ret;
+    GError *error = NULL;
+    NMClient *nm_client = NULL;
+
+    nm_client = nm_client_new (NULL, &error);
+
+	ret = nm_client_networking_get_enabled (nm_client);
+
+	g_clear_object (&nm_client);
+#endif
+}
 
 static void
 mode_button_toggled_cb (GtkToggleButton *button,
@@ -49,138 +76,32 @@ mode_button_toggled_cb (GtkToggleButton *button,
 		mode = MODE_ONLINE;
 
 	greeter_page_manager_set_mode (manager, mode);
-
-/*
-    GtkWidget *toplevel;
-    const char *message;
-    toplevel = gtk_widget_get_toplevel (GTK_WIDGET (page));
-    message = _("Authentication is in progress.\nPlease wait...");
-
-    greeter_page_manager_show_splash (manager, toplevel, message);
-*/
-}
-
-#if 0
-static void
-setup_page_ui (GreeterModePage *page)
-{
-//	GreeterModePagePrivate *priv = page->priv;
-
-//	gtk_button_set_relief (GTK_BUTTON (priv->on_button), GTK_RELIEF_NONE);
-//	gtk_button_set_relief (GTK_BUTTON (priv->off_button), GTK_RELIEF_NONE);
-
-//	gchar *markup;
-//	markup = g_markup_printf_escaped ("<span font=\"30px\" weight=\"bold\">%s</span>", _("ONLINE"));
-//	gtk_label_set_markup (GTK_LABEL (priv->on_label), markup);
-//	g_free (markup);
-//
-//	markup = g_markup_printf_escaped ("<span font=\"30px\" weight=\"bold\">%s</span>", _("OFFLINE"));
-//	gtk_label_set_markup (GTK_LABEL (priv->off_label), markup);
-//	g_free (markup);
-}
-
-static void
-greeter_mode_page_constructed (GObject *object)
-{
-	gchar *markup = NULL;
-	GreeterModePage *page = GREETER_MODE_PAGE (object);
-	GreeterModePagePrivate *priv = page->priv;
-
-	G_OBJECT_CLASS (greeter_mode_page_parent_class)->constructed (object);
-
-	greeter_page_set_title (GREETER_PAGE (page), _("Which mode would you like to use?"));
-
-	markup = g_markup_printf_escaped ("<span font=\"30px\" weight=\"bold\">%s</span>", _("Online"));
-	gtk_label_set_markup (GTK_LABEL (priv->on_label), markup);
-	g_free (markup);
-
-	markup = g_markup_printf_escaped ("<span font=\"30px\" weight=\"bold\">%s</span>", _("Offline"));
-	gtk_label_set_markup (GTK_LABEL (priv->off_label), markup);
-	g_free (markup);
-
-	g_signal_connect (G_OBJECT (priv->on_button), "toggled",
-                      G_CALLBACK (mode_button_toggled_cb), page);
-
-	g_signal_connect (G_OBJECT (priv->off_button), "toggled",
-                      G_CALLBACK (mode_button_toggled_cb), page);
-
-	gtk_widget_show (GTK_WIDGET (page));
-
-	greeter_page_set_complete (GREETER_PAGE (page), TRUE);
 }
 
 static void
 greeter_mode_page_finalize (GObject *object)
 {
-//	GreeterModePage *page = GREETER_MODE_PAGE (object);
-//	GreeterModePagePrivate *priv = page->priv;
-
 	G_OBJECT_CLASS (greeter_mode_page_parent_class)->finalize (object);
 }
 
-static void
-greeter_mode_page_size_allocate (GtkWidget     *widget,
-                                 GtkAllocation *allocation)
-{
-	gint size, pref_w, pref_h;
-	GreeterModePage *page = GREETER_MODE_PAGE (widget);
-	GreeterModePagePrivate *priv = page->priv;
-
-	if (GTK_WIDGET_CLASS (greeter_mode_page_parent_class)->size_allocate)
-		GTK_WIDGET_CLASS (greeter_mode_page_parent_class)->size_allocate (widget, allocation);
-
-	gtk_widget_get_preferred_width (GTK_WIDGET (priv->on_button), NULL, &pref_w);
-	gtk_widget_get_preferred_height (GTK_WIDGET (priv->on_button), NULL, &pref_h);
-
-g_print ("button size width = %d\n", pref_w);
-g_print ("button size height = %d\n", pref_h);
-
-	size = MAX (pref_w, pref_h);
-
-	gtk_widget_set_size_request (priv->on_button, size, size);
-	gtk_widget_set_size_request (priv->off_button, size, size);
-}
-
-static void
-greeter_mode_page_realize (GtkWidget *widget)
-{
-	gint size, pref_w, pref_h;
-	GreeterModePage *page = GREETER_MODE_PAGE (widget);
-	GreeterModePagePrivate *priv = page->priv;
-
-	gtk_widget_get_preferred_width (GTK_WIDGET (priv->on_button), NULL, &pref_w);
-	gtk_widget_get_preferred_height (GTK_WIDGET (priv->on_button), NULL, &pref_h);
-
-g_print ("button size width = %d\n", pref_w);
-g_print ("button size height = %d\n", pref_h);
-
-	size = MAX (pref_w, pref_h);
-
-	gtk_widget_set_size_request (priv->on_button, size, size);
-	gtk_widget_set_size_request (priv->off_button, size, size);
-
-	if (GTK_WIDGET_CLASS (greeter_mode_page_parent_class)->realize)
-		GTK_WIDGET_CLASS (greeter_mode_page_parent_class)->realize (widget);
-}
-#endif
-
-static void
-greeter_mode_page_out (GreeterPage *page,
-                       gboolean     next)
-{
-	g_print ("greeter_mode_page_out : %d\n", next);
-}
+//static void
+//greeter_mode_page_out (GreeterPage *page,
+//                       gboolean     next)
+//{
+//	if (!next)
+//		return;
+//
+//	set_networking_enable (greeter_page_manager_get_mode (page->manager) == MODE_ONLINE);
+//}
 
 static void
 greeter_mode_page_shown (GreeterPage *page)
 {
-	int mode = MODE_ONLINE;
 	GreeterModePage *self = GREETER_MODE_PAGE (page);
 
-	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (self->priv->off_button)))
-		mode = MODE_OFFLINE;
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->priv->on_button), TRUE);
 
-	greeter_page_manager_set_mode (page->manager, mode);
+	greeter_page_manager_set_mode (page->manager, MODE_ONLINE);
 }
 
 static gboolean
@@ -188,6 +109,40 @@ greeter_mode_page_should_show (GreeterPage *page)
 {
 	return TRUE;
 }
+
+//static gboolean
+//greeter_mode_page_key_press_event (GtkWidget   *widget,
+//                                   GdkEventKey *event)
+//{
+//	GreeterModePage *page = GREETER_MODE_PAGE (widget);
+//	GreeterModePagePrivate *priv = page->priv;
+//
+//	if (event->keyval == GDK_KEY_Return &&
+//		greeter_page_get_complete (GREETER_PAGE (page))) {
+//		greeter_page_manager_go_next (GREETER_PAGE (page)->manager);
+//		return TRUE;
+//	}
+//
+//	if ((event->keyval == GDK_KEY_Up || event->keyval == GDK_KEY_Down)) {
+//		GtkWidget *active_button = NULL;
+//		if (event->keyval == GDK_KEY_Up &&
+//            !gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->on_button))) {
+//			active_button = priv->on_button;
+//		}
+//
+//		if (event->keyval == GDK_KEY_Down &&
+//            !gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->off_button))) {
+//			active_button = priv->off_button;
+//		}
+//
+//		if (active_button)
+//			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (active_button), TRUE);
+//
+//		return TRUE;
+//	}
+//
+//	return GTK_WIDGET_CLASS (greeter_mode_page_parent_class)->key_press_event (widget, event);
+//}
 
 static void
 greeter_mode_page_init (GreeterModePage *page)
@@ -198,10 +153,7 @@ greeter_mode_page_init (GreeterModePage *page)
 
 	gtk_widget_init_template (GTK_WIDGET (page));
 
-	// 시스템 동작 모드 설정
 	greeter_page_set_title (GREETER_PAGE (page), _("System operation mode setting"));
-
-//	setup_page_ui (page);
 
 	g_signal_connect (G_OBJECT (priv->on_button), "toggled",
                       G_CALLBACK (mode_button_toggled_cb), page);
@@ -209,9 +161,11 @@ greeter_mode_page_init (GreeterModePage *page)
 	g_signal_connect (G_OBJECT (priv->off_button), "toggled",
                       G_CALLBACK (mode_button_toggled_cb), page);
 
-	gtk_widget_show (GTK_WIDGET (page));
+	set_networking_enable ();
 
 	greeter_page_set_complete (GREETER_PAGE (page), TRUE);
+
+	gtk_widget_show (GTK_WIDGET (page));
 }
 
 static void
@@ -219,7 +173,7 @@ greeter_mode_page_class_init (GreeterModePageClass *klass)
 {
 	GreeterPageClass *page_class = GREETER_PAGE_CLASS (klass);
 //	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
-//	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
 
 	gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass),
@@ -229,14 +183,13 @@ greeter_mode_page_class_init (GreeterModePageClass *klass)
 	gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GreeterModePage, off_button);
 
 	page_class->page_id = PAGE_ID;
-	page_class->out = greeter_mode_page_out;
+//	page_class->out = greeter_mode_page_out;
 	page_class->shown = greeter_mode_page_shown;
 	page_class->should_show = greeter_mode_page_should_show;
 
-//	object_class->constructed = greeter_mode_page_constructed;
-//	object_class->finalize = greeter_mode_page_finalize;
-//	widget_class->size_allocate = greeter_mode_page_size_allocate;
-//	widget_class->realize = greeter_mode_page_realize;
+//	widget_class->key_press_event = greeter_mode_page_key_press_event;
+
+	object_class->finalize = greeter_mode_page_finalize;
 }
 
 GreeterPage *

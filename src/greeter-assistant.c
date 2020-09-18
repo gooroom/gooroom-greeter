@@ -27,7 +27,6 @@
 #include "greeter-assistant.h"
 #include "greeter-mode-page.h"
 #include "greeter-network-page.h"
-//#include "greeter-gpki-page.h"
 #include "greeter-vpn-page.h"
 #include "greeter-ars-page.h"
 #include "greeter-login-page.h"
@@ -67,66 +66,7 @@ static PageData page_table[] = {
 
 G_DEFINE_TYPE_WITH_PRIVATE (GreeterAssistant, greeter_assistant, GTK_TYPE_BOX)
 
-#if 0
-static int
-get_page_index (GreeterPage *page)
-{
-	int page_index = 0;
 
-	if (page) {
-		PageData *page_data = NULL;
-	    for (page_data = page_table; page_data->page_id != NULL; ++page_data) {
-			g_print ("page_id = %s\n", page_data->page_id);
-
-			++page_index;
-
-			if (g_str_equal (page_data->page_id, GREETER_PAGE_GET_CLASS (page)->page_id))
-				break;
-		}
-	}
-
-	return page_index;
-}
-
-static void
-widget_destroyed (GtkWidget *widget, GreeterAssistant *assistant)
-{
-	GreeterPage *page = GREETER_PAGE (widget);
-	GreeterAssistantPrivate *priv = assistant->priv;
-
-	priv->pages = g_list_delete_link (priv->pages, page);
-	if (page == priv->current_page)
-		priv->current_page = NULL;
-
-//	g_slice_free (GreeterAssistantPagePrivate, page->assistant_priv);
-//	page->assistant_priv = NULL;
-}
-#endif
-
-//static void
-//visible_child_changed (GreeterAssistant *assistant)
-//{
-//	g_signal_emit (assistant, signals[PAGE_CHANGED], 0);
-//}
-
-//static void
-//destroy_pages_after (GreeterAssistant *assistant, GreeterPage *page)
-//{
-//	GList *pages, *l, *next;
-//
-//	pages = greeter_assistant_get_all_pages (assistant);
-//
-//	for (l = pages; l != NULL; l = l->next)
-//		if (l->data == page)
-//			break;
-//
-//	l = l->next;
-//	for (; l != NULL; l = next) {
-//		next = l->next;
-//		gtk_widget_destroy (GTK_WIDGET (l->data));
-//	}
-//}
-//
 
 static void
 switch_to (GreeterAssistant *assistant, GreeterPage *page)
@@ -189,14 +129,6 @@ find_prev_page (GreeterAssistant *assistant)
 	return NULL;
 }
 
-#if 0
-static void
-switch_to_next_page (GreeterAssistant *assistant)
-{
-	switch_to (assistant, find_next_page (assistant));
-}
-#endif
-
 static void
 set_suggested_action_sensitive (GtkWidget *widget, gboolean sensitive)
 {
@@ -214,73 +146,6 @@ set_navigation_button (GreeterAssistant *assistant, GtkWidget *widget)
 
 	gtk_widget_set_visible (priv->forward, (widget == priv->forward));
 }
-//
-//
-//static void
-//on_apply_done (GreeterPage *page,
-//               gboolean valid,
-//               gpointer user_data)
-//{
-//	GreeterAssistant *assistant = GREETER_ASSISTANT (user_data);
-//
-//	if (valid)
-//		switch_to_next_page (assistant);
-//}
-//
-//static void
-//rebuild_pages (GreeterAssistant *assistant)
-//{
-//	PageData *page_data;
-//	GreeterPage *page;
-////  GreeterAssistant *assistant;
-//	GreeterPage *current_page;
-////  gchar **skip_pages;
-////  gboolean is_new_user, skipped;
-//	GreeterAssistantPrivate *priv = assistant->priv;
-//
-////  assistant = greeter_driver_get_assistant (driver);
-//	current_page = greeter_assistant_get_current_page (assistant);
-//	page_data = page_table;
-//
-////  g_ptr_array_free (skipped_pages, TRUE);
-////  skipped_pages = g_ptr_array_new_with_free_func ((GDestroyNotify) gtk_widget_destroy);
-//
-//  if (current_page != NULL) {
-//    destroy_pages_after (assistant, current_page);
-//
-//    for (page_data = page_table; page_data->page_id != NULL; ++page_data)
-//      if (g_str_equal (page_data->page_id, GREETER_PAGE_GET_CLASS (current_page)->page_id))
-//        break;
-//
-//    ++page_data;
-//  }
-//
-////  is_new_user = (greeter_driver_get_mode (driver) == GREETER_DRIVER_MODE_NEW_USER);
-////  skip_pages = pages_to_skip_from_file (is_new_user);
-//
-//	for (; page_data->page_id != NULL; ++page_data) {
-//g_print ("page_id = %s\n", page_data->page_id);
-////	  skipped = FALSE;
-//
-////	  if ((page_data->new_user_only && !is_new_user) ||
-////			  (should_skip_page (driver, page_data->page_id, skip_pages)))
-////		  skipped = TRUE;
-//
-//		page = page_data->prepare_page_func (priv->manager);
-//		if (!page)
-//			continue;
-//
-////	  if (skipped && greeter_page_skip (page))
-////		  g_ptr_array_add (skipped_pages, page);
-////	  else
-////		  greeter_driver_add_page (driver, page);
-//
-//		greeter_assistant_add_page (assistant, page);
-//	}
-//
-////	g_strfreev (skip_pages);
-//}
-//
 
 //static void
 //initialize_pages (GList *pages)
@@ -302,30 +167,6 @@ update_titlebar (GreeterAssistant *assistant)
 		gtk_label_set_text (GTK_LABEL (priv->title), title);
 }
 
-//static void
-//update_applying_state (GreeterAssistant *assistant)
-//{
-//	gboolean applying = FALSE;
-//	gboolean is_first_page = FALSE;
-//
-//	GreeterAssistantPrivate *priv = greeter_assistant_get_instance_private (assistant);
-//	if (priv->current_page)
-//	{
-//		applying = greeter_page_get_applying (priv->current_page);
-//		is_first_page = (find_prev_page (assistant) == NULL);
-//	}
-//	gtk_widget_set_sensitive (priv->forward, !applying);
-//	gtk_widget_set_visible (priv->backward, !applying && !is_first_page);
-////	gtk_widget_set_visible (priv->cancel, applying);
-////	gtk_widget_set_visible (priv->spinner, applying);
-//
-////	if (applying)
-////		gtk_spinner_start (GTK_SPINNER (priv->spinner));
-////	else
-////		gtk_spinner_stop (GTK_SPINNER (priv->spinner));
-//}
-
-
 static void
 update_navigation_buttons (GreeterAssistant *assistant)
 {
@@ -338,8 +179,6 @@ update_navigation_buttons (GreeterAssistant *assistant)
 	gtk_widget_hide (priv->first);
 
 	is_last_page = (find_next_page (assistant) == NULL);
-
-	g_print ("is last page = %d\n", is_last_page);
 
 	if (is_last_page) {
 		gtk_widget_hide (priv->backward);
@@ -386,7 +225,8 @@ update_current_page (GreeterAssistant *assistant,
 }
 
 static void
-go_first_cb (GtkWidget *button, gpointer user_data)
+go_first_button_cb (GtkWidget *button,
+                    gpointer   user_data)
 {
 	int res;
 	const gchar *title;
@@ -403,7 +243,7 @@ go_first_cb (GtkWidget *button, gpointer user_data)
                     "Would you like to continue anyway?");
 
 		dialog = greeter_message_dialog_new (GTK_WINDOW (toplevel),
-				"dialog-information",
+				"network-vpn-symbolic",
 				title,
 				message);
 
@@ -425,7 +265,8 @@ go_first_cb (GtkWidget *button, gpointer user_data)
 }
 
 static void
-go_forward_cb (GtkWidget *button, gpointer user_data)
+go_forward_button_cb (GtkWidget *button,
+                      gpointer   user_data)
 {
 	GreeterAssistant *assistant = GREETER_ASSISTANT (user_data);
 
@@ -433,22 +274,14 @@ go_forward_cb (GtkWidget *button, gpointer user_data)
 }
 
 static void
-go_backward_cb (GtkWidget *button, gpointer user_data)
+go_backward_button_cb (GtkWidget *button,
+                       gpointer   user_data)
 {
 	GreeterAssistant *assistant = GREETER_ASSISTANT (user_data);
 
 	greeter_assistant_prev_page (assistant);
 }
 
-//static void
-//do_cancel_cb (GtkWidget *button, gpointer user_data)
-//{
-//	GreeterAssistant *assistant = GREETER_ASSISTANT (user_data);
-//	GreeterAssistantPrivate *priv = assistant->priv;
-//	if (priv->current_page)
-//		greeter_page_apply_cancel (priv->current_page);
-//}
-//
 static void
 page_notify_cb (GreeterPage      *page,
                 GParamSpec       *pspec,
@@ -459,17 +292,9 @@ page_notify_cb (GreeterPage      *page,
 	if (page != priv->current_page)
 		return;
 
-	if (strcmp (pspec->name, "title") == 0)
-	{
-//		g_object_notify_by_pspec (G_OBJECT (assistant), obj_props[PROP_TITLE]);
+	if (strcmp (pspec->name, "title") == 0) {
 		update_titlebar (assistant);
-	}
-//	else if (strcmp (pspec->name, "applying") == 0)
-//	{
-//		update_applying_state (assistant);
-//	}
-	else
-	{
+	} else {
 		update_navigation_buttons (assistant);
 	}
 }
@@ -502,57 +327,20 @@ go_next_page_cb (GreeterPageManager *manager,
 	greeter_assistant_next_page (GREETER_ASSISTANT (user_data));
 }
 
-#if 0
 static void
-greeter_assistant_set_property (GObject      *object,
-                                guint         prop_id,
-                                const GValue *value,
-                                GParamSpec   *pspec)
+go_first_page_cb (GreeterPageManager *manager,
+                  gpointer            user_data)
 {
-	GreeterAssistant *assistant = GREETER_ASSISTANT (object);
-	GreeterAssistantPrivate *priv = assistant->priv;
-
-	switch (prop_id)
-	{
-		case PROP_GREETER:
-			priv->greeter = g_value_get_pointer (value);
-		break;
-
-		default:
-			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-		break;
-	}
+	greeter_assistant_first_page (GREETER_ASSISTANT (user_data));
 }
-
-static void
-greeter_assistant_get_property (GObject    *object,
-                                guint       prop_id,
-                                GValue     *value,
-                                GParamSpec *pspec)
-{
-	GreeterAssistant *assistant = GREETER_ASSISTANT (object);
-	GreeterAssistantPrivate *priv = assistant->priv;
-
-	switch (prop_id)
-	{
-		case PROP_GREETER:
-			g_value_set_pointer (value, (gpointer) priv->greeter);
-		break;
-
-		default:
-			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-		break;
-	}
-}
-#endif
 
 static void
 greeter_assistant_ui_setup (GreeterAssistant *assistant)
 {
 	GdkPixbuf *pixbuf = NULL;
 
-	pixbuf = gdk_pixbuf_new_from_resource_at_scale ("/kr/gooroom/greeter/gooroom-logo",
-                                                    72, 36, FALSE, NULL);
+	pixbuf = gdk_pixbuf_new_from_resource_at_scale ("/kr/gooroom/greeter/logo",
+                                                    102, 44, FALSE, NULL);
 	if (pixbuf) {
 		gtk_image_set_from_pixbuf (GTK_IMAGE (assistant->priv->logo_image), pixbuf);
 		g_object_unref (pixbuf);
@@ -571,9 +359,6 @@ greeter_assistant_realize (GtkWidget *widget)
 
 	gtk_widget_get_preferred_width (widget, NULL, &pref_w);
 	gtk_widget_get_preferred_height (widget, NULL, &pref_h);
-
-g_print ("assistant width = %d\n", pref_w);
-g_print ("assistant height = %d\n", pref_h);
 }
 #endif
 
@@ -617,13 +402,14 @@ greeter_assistant_init (GreeterAssistant *assistant)
 	}
 
 	g_signal_connect (priv->manager, "go-next", G_CALLBACK (go_next_page_cb), assistant);
+	g_signal_connect (priv->manager, "go-first", G_CALLBACK (go_first_page_cb), assistant);
 
 	g_signal_connect (priv->stack, "notify::visible-child",
                       G_CALLBACK (current_page_changed_cb), assistant);
 
-	g_signal_connect (priv->first, "clicked", G_CALLBACK (go_first_cb), assistant);
-	g_signal_connect (priv->forward, "clicked", G_CALLBACK (go_forward_cb), assistant);
-	g_signal_connect (priv->backward, "clicked", G_CALLBACK (go_backward_cb), assistant);
+	g_signal_connect (priv->first, "clicked", G_CALLBACK (go_first_button_cb), assistant);
+	g_signal_connect (priv->forward, "clicked", G_CALLBACK (go_forward_button_cb), assistant);
+	g_signal_connect (priv->backward, "clicked", G_CALLBACK (go_backward_button_cb), assistant);
 
 	g_idle_add ((GSourceFunc) change_current_page_idle, assistant);
 }
@@ -646,43 +432,6 @@ greeter_assistant_class_init (GreeterAssistantClass *klass)
 	gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GreeterAssistant, backward);
 	gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GreeterAssistant, title);
 	gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GreeterAssistant, logo_image);
-
-//	gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GreeterAssistant, cancel);
-//  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GreeterAssistant, main_layout);
-//  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GreeterAssistant, spinner);
-//  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GreeterAssistant, titlebar);
-//	gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), visible_child_changed);
-
-//	gobject_class->get_property = greeter_assistant_get_property;
-//	gobject_class->set_property = greeter_assistant_set_property;
-
-#if 0
-	obj_props[PROP_GREETER] =
-		g_param_spec_pointer ("greeter", "", "",
-                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
-
-
-	obj_props[PROP_TITLE] = g_param_spec_string ("title",
-                                                 "", "",
-                                                 NULL,
-                                                 G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
-
-	/**
-	 * GreeterAssistant::page-changed:
-	 * @assistant: the #GreeterAssistant
-	 *
-	 * The ::page-changed signal is emitted when the visible page
-	 * changed.
-	 */
-	signals[PAGE_CHANGED] = g_signal_new ("page-changed",
-                                          G_TYPE_FROM_CLASS (gobject_class),
-                                          G_SIGNAL_RUN_LAST,
-                                          0,
-                                          NULL, NULL, NULL,
-                                          G_TYPE_NONE, 0);
-
-	g_object_class_install_properties (gobject_class, PROP_LAST, obj_props);
-#endif
 }
 
 GtkWidget *
@@ -699,15 +448,12 @@ greeter_assistant_add_page (GreeterAssistant *assistant,
 
 	priv->pages = g_list_append (priv->pages, page);
 
-//	g_signal_connect (page, "destroy", G_CALLBACK (widget_destroyed), assistant);
 	g_signal_connect (page, "notify", G_CALLBACK (page_notify_cb), assistant);
 
 	gtk_container_add (GTK_CONTAINER (priv->stack), GTK_WIDGET (page));
 
 	gtk_widget_set_halign (GTK_WIDGET (page), GTK_ALIGN_FILL);
 	gtk_widget_set_valign (GTK_WIDGET (page), GTK_ALIGN_FILL);
-
-//	update_navigation_buttons (assistant);
 }
 
 GreeterPage *

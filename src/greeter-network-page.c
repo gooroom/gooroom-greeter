@@ -23,15 +23,12 @@
 #define PAGE_ID "network"
 
 #include "config.h"
-//#include "network-resources.h"
 #include "network-dialogs.h"
 #include "greeter-network-page.h"
 
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 
-
-static gboolean refresh_wireless_list (GreeterNetworkPage *page);
 
 typedef enum {
   NM_AP_SEC_UNKNOWN,
@@ -42,25 +39,38 @@ typedef enum {
 } NMAccessPointSecurity;
 
 struct _GreeterNetworkPagePrivate {
-  GtkWidget *network_list;
-  GtkWidget *scrolled_window;
-  GtkWidget *no_network_box;
+  GtkWidget *network_box;
+  GtkWidget *device_frame;
+  GtkWidget *device_list;
+  GtkWidget *wired_item;
+  GtkWidget *wired_label;
+  GtkWidget *wired_switch;
+  GtkWidget *wifi_item;
+  GtkWidget *wifi_label;
+  GtkWidget *wifi_switch;
+  GtkWidget *wifi_list_frame;
+  GtkWidget *wifi_list;
+  GtkWidget *spinner;
+  GtkWidget *no_nm_box;
   GtkWidget *no_device_box;
-  GtkWidget *device_turn_on_box;
-//  GtkWidget *no_network_label;
-//  GtkWidget *no_network_spinner;
-//  GtkWidget *turn_on_label;
-  GtkWidget *turn_on_switch;
+  GtkWidget *no_network_box;
+  GtkWidget *exit_button1;
+  GtkWidget *exit_button2;
+  GtkWidget *network_enable_button;
 
   NMClient *nm_client;
-  NMDevice *nm_device;
+
+  NMDevice *nm_device_eth;
+  NMDevice *nm_device_wifi;
+
   gboolean refreshing;
-//  GtkSizeGroup *icons;
+  gboolean old_network_enabled;
 
   guint refresh_timeout_id;
-
-//  GMainLoop *loop;
 };
+
+static gboolean refresh_wireless_list (GreeterNetworkPage *page);
+static gboolean wired_switch_toggled_cb (GtkSwitch *sw, gboolean state, gpointer user_data);
 
 G_DEFINE_TYPE_WITH_PRIVATE (GreeterNetworkPage, greeter_network_page, GREETER_TYPE_PAGE);
 
@@ -70,15 +80,15 @@ static void
 get_monitor_geometry (GtkWidget    *widget,
                       GdkRectangle *geometry)
 {
-	GdkDisplay *d;
-	GdkWindow  *w;
-	GdkMonitor *m;
+  GdkDisplay *d;
+  GdkWindow  *w;
+  GdkMonitor *m;
 
-	d = gdk_display_get_default ();
-	w = gtk_widget_get_window (widget);
-	m = gdk_display_get_monitor_at_window (d, w);
+  d = gdk_display_get_default ();
+  w = gtk_widget_get_window (widget);
+  m = gdk_display_get_monitor_at_window (d, w);
 
-	gdk_monitor_get_geometry (m, geometry);
+  gdk_monitor_get_geometry (m, geometry);
 }
 
 static gboolean
@@ -86,49 +96,46 @@ modal_window_button_pressed_event_cb (GtkWidget      *widget,
                                       GdkEventButton *event,
                                       gpointer        user_data)
 {
-	g_print ("modal_window_button_pressed_event_cb\n");
-	return TRUE;
+  return TRUE;
 }
 
 static void
 modal_window_show (GreeterNetworkPage *page)
 {
-	GtkWidget *window;
+  GtkWidget *window;
     GtkWidget *toplevel;
-	GdkRectangle geometry;
+  GdkRectangle geometry;
 
-g_print ("modal_window_showwwwwwwwwww\n");
+  toplevel = gtk_widget_get_toplevel (GTK_WIDGET (page));
 
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (page));
+  get_monitor_geometry (toplevel, &geometry);
 
-	get_monitor_geometry (toplevel, &geometry);
+  window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_accept_focus (GTK_WINDOW (window), FALSE);
+//  gtk_window_set_keep_above (GTK_WINDOW (window), FALSE);
+  gtk_window_set_modal (GTK_WINDOW (window), TRUE);
+  gtk_window_set_decorated (GTK_WINDOW (window), FALSE);
+  gtk_window_set_skip_taskbar_hint (GTK_WINDOW (window), TRUE);
+  gtk_window_set_skip_pager_hint (GTK_WINDOW (window), TRUE);
+  gtk_window_set_resizable (GTK_WINDOW (window), FALSE);
+  gtk_window_set_transient_for (GTK_WINDOW (window), GTK_WINDOW (toplevel));
+  gtk_window_set_destroy_with_parent (GTK_WINDOW (window), TRUE);
+  gtk_widget_set_app_paintable (window, TRUE);
+  gtk_widget_set_size_request (window, geometry.width, geometry.height);
+  gtk_window_move (GTK_WINDOW (window), geometry.x, geometry.y);
 
-	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_accept_focus (GTK_WINDOW (window), FALSE);
-//	gtk_window_set_keep_above (GTK_WINDOW (window), FALSE);
-	gtk_window_set_modal (GTK_WINDOW (window), TRUE);
-	gtk_window_set_decorated (GTK_WINDOW (window), FALSE);
-	gtk_window_set_skip_taskbar_hint (GTK_WINDOW (window), TRUE);
-	gtk_window_set_skip_pager_hint (GTK_WINDOW (window), TRUE);
-	gtk_window_set_resizable (GTK_WINDOW (window), FALSE);
-	gtk_window_set_transient_for (GTK_WINDOW (window), GTK_WINDOW (toplevel));
-	gtk_window_set_destroy_with_parent (GTK_WINDOW (window), TRUE);
-	gtk_widget_set_app_paintable (window, TRUE);
-	gtk_widget_set_size_request (window, geometry.width, geometry.height);
-	gtk_window_move (GTK_WINDOW (window), geometry.x, geometry.y);
+  GdkScreen *screen = gtk_window_get_screen (GTK_WINDOW (window));
+  if(gdk_screen_is_composited (screen)) {
+    GdkVisual *visual = gdk_screen_get_rgba_visual (screen);
+    if (visual == NULL)
+      visual = gdk_screen_get_system_visual (screen);
 
-	GdkScreen *screen = gtk_window_get_screen (GTK_WINDOW (window));
-	if(gdk_screen_is_composited (screen)) {
-		GdkVisual *visual = gdk_screen_get_rgba_visual (screen);
-		if (visual == NULL)
-			visual = gdk_screen_get_system_visual (screen);
+    gtk_widget_set_visual (GTK_WIDGET (window), visual);
+  }
 
-		gtk_widget_set_visual (GTK_WIDGET (window), visual);
-	}
+  gtk_widget_show (window);
 
-	gtk_widget_show (window);
-
-	g_signal_connect (G_OBJECT (window), "button-press-event",
+  g_signal_connect (G_OBJECT (window), "button-press-event",
                       G_CALLBACK (modal_window_button_pressed_event_cb), page);
 }
 #endif
@@ -275,16 +282,14 @@ add_access_point (GreeterNetworkPage *page, NMAccessPoint *ap, NMAccessPoint *ac
 
   if (ssid == NULL || object_path == NULL)
     return;
-  ssid_text = nm_utils_ssid_to_utf8 (g_bytes_get_data (ssid, NULL), g_bytes_get_size (ssid));
 
-//g_print ("add access point ssid = %s\n", ssid_text);
-//g_print ("add access point object_path = %s\n", object_path);
+  ssid_text = nm_utils_ssid_to_utf8 (g_bytes_get_data (ssid, NULL), g_bytes_get_size (ssid));
 
   if (active)
     ssid_active = nm_access_point_get_ssid (active);
   if (ssid_active && nm_utils_same_ssid (g_bytes_get_data (ssid, NULL), g_bytes_get_size (ssid),
                                          g_bytes_get_data (ssid_active, NULL), g_bytes_get_size (ssid_active), TRUE)) {
-    switch (nm_device_get_state (priv->nm_device))
+    switch (nm_device_get_state (priv->nm_device_wifi))
       {
       case NM_DEVICE_STATE_PREPARE:
       case NM_DEVICE_STATE_CONFIG:
@@ -315,8 +320,8 @@ add_access_point (GreeterNetworkPage *page, NMAccessPoint *ap, NMAccessPoint *ac
   gtk_widget_set_margin_start (row, 12);
   gtk_widget_set_margin_end (row, 12);
   widget = gtk_label_new (ssid_text);
-  gtk_widget_set_margin_top (widget, 12);
-  gtk_widget_set_margin_bottom (widget, 12);
+  gtk_widget_set_margin_top (widget, 6);
+  gtk_widget_set_margin_bottom (widget, 6);
   gtk_box_pack_start (GTK_BOX (row), widget, FALSE, FALSE, 0);
 
   if (activated) {
@@ -337,7 +342,6 @@ add_access_point (GreeterNetworkPage *page, NMAccessPoint *ap, NMAccessPoint *ac
   gtk_grid_set_column_spacing (GTK_GRID (grid), 6);
   gtk_grid_set_column_homogeneous (GTK_GRID (grid), TRUE);
   gtk_widget_set_valign (grid, GTK_ALIGN_CENTER);
-//  gtk_size_group_add_widget (priv->icons, grid);
   gtk_box_pack_end (GTK_BOX (row), grid, FALSE, FALSE, 0);
 
   if (security != NM_AP_SEC_UNKNOWN &&
@@ -368,14 +372,12 @@ add_access_point (GreeterNetworkPage *page, NMAccessPoint *ap, NMAccessPoint *ac
     strength = G_MAXUINT;
 
   g_object_set_data (G_OBJECT (row), "ap", ap);
-//  g_object_set_data (G_OBJECT (row), "object-path", (gpointer) object_path);
-//  g_object_set_data (G_OBJECT (row), "ssid", (gpointer) ssid);
   g_object_set_data (G_OBJECT (row), "strength", GUINT_TO_POINTER (strength));
 
   widget = gtk_list_box_row_new ();
   gtk_container_add (GTK_CONTAINER (widget), row);
   gtk_widget_show (widget);
-  gtk_container_add (GTK_CONTAINER (priv->network_list), widget);
+  gtk_container_add (GTK_CONTAINER (priv->wifi_list), widget);
 }
 
 static void
@@ -389,15 +391,14 @@ add_access_point_other (GreeterNetworkPage *page)
   gtk_widget_set_margin_start (row, 12);
   gtk_widget_set_margin_end (row, 12);
   widget = gtk_label_new (C_("Wireless access point", "Other…"));
-  gtk_widget_set_margin_top (widget, 12);
-  gtk_widget_set_margin_bottom (widget, 12);
+  gtk_widget_set_margin_top (widget, 6);
+  gtk_widget_set_margin_bottom (widget, 6);
   gtk_box_pack_start (GTK_BOX (row), widget, FALSE, FALSE, 0);
   gtk_widget_show_all (row);
 
-//  g_object_set_data (G_OBJECT (row), "object-path", "ap-other...");
   g_object_set_data (G_OBJECT (row), "strength", GUINT_TO_POINTER (0));
 
-  gtk_container_add (GTK_CONTAINER (priv->network_list), row);
+  gtk_container_add (GTK_CONTAINER (priv->wifi_list), row);
 }
 
 static void
@@ -405,20 +406,21 @@ cancel_periodic_refresh (GreeterNetworkPage *page)
 {
   GreeterNetworkPagePrivate *priv = page->priv;
 
-  if (priv->refresh_timeout_id == 0)
-    return;
-
   g_debug ("Stopping periodic/scheduled Wi-Fi list refresh");
 
-  g_clear_handle_id (&priv->refresh_timeout_id, g_source_remove);
+  if (priv->refresh_timeout_id != 0) {
+    g_clear_handle_id (&priv->refresh_timeout_id, g_source_remove);
+    priv->refresh_timeout_id = 0;
+  }
 }
 
 static gboolean
 refresh_again (gpointer user_data)
 {
-g_print ("refresh_againnnnnnnnnnn\n");
   GreeterNetworkPage *page = GREETER_NETWORK_PAGE (user_data);
+
   refresh_wireless_list (page);
+
   return G_SOURCE_REMOVE;
 }
 
@@ -432,6 +434,7 @@ start_periodic_refresh (GreeterNetworkPage *page)
 
   g_debug ("Starting periodic Wi-Fi list refresh (every %u secs)",
            periodic_wifi_refresh_timeout_sec);
+
   priv->refresh_timeout_id = g_timeout_add_seconds (periodic_wifi_refresh_timeout_sec,
                                                     refresh_again, page);
 }
@@ -441,25 +444,13 @@ start_periodic_refresh (GreeterNetworkPage *page)
 static void
 schedule_refresh_wireless_list (GreeterNetworkPage *page)
 {
-//  static const guint refresh_wireless_list_timeout_sec = 1;
   GreeterNetworkPagePrivate *priv = page->priv;
 
   cancel_periodic_refresh (page);
 
-//  g_debug ("Delaying Wi-Fi list refresh (for %u sec)",
-//           refresh_wireless_list_timeout_sec);
-
-  priv->refresh_timeout_id = g_timeout_add (700,
+  priv->refresh_timeout_id = g_timeout_add (1000,
                                             (GSourceFunc) refresh_wireless_list,
                                             page);
-
-//  priv->refresh_timeout_id = g_idle_add_full (G_PRIORITY_DEFAULT,
-//                                              (GSourceFunc) refresh_wireless_list,
-//                                              page, NULL);
-
-//  priv->refresh_timeout_id = g_timeout_add_seconds (refresh_wireless_list_timeout_sec,
-//                                                    (GSourceFunc) refresh_wireless_list,
-//                                                    page);
 }
 
 static gboolean
@@ -472,50 +463,55 @@ refresh_wireless_list (GreeterNetworkPage *page)
   GPtrArray *unique_aps;
   guint i;
   GList *children, *l;
-  gboolean enabled;
+  gboolean enabled, hw_enabled;
   gboolean fast_refresh = FALSE;
 
   g_debug ("Refreshing Wi-Fi networks list");
 
   priv->refreshing = TRUE;
 
-  g_assert (NM_IS_DEVICE_WIFI (priv->nm_device));
+  if (!NM_IS_DEVICE_WIFI (priv->nm_device_wifi))
+    return G_SOURCE_REMOVE;
 
   cancel_periodic_refresh (page);
 
-  active_ap = nm_device_wifi_get_active_access_point (NM_DEVICE_WIFI (priv->nm_device));
+  active_ap = nm_device_wifi_get_active_access_point (NM_DEVICE_WIFI (priv->nm_device_wifi));
 
-  children = gtk_container_get_children (GTK_CONTAINER (priv->network_list));
+  children = gtk_container_get_children (GTK_CONTAINER (priv->wifi_list));
   for (l = children; l; l = l->next)
-    gtk_container_remove (GTK_CONTAINER (priv->network_list), l->data);
+    gtk_container_remove (GTK_CONTAINER (priv->wifi_list), l->data);
   g_list_free (children);
 
-  aps = nm_device_wifi_get_access_points (NM_DEVICE_WIFI (priv->nm_device));
   enabled = nm_client_wireless_get_enabled (priv->nm_client);
+  hw_enabled = nm_client_wireless_hardware_get_enabled (priv->nm_client);
+  aps = nm_device_wifi_get_access_points (NM_DEVICE_WIFI (priv->nm_device_wifi));
 
-  gtk_widget_hide (priv->no_network_box);
-  gtk_widget_hide (priv->no_device_box);
-  gtk_widget_show (priv->scrolled_window);
+  gtk_widget_hide (priv->spinner);
+  gtk_widget_show (priv->wifi_list_frame);
+
+  g_debug ("Refreshing Wi-Fi networks list length = %d", aps->len);
 
   if (aps == NULL || aps->len == 0) {
-    gboolean hw_enabled;
-
     hw_enabled = nm_client_wireless_hardware_get_enabled (priv->nm_client);
 
     if (!enabled || !hw_enabled) {
-      gtk_widget_show_all (priv->no_device_box);
-
+      gtk_switch_set_active (GTK_SWITCH (priv->wifi_switch), FALSE);
       if (!hw_enabled)
-        gtk_widget_hide (priv->device_turn_on_box);
-
+        gtk_widget_set_sensitive (priv->wifi_item, FALSE);
     } else {
-      gtk_widget_show (priv->no_network_box);
+      gtk_widget_show (priv->spinner);
       fast_refresh = TRUE;
     }
 
-    gtk_widget_hide (priv->scrolled_window);
+    gtk_label_set_text (GTK_LABEL (priv->wifi_label), _("Wireless - No Use"));
+    gtk_widget_hide (priv->wifi_list_frame);
+    fast_refresh = TRUE;
     goto out;
   }
+
+  gtk_label_set_text (GTK_LABEL (priv->wifi_label), _("Wireless - Use"));
+  gtk_widget_set_sensitive (priv->wifi_item, TRUE);
+  gtk_switch_set_active (GTK_SWITCH (priv->wifi_switch), TRUE);
 
   unique_aps = get_strongest_unique_aps (aps);
   for (i = 0; i < unique_aps->len; i++) {
@@ -526,7 +522,6 @@ refresh_wireless_list (GreeterNetworkPage *page)
   add_access_point_other (page);
 
  out:
-
   if (enabled) {
     if (fast_refresh) {
       schedule_refresh_wireless_list (page);
@@ -543,14 +538,18 @@ refresh_wireless_list (GreeterNetworkPage *page)
 static gboolean
 sync_complete (GreeterNetworkPage *page)
 {
-  gboolean activated;
+  gboolean activated = FALSE;
   GreeterNetworkPagePrivate *priv = page->priv;
 
-//  activated = (nm_device_get_state (priv->nm_device) == NM_DEVICE_STATE_ACTIVATED);
-  activated = (nm_client_get_state (priv->nm_client) > NM_STATE_CONNECTING);
+  if (priv->nm_device_eth) {
+    activated = (nm_device_get_state (priv->nm_device_eth) == NM_DEVICE_STATE_ACTIVATED);
+  }
+
+  if (priv->nm_device_wifi) {
+    activated |= (nm_device_get_state (priv->nm_device_wifi) == NM_DEVICE_STATE_ACTIVATED);
+  }
 
   greeter_page_set_complete (GREETER_PAGE (page), activated);
-  schedule_refresh_wireless_list (page);
 
   return FALSE;
 }
@@ -560,10 +559,9 @@ connection_activate_cb (GObject *object,
                         GAsyncResult *result,
                         gpointer user_data)
 {
-  NMClient *client = NM_CLIENT (object);
-  NMActiveConnection *connection;
   GError *error = NULL;
-//  GreeterNetworkPage *page = GREETER_NETWORK_PAGE (user_data);
+  NMActiveConnection *connection;
+  NMClient *client = NM_CLIENT (object);
 
   connection = nm_client_activate_connection_finish (client, result, &error);
   if (connection) {
@@ -573,10 +571,6 @@ connection_activate_cb (GObject *object,
     g_warning ("Failed to activate a connection: %s", error->message);
     g_error_free (error);
   }
-
-g_print ("connection_activate_cbbbbbbbbbbb\n");
-
-//  g_main_loop_quit (page->priv->loop);
 }
 
 static void
@@ -588,7 +582,6 @@ connection_add_activate_cb (GObject *object,
   NMActiveConnection *connection;
   GError *error = NULL;
 
-g_print ("connection_add_activate_cbbbbbbbbbbb\n");
   connection = nm_client_add_and_activate_connection_finish (client, result, &error);
   if (connection) {
     g_object_unref (connection);
@@ -635,8 +628,6 @@ row_activated (GtkListBox *box,
     object_path = nm_object_get_path (NM_OBJECT (ap));
     ssid_target = nm_access_point_get_ssid (ap);
   } else {
-//    object_path = g_object_get_data (G_OBJECT (child), "object-path");
-//    ssid_target = g_object_get_data (G_OBJECT (child), "ssid");
     connect_to_hidden_network (page);
     goto out;
   }
@@ -644,15 +635,8 @@ row_activated (GtkListBox *box,
   if (object_path == NULL || object_path[0] == 0)
     return;
 
-g_print ("object_path = %s\n", object_path);
-
-//  if (g_strcmp0 (object_path, "ap-other...") == 0) {
-//    connect_to_hidden_network (page);
-//    goto out;
-//  }
-
   list = nm_client_get_connections (priv->nm_client);
-  filtered = nm_device_filter_connections (priv->nm_device, list);
+  filtered = nm_device_filter_connections (priv->nm_device_wifi, list);
 
   connection_to_activate = NULL;
 
@@ -677,156 +661,542 @@ g_print ("object_path = %s\n", object_path);
 //  modal_window_show (page);
 
   if (connection_to_activate != NULL) {
-g_print ("connection_to_activate is not NULLLLL\n");
     nm_client_activate_connection_async (priv->nm_client,
                                          connection_to_activate,
-                                         priv->nm_device, NULL,
+                                         priv->nm_device_wifi, NULL,
                                          NULL,
                                          connection_activate_cb, page);
 
-//    g_main_loop_run (priv->loop);
     return;
   }
 
-
-g_print ("connection_to_activate is NULLLLL\n");
   nm_client_add_and_activate_connection_async (priv->nm_client,
                                                NULL,
-                                               priv->nm_device, object_path,
+                                               priv->nm_device_wifi, object_path,
                                                NULL,
                                                connection_add_activate_cb, page);
 
-//  g_main_loop_run (priv->loop);
 
  out:
   schedule_refresh_wireless_list (page);
 }
 
 static void
-connection_state_changed (NMActiveConnection *c, GParamSpec *pspec, GreeterNetworkPage *page)
+device_state_changed_cb (NMDevice            *device,
+                         NMDeviceState        new_state,
+                         NMDeviceState        old_state,
+                         NMDeviceStateReason  reason,
+                         gpointer             user_data)
+
 {
-  g_timeout_add (100, (GSourceFunc)sync_complete, page);
+  GreeterNetworkPage *page = GREETER_NETWORK_PAGE (user_data);
+  GreeterNetworkPagePrivate *priv = page->priv;
+
+  if (NM_IS_DEVICE_ETHERNET (device)) {
+    const char *text;
+    gboolean active = FALSE;
+    NMDeviceState state = nm_device_get_state (device);
+  
+    switch (state) {
+      case NM_DEVICE_STATE_UNMANAGED:
+      case NM_DEVICE_STATE_UNAVAILABLE:
+      case NM_DEVICE_STATE_DISCONNECTED:
+      case NM_DEVICE_STATE_DEACTIVATING:
+      case NM_DEVICE_STATE_FAILED:
+        active = FALSE;
+      break;
+
+      default:
+        active = TRUE;
+      break;
+    }
+    text = active ? _("Wired - Connected") : _("Wired - Not Connected");
+    gtk_label_set_text (GTK_LABEL (priv->wired_label), text);
+    g_signal_handlers_block_by_func (priv->wired_switch, wired_switch_toggled_cb, page);
+    gtk_switch_set_active (GTK_SWITCH (priv->wired_switch), active);
+    g_signal_handlers_unblock_by_func (priv->wired_switch, wired_switch_toggled_cb, page);
+  } else if (NM_IS_DEVICE_WIFI (device)) {
+    schedule_refresh_wireless_list (page);
+  }
+
+  g_idle_add ((GSourceFunc)sync_complete, page);
 }
 
 static void
-active_connections_changed (NMClient *client, GParamSpec *pspec, GreeterNetworkPage *page)
+update_page_ui (GreeterNetworkPage *page)
 {
-  const GPtrArray *connections;
+  gboolean active;
+  const char *text;
+  GreeterNetworkPagePrivate *priv = page->priv;
+
+  gtk_widget_hide (priv->device_frame);
+  gtk_widget_hide (priv->wifi_list_frame);
+  gtk_widget_hide (priv->spinner);
+  gtk_widget_hide (priv->no_nm_box);
+  gtk_widget_hide (priv->no_network_box);
+  gtk_widget_hide (priv->no_device_box);
+  gtk_widget_set_sensitive (priv->network_enable_button, TRUE);
+
+  if (!priv->nm_client) {
+    gtk_widget_show (priv->no_nm_box);
+    return;
+  }
+
+  if (!nm_client_networking_get_enabled (priv->nm_client)) {
+    gtk_widget_show (priv->no_network_box);
+    return;
+  }
+
+  if (!priv->nm_device_eth && !priv->nm_device_wifi) {
+    gtk_widget_show (priv->no_device_box);
+    return;
+  }
+
+  gtk_widget_show (priv->device_frame);
+
+  if (priv->nm_device_eth) {
+    active = (nm_device_get_state (priv->nm_device_eth) == NM_DEVICE_STATE_ACTIVATED);
+    text = active ? _("Wired - Connected") : _("Wired - Not Connected");
+  } else {
+    text = _("Wired - No Device");
+  }
+  gtk_label_set_text (GTK_LABEL (priv->wired_label), text);
+
+  if (priv->nm_device_wifi) {
+    active = (nm_device_get_state (priv->nm_device_wifi) == NM_DEVICE_STATE_ACTIVATED);
+    text = active ? _("Wireless - Use") : _("Wireless - No Use");
+  } else {
+    text = _("Wireless - No Device");
+  }
+  gtk_label_set_text (GTK_LABEL (priv->wifi_label), text);
+
+  gtk_widget_set_sensitive (priv->wired_item, priv->nm_device_eth != NULL);
+  gtk_widget_set_sensitive (priv->wifi_item, priv->nm_device_wifi != NULL);
+}
+
+static void
+client_device_added_cb (NMClient *client,
+                        NMDevice *device,
+                        gpointer  user_data)
+{
+  GreeterNetworkPage *page = GREETER_NETWORK_PAGE (user_data);
+  GreeterNetworkPagePrivate *priv = page->priv;
+
+  if (NM_IS_DEVICE_ETHERNET (device)) {
+    g_clear_object (&priv->nm_device_eth);
+    priv->nm_device_eth = g_object_ref (device);
+    g_signal_connect (priv->nm_device_eth, "state-changed",
+                      G_CALLBACK (device_state_changed_cb), page);
+  } else if (NM_IS_DEVICE_WIFI (device)) {
+    g_clear_object (&priv->nm_device_wifi);
+    priv->nm_device_wifi = g_object_ref (device);
+    g_signal_connect (priv->nm_device_wifi, "state-changed",
+                      G_CALLBACK (device_state_changed_cb), page);
+  } else {
+  }
+
+  update_page_ui (page);
+}
+
+static void
+client_device_removed_cb (NMClient *client,
+                          NMDevice *device,
+                          gpointer  user_data)
+{
+  GreeterNetworkPage *page = GREETER_NETWORK_PAGE (user_data);
+  GreeterNetworkPagePrivate *priv = page->priv;
+
+  if (NM_IS_DEVICE_ETHERNET (device)) {
+    g_clear_object (&priv->nm_device_eth);
+  } else if (NM_IS_DEVICE_WIFI (device)) {
+    g_clear_object (&priv->nm_device_wifi);
+  } else {
+  }
+
+  update_page_ui (page);
+}
+
+static gboolean
+gtk_main_quit_idle (gpointer user_data)
+{
+  gtk_main_quit ();
+
+  return FALSE;
+}
+
+static void
+exit_button_clicked_cb (GtkButton *button,
+                         gpointer   user_data)
+{
+  g_timeout_add (300, gtk_main_quit_idle, NULL);
+}
+
+static void
+network_enable_button_clicked_cb (GtkButton *button,
+                                  gpointer   user_data)
+{
+  GreeterNetworkPage *page = GREETER_NETWORK_PAGE (user_data);
+
+  gtk_widget_set_sensitive (page->priv->network_enable_button, FALSE);
+  nm_client_networking_set_enabled (page->priv->nm_client, TRUE, NULL);
+}
+
+/* return value must not be freed! */
+static const gchar *
+get_mac_address_of_device (NMDevice *device)
+{
+  const gchar *mac = NULL;
+
+  switch (nm_device_get_device_type (device)) {
+    case NM_DEVICE_TYPE_WIFI:
+    {
+      NMDeviceWifi *device_wifi = NM_DEVICE_WIFI (device);
+      mac = nm_device_wifi_get_hw_address (device_wifi);
+      break;
+    }
+
+    case NM_DEVICE_TYPE_ETHERNET:
+    {
+      NMDeviceEthernet *device_ethernet = NM_DEVICE_ETHERNET (device);
+      mac = nm_device_ethernet_get_hw_address (device_ethernet);
+      break;
+    }
+
+    default:
+      break;
+  }
+
+  /* no MAC address found */
+  return mac;
+}
+
+/* return value must be freed by caller with g_free() */
+static gchar *
+get_mac_address_of_connection (NMConnection *connection)
+{
+  if (!connection)
+    return NULL;
+
+  /* check the connection type */
+  if (nm_connection_is_type (connection, NM_SETTING_WIRELESS_SETTING_NAME)) {
+    /* check wireless settings */
+    NMSettingWireless *s_wireless = nm_connection_get_setting_wireless (connection);
+    if (!s_wireless)
+      return NULL;
+    return g_strdup (nm_setting_wireless_get_mac_address (s_wireless));
+  } else if (nm_connection_is_type (connection, NM_SETTING_WIRED_SETTING_NAME)) {
+    /* check wired settings */
+    NMSettingWired *s_wired = nm_connection_get_setting_wired (connection);
+    if (!s_wired)
+      return NULL;
+    return g_strdup (nm_setting_wired_get_mac_address (s_wired));
+  }
+
+  /* no MAC address found */
+  return NULL;
+}
+
+/* returns TRUE if both MACs are equal */
+static gboolean
+compare_mac_device_with_mac_connection (NMDevice *device, NMConnection *connection)
+{
+  const gchar *mac_dev = NULL;
+  gchar *mac_conn = NULL;
+
+  mac_dev = get_mac_address_of_device (device);
+  if (mac_dev != NULL) {
+    mac_conn = get_mac_address_of_connection (connection);
+    if (mac_conn) {
+      /* compare both MACs */
+      if (g_strcmp0 (mac_dev, mac_conn) == 0) {
+        g_free (mac_conn);
+        return TRUE;
+      }
+      g_free (mac_conn);
+    }
+  }
+  return FALSE;
+}
+
+static GSList *
+get_valid_connections (NMClient *client, NMDevice *device)
+{
+  GSList *valid;
+  NMConnection *connection;
+  NMSettingConnection *s_con;
+  NMActiveConnection *ac;
+  const char *active_uuid;
+  const GPtrArray *all;
+  GPtrArray *filtered;
   guint i;
 
-  connections = nm_client_get_active_connections (client);
-  for (i = 0; connections && (i < connections->len); i++) {
-    NMActiveConnection *connection;
+  all = nm_client_get_connections (client);
+  filtered = nm_device_filter_connections (device, all);
 
-    connection = g_ptr_array_index (connections, i);
-    if (!g_object_get_data (G_OBJECT (connection), "has-state-changed-handler")) {
-      g_signal_connect (connection, "notify::state",
-                        G_CALLBACK (connection_state_changed), page);
-      g_object_set_data (G_OBJECT (connection), "has-state-changed-handler", GINT_TO_POINTER (1));
+  ac = nm_device_get_active_connection (device);
+  active_uuid = ac ? nm_active_connection_get_uuid (ac) : NULL;
+
+  valid = NULL;
+  for (i = 0; i < filtered->len; i++) {
+    connection = g_ptr_array_index (filtered, i);
+    s_con = nm_connection_get_setting_connection (connection);
+    if (!s_con)
+      continue;
+
+    if (nm_setting_connection_get_master (s_con) &&
+        g_strcmp0 (nm_setting_connection_get_uuid (s_con), active_uuid) != 0)
+      continue;
+
+    valid = g_slist_prepend (valid, connection);
+  }
+  g_ptr_array_free (filtered, FALSE);
+
+  return g_slist_reverse (valid);
+}
+
+static NMConnection *
+get_find_connection (NMClient *client, NMDevice *device)
+{
+  GSList *list, *iterator;
+  NMActiveConnection *ac;
+  NMConnection *connection = NULL;
+
+  /* is the device available in a active connection? */
+  ac = nm_device_get_active_connection (device);
+  if (ac)
+    return (NMConnection*) nm_active_connection_get_connection (ac);
+
+  /* not found in active connections - check all available connections */
+  list = get_valid_connections (client, device);
+  if (list != NULL) {
+    /* if list has only one connection, use this connection */
+    if (g_slist_length (list) == 1) {
+      connection = list->data;
+      goto out;
     }
+
+    /* is there connection with the MAC address of the device? */
+    for (iterator = list; iterator; iterator = iterator->next) {
+      connection = iterator->data;
+      if (compare_mac_device_with_mac_connection (device, connection)) {
+        goto out;
+      }
+    }
+  }
+
+  /* no connection found for the given device */
+  connection = NULL;
+
+out:
+  g_slist_free (list);
+
+  return connection;
+}
+
+static void
+activate_connection_cb (GObject      *client,
+                        GAsyncResult *result,
+                        gpointer      user_data)
+{
+  GError *error = NULL;
+  NMActiveConnection *active;
+  GreeterNetworkPage *page = GREETER_NETWORK_PAGE (user_data);
+  GreeterNetworkPagePrivate *priv = page->priv;
+
+  active = nm_client_activate_connection_finish (NM_CLIENT (client), result, NULL);
+  g_clear_object (&active);
+
+  if (error) {
+    g_warning ("Wired connection activating failed");
+    g_error_free (error);
+
+    g_signal_handlers_block_by_func (priv->wired_switch, wired_switch_toggled_cb, page);
+    gtk_switch_set_active (GTK_SWITCH (priv->wired_switch), FALSE);
+    g_signal_handlers_unblock_by_func (priv->wired_switch, wired_switch_toggled_cb, page);
+    return;
+  }
+
+  gtk_widget_set_sensitive (priv->wired_switch, TRUE);
+}
+
+static gboolean
+wired_switch_toggled_cb (GtkSwitch *sw,
+                         gboolean   state,
+                         gpointer   user_data)
+{
+  GreeterNetworkPage *page = GREETER_NETWORK_PAGE (user_data);
+  GreeterNetworkPagePrivate *priv = page->priv;
+
+  if (!priv->nm_device_eth)
+    return TRUE;
+
+  gtk_widget_set_sensitive (priv->wired_switch, FALSE);
+
+  if (gtk_switch_get_active (sw)) {
+    NMConnection *connection = NULL;
+
+    /* is the device available in a active connection? */
+    connection = get_find_connection (priv->nm_client, priv->nm_device_eth);
+    if (connection != NULL) {
+      nm_client_activate_connection_async (priv->nm_client,
+                                           connection, priv->nm_device_eth,
+                                           NULL, NULL, activate_connection_cb, page);
+    } 
+    return FALSE;
+  }
+
+  nm_device_disconnect (priv->nm_device_eth, NULL, NULL);
+  gtk_widget_set_sensitive (priv->wired_switch, TRUE);
+
+  return FALSE;
+}
+
+static gboolean
+greeter_network_page_should_show (GreeterPage *page)
+{
+  gboolean should_show = FALSE;
+  GreeterPageManager *manager = page->manager;
+
+  if (greeter_page_manager_get_mode (manager) == MODE_OFFLINE)
+    goto out;
+
+  should_show = TRUE;
+
+out:
+  return should_show;
+}
+
+static void
+start_action_for_networking_enabled (GreeterNetworkPage *page)
+{
+  const GPtrArray *devices;
+  GreeterNetworkPagePrivate *priv = page->priv;
+
+  devices = nm_client_get_devices (priv->nm_client);
+  if (devices) {
+    guint i;
+    for (i = 0; i < devices->len; i++) {
+      NMDevice *device = g_ptr_array_index (devices, i);
+
+      if (!nm_device_get_managed (device))
+        continue;
+
+      if (nm_device_get_device_type (device) == NM_DEVICE_TYPE_ETHERNET) {
+        priv->nm_device_eth = g_object_ref (device);
+        continue;
+      }
+
+      if (nm_device_get_device_type (device) == NM_DEVICE_TYPE_WIFI) {
+        /* FIXME deal with multiple, dynamic devices */
+        priv->nm_device_wifi = g_object_ref (device);
+        continue;
+      }
+    }
+  }
+
+  if (priv->nm_device_wifi == NULL && priv->nm_device_eth == NULL) {
+    g_warning ("No network device found, hiding network page");
+    update_page_ui (page);
+    return;
+  }
+
+  if (priv->nm_device_eth) {
+    g_signal_connect (priv->nm_device_eth, "state-changed",
+                      G_CALLBACK (device_state_changed_cb), page);
+
+    device_state_changed_cb (priv->nm_device_eth,
+                             NM_STATE_UNKNOWN,
+                             NM_STATE_UNKNOWN,
+                             NM_DEVICE_STATE_REASON_NONE, page);
+  }
+
+  if (priv->nm_device_wifi) {
+    g_signal_connect (priv->nm_device_wifi, "state-changed",
+                      G_CALLBACK (device_state_changed_cb), page);
+
+    device_state_changed_cb (priv->nm_device_wifi,
+                             NM_STATE_UNKNOWN,
+                             NM_STATE_UNKNOWN,
+                             NM_DEVICE_STATE_REASON_NONE, page);
   }
 }
 
 static void
-device_state_changed (GObject *object, GParamSpec *param, GreeterNetworkPage *page)
+start_action_for_networking_disabled (GreeterNetworkPage *page)
 {
-//  sync_complete (page);
-//  g_idle_add ((GSourceFunc)sync_complete, page);
-  g_timeout_add (100, (GSourceFunc)sync_complete, page);
+  GreeterNetworkPagePrivate *priv = page->priv;
+
+  cancel_periodic_refresh (page);
+
+  g_clear_object (&priv->nm_device_eth);
+  g_clear_object (&priv->nm_device_wifi);
+}
+
+static void
+nm_client_networking_enable_changed_cb (NMClient   *client,
+                                        GParamSpec *pspec,
+                                        gpointer    user_data)
+{
+  gboolean cur_network_enabled;
+  GreeterNetworkPage *page = GREETER_NETWORK_PAGE (user_data);
+  GreeterNetworkPagePrivate *priv = page->priv;
+
+  cur_network_enabled = nm_client_networking_get_enabled (client);
+
+  if (priv->old_network_enabled == cur_network_enabled)
+    return;
+
+  if (cur_network_enabled)  {
+    priv->old_network_enabled = TRUE;
+    start_action_for_networking_enabled (page);
+  } else {
+    priv->old_network_enabled = FALSE;
+    start_action_for_networking_disabled (page);
+  }
+
+  update_page_ui (page);
 }
 
 static void
 greeter_network_page_constructed (GObject *object)
 {
+  GError *error = NULL;
   GreeterNetworkPage *page = GREETER_NETWORK_PAGE (object);
   GreeterNetworkPagePrivate *priv = page->priv;
-  const GPtrArray *devices;
-  NMDevice *device;
-  guint i;
-  gboolean visible = FALSE;
-  GError *error = NULL;
 
   G_OBJECT_CLASS (greeter_network_page_parent_class)->constructed (object);
 
-//  priv->icons = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
-
   priv->nm_client = nm_client_new (NULL, &error);
   if (!priv->nm_client) {
-    g_warning ("Can't create NetworkManager client, hiding network page: %s",
-               error->message);
+    g_warning ("Can't create NetworkManager client, hiding network page: %s\n", error->message);
     g_error_free (error);
     goto out;
   }
 
+  g_signal_connect (priv->nm_client, "device-added",
+                    G_CALLBACK (client_device_added_cb), page);
+  g_signal_connect (priv->nm_client, "device-removed",
+                    G_CALLBACK (client_device_removed_cb), page);
+  g_signal_connect (priv->nm_client, "notify::networking-enabled",
+                    G_CALLBACK (nm_client_networking_enable_changed_cb), page);
+
   g_object_bind_property (priv->nm_client, "wireless-enabled",
-                          priv->turn_on_switch, "active",
+                          priv->wifi_switch, "active",
                           G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
 
-  devices = nm_client_get_devices (priv->nm_client);
-  if (devices) {
-    for (i = 0; i < devices->len; i++) {
-      device = g_ptr_array_index (devices, i);
+  priv->old_network_enabled = nm_client_networking_get_enabled (priv->nm_client);
 
-      if (!nm_device_get_managed (device))
-        continue;
-
-      if (nm_device_get_device_type (device) == NM_DEVICE_TYPE_WIFI) {
-        /* FIXME deal with multiple, dynamic devices */
-        priv->nm_device = g_object_ref (device);
-        break;
-      }
-    }
-  }
-
-  if (priv->nm_device == NULL) {
-    g_debug ("No network device found, hiding network page");
+  if (!priv->old_network_enabled) {
+    g_warning ("Networking is diabled , hiding network page");
     goto out;
   }
 
-#if 0
-  g_print ("nm_client_get_state = %d\n", nm_client_get_state (priv->nm_client));
+  start_action_for_networking_enabled (page);
 
-g_print ("NM_STATE_UNKNOWN = %d\n", NM_STATE_UNKNOWN);
-g_print ("NM_STATE_ASLEEP = %d\n", NM_STATE_ASLEEP);
-g_print ("NM_STATE_DISCONNECTED = %d\n", NM_STATE_DISCONNECTED);
-g_print ("NM_STATE_DISCONNECTING = %d\n", NM_STATE_DISCONNECTING);
-g_print ("NM_STATE_CONNECTING = %d\n", NM_STATE_CONNECTING);
-g_print ("NM_STATE_CONNECTED_LOCAL = %d\n", NM_STATE_CONNECTED_LOCAL);
-g_print ("NM_STATE_CONNECTED_SITE = %d\n", NM_STATE_CONNECTED_SITE);
-g_print ("NM_STATE_CONNECTED_GLOBAL = %d\n", NM_STATE_CONNECTED_GLOBAL);
+out:
+  update_page_ui (page);
 
-g_print ("NM_DEVICE_STATE_UNKNOWN = %d\n", NM_DEVICE_STATE_UNKNOWN);
-g_print ("NM_DEVICE_STATE_UNMANAGED = %d\n", NM_DEVICE_STATE_UNMANAGED);
-g_print ("NM_DEVICE_STATE_UNAVAILABLE = %d\n", NM_DEVICE_STATE_UNAVAILABLE);
-g_print ("NM_DEVICE_STATE_DISCONNECTED = %d\n", NM_DEVICE_STATE_DISCONNECTED);
-g_print ("NM_DEVICE_STATE_PREPARE = %d\n", NM_DEVICE_STATE_PREPARE);
-g_print ("NM_DEVICE_STATE_CONFIG = %d\n", NM_DEVICE_STATE_CONFIG);
-g_print ("NM_DEVICE_STATE_NEED_AUTH = %d\n", NM_DEVICE_STATE_NEED_AUTH);
-g_print ("NM_DEVICE_STATE_IP_CONFIG = %d\n", NM_DEVICE_STATE_IP_CONFIG);
-g_print ("NM_DEVICE_STATE_IP_CHECK = %d\n", NM_DEVICE_STATE_IP_CHECK);
-g_print ("NM_DEVICE_STATE_SECONDARIES = %d\n", NM_DEVICE_STATE_SECONDARIES);
-g_print ("NM_DEVICE_STATE_ACTIVATED = %d\n", NM_DEVICE_STATE_ACTIVATED);
-g_print ("NM_DEVICE_STATE_DEACTIVATING = %d\n", NM_DEVICE_STATE_DEACTIVATING);
-g_print ("NM_DEVICE_STATE_FAILED = %d\n", NM_DEVICE_STATE_FAILED);
-#endif
-
-  visible = TRUE;
-
-  g_signal_connect (priv->nm_device, "notify::state",
-                    G_CALLBACK (device_state_changed), page);
-  g_signal_connect (priv->nm_client, "notify::active-connections",
-                    G_CALLBACK (active_connections_changed), page);
-
-  gtk_list_box_set_selection_mode (GTK_LIST_BOX (priv->network_list), GTK_SELECTION_NONE);
-  gtk_list_box_set_header_func (GTK_LIST_BOX (priv->network_list), update_header_func, NULL, NULL);
-  gtk_list_box_set_sort_func (GTK_LIST_BOX (priv->network_list), ap_sort, NULL, NULL);
-  g_signal_connect (priv->network_list, "row-activated",
-                    G_CALLBACK (row_activated), page);
-
-  g_timeout_add (100, (GSourceFunc)sync_complete, page);
-
- out:
-  gtk_widget_set_visible (GTK_WIDGET (page), visible);
+  gtk_widget_show (GTK_WIDGET (page));
 }
 
 static void
@@ -835,47 +1205,43 @@ greeter_network_page_dispose (GObject *object)
   GreeterNetworkPage *page = GREETER_NETWORK_PAGE (object);
   GreeterNetworkPagePrivate *priv = page->priv;
 
-  g_clear_object (&priv->nm_client);
-  g_clear_object (&priv->nm_device);
-//  g_clear_object (&priv->icons);
-//  g_main_loop_unref (priv->loop);
-
   cancel_periodic_refresh (page);
 
+  g_clear_object (&priv->nm_client);
+  g_clear_object (&priv->nm_device_eth);
+  g_clear_object (&priv->nm_device_wifi);
+
   G_OBJECT_CLASS (greeter_network_page_parent_class)->dispose (object);
-}
-
-static gboolean
-greeter_network_page_should_show (GreeterPage *page)
-{
-  gboolean should_show = FALSE;
-  GreeterNetworkPage *self = GREETER_NETWORK_PAGE (page);
-  GreeterNetworkPagePrivate *priv = self->priv;
-  GreeterPageManager *manager = page->manager;
-
-  if (greeter_page_manager_get_mode (manager) == MODE_OFFLINE || !priv->nm_client)
-    goto out;
-
-  if (nm_client_get_state (priv->nm_client) > NM_STATE_CONNECTING)
-    goto out;
-
-  should_show = TRUE;
-
-out:
-  gtk_widget_set_visible (GTK_WIDGET (self), should_show);
-  return should_show;
 }
 
 static void
 greeter_network_page_init (GreeterNetworkPage *page)
 {
-  page->priv = greeter_network_page_get_instance_private (page);
+  GreeterNetworkPagePrivate *priv;
+  priv = page->priv = greeter_network_page_get_instance_private (page);
+
+  priv->nm_device_eth = NULL;
+  priv->nm_device_wifi = NULL;
+  priv->old_network_enabled = TRUE;
 
   gtk_widget_init_template (GTK_WIDGET (page));
 
   greeter_page_set_title (GREETER_PAGE (page), _("Network Settings"));
 
-//  page->priv->loop = g_main_loop_new (NULL, FALSE);
+  gtk_list_box_set_header_func (GTK_LIST_BOX (priv->device_list), update_header_func, NULL, NULL);
+  gtk_list_box_set_header_func (GTK_LIST_BOX (priv->wifi_list), update_header_func, NULL, NULL);
+  gtk_list_box_set_sort_func (GTK_LIST_BOX (priv->wifi_list), ap_sort, NULL, NULL);
+
+  g_signal_connect (priv->wired_switch, "state-set",
+                    G_CALLBACK (wired_switch_toggled_cb), page);
+  g_signal_connect (priv->wifi_list, "row-activated",
+                    G_CALLBACK (row_activated), page);
+  g_signal_connect (priv->exit_button1, "clicked",
+                    G_CALLBACK (exit_button_clicked_cb), page);
+  g_signal_connect (priv->exit_button2, "clicked",
+                    G_CALLBACK (exit_button_clicked_cb), page);
+  g_signal_connect (priv->network_enable_button, "clicked",
+                    G_CALLBACK (network_enable_button_clicked_cb), page);
 }
 
 static void
@@ -883,19 +1249,29 @@ greeter_network_page_class_init (GreeterNetworkPageClass *klass)
 {
   GreeterPageClass *page_class = GREETER_PAGE_CLASS (klass);
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
+  GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
   gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass),
                                                "/kr/gooroom/greeter/greeter-network-page.ui");
 
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GreeterNetworkPage, network_list);
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GreeterNetworkPage, scrolled_window);
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GreeterNetworkPage, no_network_box);
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GreeterNetworkPage, no_device_box);
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GreeterNetworkPage, device_turn_on_box);
-//  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GreeterNetworkPage, no_network_label);
-//  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GreeterNetworkPage, no_network_spinner);
-//  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GreeterNetworkPage, turn_on_label);
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GreeterNetworkPage, turn_on_switch);
+  gtk_widget_class_bind_template_child_private (widget_class, GreeterNetworkPage, network_box);
+  gtk_widget_class_bind_template_child_private (widget_class, GreeterNetworkPage, device_frame);
+  gtk_widget_class_bind_template_child_private (widget_class, GreeterNetworkPage, device_list);
+  gtk_widget_class_bind_template_child_private (widget_class, GreeterNetworkPage, wired_item);
+  gtk_widget_class_bind_template_child_private (widget_class, GreeterNetworkPage, wired_label);
+  gtk_widget_class_bind_template_child_private (widget_class, GreeterNetworkPage, wired_switch);
+  gtk_widget_class_bind_template_child_private (widget_class, GreeterNetworkPage, wifi_item);
+  gtk_widget_class_bind_template_child_private (widget_class, GreeterNetworkPage, wifi_label);
+  gtk_widget_class_bind_template_child_private (widget_class, GreeterNetworkPage, wifi_switch);
+  gtk_widget_class_bind_template_child_private (widget_class, GreeterNetworkPage, wifi_list_frame);
+  gtk_widget_class_bind_template_child_private (widget_class, GreeterNetworkPage, wifi_list);
+  gtk_widget_class_bind_template_child_private (widget_class, GreeterNetworkPage, spinner);
+  gtk_widget_class_bind_template_child_private (widget_class, GreeterNetworkPage, no_nm_box);
+  gtk_widget_class_bind_template_child_private (widget_class, GreeterNetworkPage, no_device_box);
+  gtk_widget_class_bind_template_child_private (widget_class, GreeterNetworkPage, no_network_box);
+  gtk_widget_class_bind_template_child_private (widget_class, GreeterNetworkPage, exit_button1);
+  gtk_widget_class_bind_template_child_private (widget_class, GreeterNetworkPage, exit_button2);
+  gtk_widget_class_bind_template_child_private (widget_class, GreeterNetworkPage, network_enable_button);
 
   page_class->page_id = PAGE_ID;
   page_class->should_show  = greeter_network_page_should_show;

@@ -31,6 +31,10 @@ gooroom_greeter_SOURCES = \
 	greeter-login-page.c \
 	greeter-password-settings-dialog.h \
 	greeter-password-settings-dialog.c \
+	greeter-vpn-passwd-dialog.h \
+	greeter-vpn-passwd-dialog.c \
+	pw-utils.h \
+	pw-utils.c \
 	splash-window.h \
 	splash-window.c \
 	greeter-message-dialog.h \
@@ -47,6 +51,7 @@ AM_CPPFLAGS = \
 	-DGOOROOM_NOTIFYD=\"$(libdir)/gooroom-notifyd/gooroom-notifyd\" \
 	-DVPN_SERVICE_CONFIG_DIR=\"$(datadir)/gooroom-vpn-service/services\" \
 	-DGOOROOM_VPN_SERVICE_CONFIG_FILE=\"$(sysconfdir)/gooroom-vpn-service/vpn.conf\" \
+	-DGREETER_NETWORK_CONTROL_HELPER=\"$(pkglibexecdir)/greeter-network-control-helper\" \
 	$(WARN_CFLAGS)
 
 gooroom_greeter_CFLAGS = \
@@ -60,6 +65,7 @@ gooroom_greeter_CFLAGS = \
 	$(GTHREAD_CFLAGS) \
 	$(LIGHTDMGOBJECT_CFLAGS) \
 	$(LIBX11_CFLAGS) \
+	$(PWQUALITY_CFLAGS) \
     $(AYATANA_INDICATOR_NG_CFLAGS)
 
 gooroom_greeter_LDADD = \
@@ -73,6 +79,7 @@ gooroom_greeter_LDADD = \
 	$(GTHREAD_LIBS) \
 	$(LIGHTDMGOBJECT_LIBS) \
 	$(LIBX11_LIBS) \
+	$(PWQUALITY_LIBS) \
 	$(AYATANA_INDICATOR_NG_LIBS) \
 	-lm
 
@@ -81,6 +88,23 @@ greeter-resources.c: gresource.xml $(resource_files)
 	$(AM_V_GEN) glib-compile-resources --target=$@ --sourcedir=$(srcdir) --generate-source --c-name greeter $<
 greeter-resources.h: gresource.xml $(resource_files)
 	$(AM_V_GEN) glib-compile-resources --target=$@ --sourcedir=$(srcdir) --generate-header --c-name greeter $<
+
+
+#pkglibexec_PROGRAMS = \
+#	greeter-network-control-helper
+#
+#greeter_network_control_helper_SOURCES = \
+#	greeter-network-control-helper.c
+#
+#greeter_network_control_helper_CFLAGS = \
+#	$(GLIB_CFLAGS)
+#
+#greeter_network_control_helper_LDFLAGS = \
+#	$(GLIB_LIBS)
+#
+#install-exec-hook:
+#	chown root "$(DESTDIR)$(pkglibexecdir)/greeter-network-control-helper"
+#	chmod +s "$(DESTDIR)$(pkglibexecdir)/greeter-network-control-helper"
 
 DISTCLEANFILES = \
 	$(BUILT_SOURCES)

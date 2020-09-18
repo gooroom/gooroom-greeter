@@ -26,7 +26,7 @@
 #include "greeter-message-dialog.h"
 
 struct _GreeterMessageDialogPrivate {
-//	GtkWidget *icon_image;
+	GtkWidget *icon_image;
 	GtkWidget *title_label;
 	GtkWidget *message_label;
 };
@@ -34,94 +34,10 @@ struct _GreeterMessageDialogPrivate {
 G_DEFINE_TYPE_WITH_PRIVATE (GreeterMessageDialog, greeter_message_dialog, GTK_TYPE_DIALOG);
 
 
-#if 0
-static gboolean
-dialog_response_ok_cb (gpointer user_data)
-{
-	gtk_dialog_response (GTK_DIALOG (user_data), GTK_RESPONSE_OK);
-
-	return FALSE;
-}
-#endif
-
-
-#if 0
-static void
-ok_button_clicked_cb (GtkButton *button,
-                      gpointer   user_data)
-{
-	GreeterMessageDialog *dialog = GREETER_ARS_DIALOG (user_data);
-
-	if (dialog->priv->auth_success)
-		gtk_dialog_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
-}
-
-static void
-cancel_button_clicked_cb (GtkButton *button,
-                          gpointer   user_data)
-{
-	GreeterMessageDialog *dialog = GREETER_ARS_DIALOG (user_data);
-	GreeterMessageDialogPrivate *priv = dialog->priv;
-
-	if (priv->message_timeout_id > 0)
-		return;
-
-	if (priv->auth_success) {
-		gtk_dialog_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
-		return;
-	}
-
-	if (close_warning_message_show () == GTK_RESPONSE_OK)
-		gtk_dialog_response (GTK_DIALOG (dialog), GTK_RESPONSE_CANCEL);
-}
-
-static void
-greeter_message_dialog_add_buttons_valist (GtkDialog      *dialog,
-                                           const gchar    *first_button_text,
-                                           va_list         args)
-{
-	const gchar* text;
-	gint response_id;
-
-	if (first_button_text == NULL)
-		return;
-
-	text = first_button_text;
-	response_id = va_arg (args, gint);
-
-	while (text != NULL)
-	{
-		gtk_dialog_add_button (dialog, text, response_id);
-
-		text = va_arg (args, gchar*);
-		if (text == NULL)
-			break;
-		response_id = va_arg (args, int);
-	}
-}
-#endif
-
-
 static void
 greeter_message_dialog_close (GtkDialog *dialog)
 {
 }
-
-#if 0
-static void
-greeter_message_dialog_response (GtkDialog *dialog,
-                             gint response_id)
-{
-//	GreeterMessageDialog *dialog = GREETER_ARS_DIALOG (dialog);
-//	GreeterMessageDialogPrivate *priv = GREETER_ARS_DIALOG (dialog)->priv;
-g_print ("greeter_message_dialog_response id = %d\n", response_id);
-
-	if (response_id == GTK_RESPONSE_CANCEL ||
-        response_id == GTK_RESPONSE_DELETE_EVENT) {
-//		gtk_dialog_response (dialog, GTK_RESPONSE_NONE);
-	}
-}
-#endif
 
 #if 0
 static void
@@ -165,13 +81,12 @@ greeter_message_dialog_class_init (GreeterMessageDialogClass *klass)
 //	gobject_class->finalize = greeter_message_dialog_finalize;
 
 	dialog_class->close = greeter_message_dialog_close;
-//	dialog_class->response = greeter_message_dialog_response;
 
 	gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass),
                                                  "/kr/gooroom/greeter/greeter-message-dialog.ui");
 
-//	gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass),
-//                                                  GreeterMessageDialog, icon_image);
+	gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass),
+                                                  GreeterMessageDialog, icon_image);
 	gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass),
                                                  GreeterMessageDialog, title_label);
 	gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass),
@@ -202,15 +117,8 @@ void
 greeter_message_dialog_set_title (GreeterMessageDialog *dialog,
                                   const char           *title)
 {
-	if (title) {
+	if (title)
 		gtk_label_set_text (GTK_LABEL (dialog->priv->title_label), title);
-/*
-		gchar *markup;
-		markup = g_markup_printf_escaped ("<span font='18px' weight='bold'>%s</span>", title);
-		gtk_label_set_markup (GTK_LABEL (dialog->priv->title_label), markup);
-		g_free (markup);
-*/
-	}
 }
 
 void
@@ -225,9 +133,10 @@ void
 greeter_message_dialog_set_icon (GreeterMessageDialog *dialog,
                                  const char           *icon)
 {
-#if 0
-	if (icon)
+	if (icon) {
 		gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->icon_image),
                                       icon, GTK_ICON_SIZE_DIALOG);
-#endif
+
+		gtk_widget_show (dialog->priv->icon_image);
+	}
 }

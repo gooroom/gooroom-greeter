@@ -1015,59 +1015,59 @@ greeter_background_set_custom_background(GreeterBackground* background,
         g_hash_table_unref(images_cache);
 }
 
-void
-greeter_background_save_xroot(GreeterBackground* background)
-{
-    g_return_if_fail(GREETER_IS_BACKGROUND(background));
-
-    GreeterBackgroundPrivate* priv = background->priv;
-    cairo_surface_t* surface = create_root_surface(priv->screen);
-    cairo_t* cr = cairo_create(surface);
-    gsize i;
-
-    const GdkRGBA ROOT_COLOR = {0.16, 0.16, 0.16, 1.0};
-    gdk_cairo_set_source_rgba(cr, &ROOT_COLOR);
-    cairo_paint(cr);
-
-    for(i = 0; i < priv->monitors_size; ++i)
-    {
-		gint w = 120;
-		gint image_logo_w, image_logo_h, letter_logo_w, letter_logo_h;
-		GdkPixbuf *image_logo, *letter_logo;
-		const Monitor* monitor = &priv->monitors[i];
-
-		if (monitor->geometry.width > 1920)
-		{
-			w = (monitor->geometry.width*120)/1920;
-		}
-
-		image_logo = gdk_pixbuf_new_from_resource_at_scale ("/kr/gooroom/greeter/image-logo.svg", w, -1, TRUE, NULL);
-		letter_logo = gdk_pixbuf_new_from_resource_at_scale ("/kr/gooroom/greeter/letter-logo.png", w, -1, TRUE, NULL);
-		image_logo_w = gdk_pixbuf_get_width (image_logo);
-		image_logo_h = gdk_pixbuf_get_height (image_logo);
-		letter_logo_w = gdk_pixbuf_get_width (letter_logo);
-		letter_logo_h = gdk_pixbuf_get_height (letter_logo);
-
-		cairo_save(cr);
-
-		cairo_translate(cr, monitor->geometry.x, monitor->geometry.y);
-		gdk_cairo_set_source_pixbuf(cr, image_logo, (monitor->geometry.width - image_logo_w)/2, monitor->geometry.height/2 - image_logo_h);
-		cairo_paint(cr);
-
-		gdk_cairo_set_source_pixbuf(cr, letter_logo, (monitor->geometry.width - letter_logo_w)/2, monitor->geometry.height - letter_logo_h*5);
-		cairo_paint(cr);
-
-		cairo_restore(cr);
-
-		g_object_unref (image_logo);
-		g_object_unref (letter_logo);
-    }
-
-    set_surface_as_root(priv->screen, surface);
-
-    cairo_destroy(cr);
-    cairo_surface_destroy(surface);
-}
+//void
+//greeter_background_save_xroot(GreeterBackground* background)
+//{
+//    g_return_if_fail(GREETER_IS_BACKGROUND(background));
+//
+//    GreeterBackgroundPrivate* priv = background->priv;
+//    cairo_surface_t* surface = create_root_surface(priv->screen);
+//    cairo_t* cr = cairo_create(surface);
+//    gsize i;
+//
+//    const GdkRGBA ROOT_COLOR = {0.16, 0.16, 0.16, 1.0};
+//    gdk_cairo_set_source_rgba(cr, &ROOT_COLOR);
+//    cairo_paint(cr);
+//
+//    for(i = 0; i < priv->monitors_size; ++i)
+//    {
+//		gint w = 120;
+//		gint image_logo_w, image_logo_h, letter_logo_w, letter_logo_h;
+//		GdkPixbuf *image_logo, *letter_logo;
+//		const Monitor* monitor = &priv->monitors[i];
+//
+//		if (monitor->geometry.width > 1920)
+//		{
+//			w = (monitor->geometry.width*120)/1920;
+//		}
+//
+//		image_logo = gdk_pixbuf_new_from_resource_at_scale ("/kr/gooroom/greeter/image-logo.svg", w, -1, TRUE, NULL);
+//		letter_logo = gdk_pixbuf_new_from_resource_at_scale ("/kr/gooroom/greeter/letter-logo.png", w, -1, TRUE, NULL);
+//		image_logo_w = gdk_pixbuf_get_width (image_logo);
+//		image_logo_h = gdk_pixbuf_get_height (image_logo);
+//		letter_logo_w = gdk_pixbuf_get_width (letter_logo);
+//		letter_logo_h = gdk_pixbuf_get_height (letter_logo);
+//
+//		cairo_save(cr);
+//
+//		cairo_translate(cr, monitor->geometry.x, monitor->geometry.y);
+//		gdk_cairo_set_source_pixbuf(cr, image_logo, (monitor->geometry.width - image_logo_w)/2, monitor->geometry.height/2 - image_logo_h);
+//		cairo_paint(cr);
+//
+//		gdk_cairo_set_source_pixbuf(cr, letter_logo, (monitor->geometry.width - letter_logo_w)/2, monitor->geometry.height - letter_logo_h*5);
+//		cairo_paint(cr);
+//
+//		cairo_restore(cr);
+//
+//		g_object_unref (image_logo);
+//		g_object_unref (letter_logo);
+//    }
+//
+//    set_surface_as_root(priv->screen, surface);
+//
+//    cairo_destroy(cr);
+//    cairo_surface_destroy(surface);
+//}
 
 const GdkRectangle*
 greeter_background_get_active_monitor_geometry(GreeterBackground* background)

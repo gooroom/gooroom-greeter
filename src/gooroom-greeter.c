@@ -60,14 +60,12 @@
 
 /* Screen window */
 static GtkWidget *main_box;
-
 /* Assistant */
-static GtkWidget    *assistant;
-
+static GtkWidget *assistant;
 /* Panel */
-static GtkWidget    *panel_box;
-static GtkWidget    *btn_shutdown, *btn_restart, *btn_suspend, *btn_hibernate;
-static GtkWidget    *indicator_box;
+static GtkWidget *panel_box;
+static GtkWidget *btn_shutdown, *btn_restart, *btn_suspend, *btn_hibernate;
+static GtkWidget *indicator_box;
 
 /* Clock */
 static gchar *clock_format;
@@ -377,7 +375,7 @@ show_command_dialog (const gchar* icon, const gchar* title, const gchar* message
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (main_box));
 
 	dialog = greeter_message_dialog_new (GTK_WINDOW (toplevel),
-                                         "dialog-information",
+                                         icon,
                                          title,
                                          new_message);
 
@@ -532,9 +530,13 @@ gf_start (void)
 static void
 notify_service_start (void)
 {
+	const gchar *cmd;
 	gchar **argv = NULL, **envp = NULL;
-	const gchar *cmd = "/usr/bin/gsettings set apps.gooroom-notifyd notify-location 2";
 
+	cmd = "/usr/bin/gsettings set apps.gooroom-notifyd notify-location 2";
+	g_spawn_command_line_sync (cmd, NULL, NULL, NULL, NULL);
+
+	cmd = "/usr/bin/gsettings set apps.gooroom-notifyd do-not-disturb true";
 	g_spawn_command_line_sync (cmd, NULL, NULL, NULL, NULL);
 
 	g_shell_parse_argv (GOOROOM_NOTIFYD, NULL, &argv, NULL);
@@ -924,7 +926,7 @@ main (int argc, char **argv)
 	wm_start ();
 
 	/* Starting gnome-flashback */
-//	gf_start ();
+	gf_start ();
 
 	/* Set default cursor */
 	gdk_window_set_cursor (gdk_get_default_root_window (),

@@ -38,7 +38,7 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
-        <property name="spacing">10</property>
+        <property name="spacing">24</property>
         <child>
           <object class="GtkBox" id="box8">
             <property name="visible">True</property>
@@ -48,11 +48,10 @@
             <property name="spacing">10</property>
             <child>
               <object class="GtkEntry" id="id_entry">
-                <property name="name">prompt_entry</property>
                 <property name="height_request">34</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="has_focus">True</property>
+                <property name="receives_default">True</property>
                 <property name="max_length">32</property>
                 <property name="width_chars">40</property>
                 <property name="max_width_chars">32</property>
@@ -72,11 +71,10 @@
                 <property name="can_focus">False</property>
                 <child>
                   <object class="GtkEntry" id="pw_entry">
-                    <property name="name">prompt_entry</property>
                     <property name="height_request">34</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="has_focus">True</property>
+                    <property name="receives_default">True</property>
                     <property name="max_length">32</property>
                     <property name="visibility">False</property>
                     <property name="invisible_char">●</property>
@@ -130,13 +128,16 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="valign">start</property>
-            <property name="use_markup">True</property>
+            <property name="label"></property>
             <property name="wrap">True</property>
-            <property name="wrap_mode">char</property>
             <property name="ellipsize">end</property>
-            <property name="width_chars">1</property>
+            <property name="width_chars">0</property>
+            <property name="max_width_chars">0</property>
             <property name="lines">5</property>
             <property name="xalign">0</property>
+            <style>
+              <class name="error-label"/>
+            </style>
           </object>
           <packing>
             <property name="expand">True</property>
