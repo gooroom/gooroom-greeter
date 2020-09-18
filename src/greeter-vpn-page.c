@@ -50,7 +50,9 @@ enum {
 	VPN_SERVER_DISCONNECTED         = 1012,
 	VPN_UNKNOWN_ERROR               = 1013,
 	VPN_SERVICE_DAEMON_ERROR        = 1014,
-	VPN_SERVICE_LOGIN_REQUEST_ERROR = 1015
+	VPN_SERVICE_LOGIN_REQUEST_ERROR = 1015,
+	VPN_SERVICE_INFO_ERROR          = 1016,
+	VPN_SERVICE_TIMEOUT_ERROR       = 1017
 };
 
 
@@ -64,8 +66,13 @@ struct _GreeterVPNPagePrivate {
 	GtkWidget  *login_button;
 	GtkWidget  *login_button_icon;
 
-	gchar      *ip;
-	gchar      *port;
+	guint       dbus_watch_id;
+	guint       dbus_signal_id;
+	guint       splash_timeout_id;
+	guint       check_vpn_service_timeout_id;
+
+	gboolean    login_success;
+	gboolean    service_enabled;
 
 	GDBusProxy *proxy;
 };
@@ -142,12 +149,10 @@ get_vpn_connection_info (gchar **ip,
 	if (!active_vpn)
 		return;
 
-	config_path = g_strdup_printf ("%s/%s.conf",
-                                        VPN_SERVICE_CONFIG_DIR,
-                                        active_vpn);
+	config_path = g_strdup_printf ("%s/%s.conf", VPN_SERVICE_CONFIG_DIR, active_vpn);
 
 	if (!g_file_test (config_path, G_FILE_TEST_EXISTS)) {
-//		g_warning (G_STRLOC ": No secuwiz vpn config file: %s", SECUWIZ_VPN_CONFIG_FILE);
+		g_warning (G_STRLOC ": No VPN config file: %s", config_path);
 		goto done;
 	}
 
@@ -168,47 +173,6 @@ done:
 }
 
 static void
-post_login (GreeterVPNPage *page)
-{
-	GreeterVPNPagePrivate *priv = page->priv;
-	GreeterPageManager *manager = GREETER_PAGE (page)->manager;
-
-	greeter_page_manager_hide_splash (manager);
-
-	g_signal_handlers_unblock_by_func (page->priv->login_button,
-                                       login_button_clicked_cb, page);
-
-	gtk_widget_set_sensitive (priv->id_entry, TRUE);
-	gtk_widget_set_sensitive (priv->pw_entry, TRUE);
-
-	gtk_entry_set_text (GTK_ENTRY (priv->id_entry), "");
-	gtk_entry_set_text (GTK_ENTRY (priv->pw_entry), "");
-}
-
-static void
-pre_login (GreeterVPNPage *page)
-{
-	GtkWidget *toplevel;
-	const char *message;
-
-	GreeterVPNPagePrivate *priv = page->priv;
-	GreeterPageManager *manager = GREETER_PAGE (page)->manager;
-
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (page));
-	message = _("Authentication is in progress.\nPlease wait...");
-
-	greeter_page_manager_show_splash (manager, toplevel, message);
-
-	g_signal_handlers_block_by_func (priv->login_button,
-                                     login_button_clicked_cb, page);
-
-	gtk_widget_set_sensitive (priv->id_entry, FALSE);
-	gtk_widget_set_sensitive (priv->pw_entry, FALSE);
-
-	gtk_label_set_text (GTK_LABEL (priv->message_label), "");
-}
-
-static void
 show_login_success_dialog (GreeterVPNPage *page)
 {
 	const gchar *title;
@@ -222,7 +186,7 @@ show_login_success_dialog (GreeterVPNPage *page)
                 "Click the 'OK' button and proceed with system login.");
 
 	dialog = greeter_message_dialog_new (GTK_WINDOW (toplevel),
-                                         "dialog-information",
+                                         "dialog-information-symbolic",
                                          title,
                                          message);
 
@@ -245,63 +209,75 @@ update_error_message_label (GtkWidget *label, int result)
 			message = NULL;
 		break;
 
-		//시스템의 VPN 서비스에서 오류가 발생하였습니다.
-		//시스템 재부팅 후 다시 시도하십시오.
 		case VPN_SERVICE_DAEMON_ERROR:
 			message = _("An error has occurred in the system's VPN service.\n"
                         "Reboot your system and try again.");
 		break;
 
-		//VPN 로그인 요청에 실패하였습니다.
-		//시스템 재부팅 후 다시 시도하십시오.
 		case VPN_SERVICE_LOGIN_REQUEST_ERROR:
 			message = _("VPN login request failed.\nReboot your system and try again.");
 		break;
 
-		// 사용자 인증에 실패하였습니다.
-		// 5회 이상 인증 실패 시 로그인이 제한 됩니다.
+		case VPN_SERVICE_TIMEOUT_ERROR:
+			message = _("VPN login request failed.\nThere is no reponse from server.");
+		break;
+
+		case VPN_SERVICE_INFO_ERROR:
+			message = _("VPN connection information is incorrect.\n"
+                        "Check the configuration file and try again.");
+		break;
+
 		case VPN_AUTH_FAILURE:
 			message = _("User authentication failed.\n"
                         "If authentication fails more than 5 times, "
                         "you can no longer log in.");
 		break;
 
-		// 사용자 인증이 5회이상 실패하여 더이상 로그인 할 수 없습니다.
-        // 관리자에게 문의하십시오.
 		case VPN_ACCOUNT_LOCKED:
 			message = _("Login is not possible because user "
                         "authentication has failed more than 5 times.\n"
                         "Please contact the administrator.");
 		break;
 
-		// 네트워크 문제로 서버에 접속 할 수 없습니다.
-        // 네트워크 상태 확인 후 다시 시도해 주십시오.
 		case VPN_SERVER_CONNECTION_ERROR:
 			message = _("The server cannot be reached due to network problems.\n"
                         "Please check the network status and try again.");
 		break;
 
-		//서버와의 연결이 끊겼습니다.
-		//네트워크 상태 확인 후 다시 연결하십시오.
 		case VPN_SERVER_DISCONNECTED:
 			message = _("The connection to the server has been lost. "
                         "Check the network status and connect again.");
 		break;
 
-		// 알 수 없는 오류로 인해 로그인에 실패하였습니다.
-		// 잠시 후 다시 시도 하거나 관리자에게 문의하십시오.
 		default:
 			message = _("Login failed due to an unknown error.\n"
                         "Please try again later or contact the administrator.");
 		break;
 	}
 
-	if (message) {
-		gchar *markup;
-		markup = g_markup_printf_escaped ("<span foreground='red'>%s</span>", message);
-		gtk_label_set_markup (GTK_LABEL (label), markup);
-		g_free (markup);
-	}
+	if (message)
+		gtk_label_set_text (GTK_LABEL (label), message);
+}
+
+static void
+post_login (GreeterVPNPage *page)
+{
+	GreeterVPNPagePrivate *priv = page->priv;
+	GreeterPageManager *manager = GREETER_PAGE (page)->manager;
+
+    g_clear_handle_id (&priv->splash_timeout_id, g_source_remove);
+	priv->splash_timeout_id = 0;
+
+	greeter_page_manager_hide_splash (manager);
+
+	g_signal_handlers_unblock_by_func (page->priv->login_button,
+                                       login_button_clicked_cb, page);
+
+	gtk_widget_set_sensitive (priv->id_entry, TRUE);
+	gtk_widget_set_sensitive (priv->pw_entry, TRUE);
+
+	gtk_entry_set_text (GTK_ENTRY (priv->id_entry), "");
+	gtk_entry_set_text (GTK_ENTRY (priv->pw_entry), "");
 }
 
 static void
@@ -310,23 +286,83 @@ handle_login_result (GreeterVPNPage *page,
 {
 	GreeterVPNPagePrivate *priv = page->priv;
 
-	// 성공 or 실패(에러)코드가 아닌 상태를 알리기위한 코드
+	// 0은 성공 or 실패(에러)코드가 아닌 상태를 알리기위한 코드
 	if (result == 0)
 		return;
 
 	post_login (page);
 
 	if (result == VPN_LOGIN_SUCCESS) {
+		priv->login_success = TRUE;
 		greeter_page_set_complete (GREETER_PAGE (page), TRUE);
 		show_login_success_dialog (page);
 		greeter_page_manager_go_next (GREETER_PAGE (page)->manager);
 	} else if (result == VPN_SERVER_DISCONNECTED) {
-//		GreeterPageManager *manager = GREETER_PAGE (page)->manager;
-g_print ("VVVVVVPN_SERVER_DISCONNECTED\n");
+		// TODO: 연결이후 접속이 끊어진 경우 이므로 팝업 메세지 처리
+		priv->login_success = FALSE;
 	} else {
+		priv->login_success = FALSE;
 		update_error_message_label (priv->message_label, result);
 		g_idle_add ((GSourceFunc) grab_focus_idle, priv->id_entry);
 	}
+}
+
+static gboolean
+start_timeout_cb (gpointer user_data)
+{
+	GreeterVPNPage *page = GREETER_VPN_PAGE (user_data);
+
+	handle_login_result (page, VPN_SERVICE_TIMEOUT_ERROR);
+
+	return FALSE;
+}
+
+static void
+pre_login (GreeterVPNPage *page)
+{
+	GtkWidget *toplevel;
+	const char *message;
+
+	GreeterVPNPagePrivate *priv = page->priv;
+	GreeterPageManager *manager = GREETER_PAGE (page)->manager;
+
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (page));
+	message = _("Authentication is in progress.\nPlease wait...");
+
+	greeter_page_manager_show_splash (manager, toplevel, message);
+
+	g_signal_handlers_block_by_func (priv->login_button,
+                                     login_button_clicked_cb, page);
+
+	gtk_label_set_text (GTK_LABEL (priv->message_label), "");
+
+	priv->splash_timeout_id = g_timeout_add (VPN_LOGIN_TIMEOUT_SECS * 1000,
+                                             start_timeout_cb, page);
+}
+
+static void
+show_error_dialog (GreeterVPNPage *page)
+{
+	const gchar *title;
+	const gchar *message;
+	GtkWidget   *dialog, *toplevel;
+
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (page));
+
+	title = _("VPN Service Error");
+	message = _("VPN service is down. Please enable VPN service and try again.");
+
+	dialog = greeter_message_dialog_new (GTK_WINDOW (toplevel),
+                                         "dialog-warning-symbolic.symbolic",
+                                         title,
+                                         message);
+
+	gtk_dialog_add_buttons (GTK_DIALOG (dialog), _("_Ok"), GTK_RESPONSE_OK, NULL);
+	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
+
+	gtk_widget_show (dialog);
+	gtk_dialog_run (GTK_DIALOG (dialog));
+	gtk_widget_destroy (dialog);
 }
 
 static void
@@ -399,17 +435,19 @@ try_to_login_done_cb (GObject      *source_object,
 		return;
 	}
 
+	// 로그인시도 후 결과는 0 (성공) or -1(실패)
+	// 성공의 의미는 로그인의 성공을 의미하는 것이 아니라 로그인시도의 성공을 의미함
+	// 로그인시도 성공 후 로그인의 성공여부는 등록한 시그널 (vpn_dbus_signal_handler)에서 처리됨.
 	if (variant) {
 		g_variant_get (variant, "(i)", &result);
 		g_variant_unref (variant);
 	}
 
-	// 로그인시도 후 결과는 0 (성공) or -1(실패)
-	// 성공의 의미는 로그인의 성공을 의미하는 것이 아니라 로그인시도의 성공을 의미함
-	// 로그인시도 성공 후 로그인의 성공여부는 vpn_dbus_signal_handler에서 처리함.
-//	if (result == -1) {
-//		handle_login_result (page, VPN_SERVICE_LOGIN_REQUEST_ERROR);
-//	}
+	if (result == 0) {
+		g_debug ("Successful VPN login attempts");
+	} else {
+		g_debug ("Failed to login VPN");
+	}
 }
 
 static gboolean
@@ -458,11 +496,77 @@ vpn_dbus_signal_handler (GDBusProxy *proxy,
 	}
 }
 
+static gboolean
+check_vpn_service (gpointer user_data)
+{
+	int mode;
+	GreeterVPNPage *self = GREETER_VPN_PAGE (user_data);
+	GreeterPage *page = GREETER_PAGE (self);
+	GreeterVPNPagePrivate *priv = self->priv;
+
+	mode = greeter_page_manager_get_mode (page->manager);
+	if (mode == MODE_ONLINE && priv->login_success) {
+		show_error_dialog (self);
+		greeter_page_manager_go_first (page->manager);
+	}
+
+	if (priv->check_vpn_service_timeout_id > 0) {
+		g_source_remove (priv->check_vpn_service_timeout_id);
+		priv->check_vpn_service_timeout_id  = 0;
+	}
+
+	return FALSE;
+}
+
+static void
+name_appeared_cb (GDBusConnection *connection,
+                  const gchar     *name,
+                  const gchar     *name_owner,
+                  gpointer         user_data)
+{
+	GreeterVPNPage *page = GREETER_VPN_PAGE (user_data);
+	GreeterVPNPagePrivate *priv = page->priv;
+
+	priv->service_enabled = TRUE;
+
+	priv->proxy = get_vpn_dbus_proxy ();
+
+	if (!priv->dbus_signal_id)
+		priv->dbus_signal_id = g_signal_connect (G_OBJECT (priv->proxy), "g-signal",
+                                                 G_CALLBACK (vpn_dbus_signal_handler), page);
+
+	try_to_logout (page);
+}
+
+static void
+name_vanished_cb (GDBusConnection *connection,
+                  const gchar     *name,
+                  gpointer         user_data)
+{
+	GreeterVPNPage *page = GREETER_VPN_PAGE (user_data);
+	GreeterVPNPagePrivate *priv = page->priv;
+
+	priv->service_enabled = FALSE;
+
+	if (!priv->check_vpn_service_timeout_id)
+		priv->check_vpn_service_timeout_id = g_timeout_add (1000, check_vpn_service, page);
+}
+
 static void
 greeter_vpn_page_shown (GreeterPage *page)
 {
 	GreeterVPNPage *self = GREETER_VPN_PAGE (page);
 	GreeterVPNPagePrivate *priv = self->priv;
+
+	priv->login_success = FALSE;
+
+	if (!priv->service_enabled) {
+		show_error_dialog (self);
+		greeter_page_manager_go_first (GREETER_PAGE (page)->manager);
+		return;
+	}
+
+	try_to_logout (self);
 
 	gtk_entry_set_text (GTK_ENTRY (priv->id_entry), "");
 	gtk_entry_set_text (GTK_ENTRY (priv->pw_entry), "");
@@ -473,20 +577,11 @@ greeter_vpn_page_shown (GreeterPage *page)
 	greeter_page_set_complete (GREETER_PAGE (page), FALSE);
 
 	g_idle_add ((GSourceFunc) grab_focus_idle, priv->id_entry);
-
-	try_to_logout (self);
 }
 
 static gboolean
 greeter_vpn_page_should_show (GreeterPage *page)
 {
-
-#if 0
-	FILE *fp = fopen ("/var/tmp/greeter.debug", "a+");
-	fprintf (fp, "vpn page mode = %d\n", greeter_page_manager_get_mode (page->manager));
-	fclose (fp);
-
-#endif
 	return (greeter_page_manager_get_mode (page->manager) == MODE_ONLINE);
 }
 
@@ -494,29 +589,45 @@ static void
 greeter_vpn_page_out (GreeterPage *page,
                       gboolean     next)
 {
-g_print ("greeter_vpn_page_out : %d\n", next);
+	GreeterVPNPage *self = GREETER_VPN_PAGE (page);
 
 	if (!next)
-		try_to_logout (GREETER_VPN_PAGE (page));
+		try_to_logout (self);
 }
 
 static void
 login_button_clicked_cb (GtkButton *button,
                          gpointer   user_data)
 {
+	char *ip = NULL, *port = NULL;
 	const char *id, *pw;
 	GreeterVPNPage *page = GREETER_VPN_PAGE (user_data);
 	GreeterVPNPagePrivate *priv = page->priv;
 
 	pre_login (page);
 
+	priv->login_success = FALSE;
+
 	id = gtk_entry_get_text (GTK_ENTRY (priv->id_entry));
 	pw = gtk_entry_get_text (GTK_ENTRY (priv->pw_entry));
 
-	if (!try_to_login (page, priv->ip, priv->port, id, pw)) {
-		handle_login_result (page, VPN_SERVICE_DAEMON_ERROR);
-		return;
+	get_vpn_connection_info (&ip, &port);
+	if (!ip || g_str_equal (ip, "")) {
+		handle_login_result (page, VPN_SERVICE_INFO_ERROR);
+		goto out;
 	}
+
+	if (!port || g_str_equal (port, "")) {
+		handle_login_result (page, VPN_SERVICE_INFO_ERROR);
+		goto out;
+	}
+
+	if (!try_to_login (page, ip, port, id, pw))
+		handle_login_result (page, VPN_SERVICE_DAEMON_ERROR);
+
+out:
+	g_free (ip);
+	g_free (port);
 }
 
 static void
@@ -529,26 +640,26 @@ pw_entry_activate_cb (GtkWidget *widget,
 		login_button_clicked_cb (GTK_BUTTON (page->priv->login_button), page);
 }
 
-static gboolean
-pw_entry_key_press_cb (GtkWidget   *widget,
-                       GdkEventKey *event,
-                       gpointer     user_data)
-{
-	GreeterVPNPage *page = GREETER_VPN_PAGE (user_data);
-	GreeterVPNPagePrivate *priv = page->priv;
-
-	if ((event->keyval == GDK_KEY_Up || event->keyval == GDK_KEY_Down)) {
-		/* Back to id_entry if it is available */
-		if (event->keyval == GDK_KEY_Up &&
-            gtk_widget_get_visible (priv->id_entry) &&
-            widget == priv->pw_entry) {
-			gtk_widget_grab_focus (priv->id_entry);
-			return TRUE;
-		}
-		return TRUE;
-	}
-	return FALSE;
-}
+//static gboolean
+//pw_entry_key_press_cb (GtkWidget   *widget,
+//                       GdkEventKey *event,
+//                       gpointer     user_data)
+//{
+//	GreeterVPNPage *page = GREETER_VPN_PAGE (user_data);
+//	GreeterVPNPagePrivate *priv = page->priv;
+//
+//	if ((event->keyval == GDK_KEY_Up || event->keyval == GDK_KEY_Down)) {
+//		/* Back to id_entry if it is available */
+//		if (event->keyval == GDK_KEY_Up &&
+//            gtk_widget_get_visible (priv->id_entry) &&
+//            widget == priv->pw_entry) {
+//			gtk_widget_grab_focus (priv->id_entry);
+//			return TRUE;
+//		}
+//		return TRUE;
+//	}
+//	return FALSE;
+//}
 
 static gboolean
 id_entry_key_press_cb (GtkWidget   *widget,
@@ -558,13 +669,15 @@ id_entry_key_press_cb (GtkWidget   *widget,
 	GreeterVPNPage *page = GREETER_VPN_PAGE (user_data); 
 	GreeterVPNPagePrivate *priv = page->priv;
 
-	if (event->keyval == GDK_KEY_Up) {
-		return pw_entry_key_press_cb (widget, event, user_data);
-	} else if (event->keyval == GDK_KEY_Return && gtk_widget_get_visible (priv->pw_entry)) {
+	/* Enter activates the password entry */
+	if ((event->keyval == GDK_KEY_Return || event->keyval == GDK_KEY_Tab) &&
+         gtk_widget_get_visible (priv->pw_entry))
+	{
 		gtk_widget_grab_focus (priv->pw_entry);
 		return TRUE;
 	}
-	return FALSE;
+	else
+		return FALSE;
 }
 
 static void
@@ -605,8 +718,22 @@ static void
 greeter_vpn_page_dispose (GObject *object)
 {
 	GreeterVPNPage *self = GREETER_VPN_PAGE (object);
+	GreeterVPNPagePrivate *priv = self->priv;
 
-	g_clear_object (&self->priv->proxy);
+	g_signal_handler_disconnect (priv->proxy, priv->dbus_signal_id);
+
+	if (priv->dbus_watch_id) {
+		g_bus_unwatch_name (priv->dbus_watch_id);
+		priv->dbus_watch_id = 0;
+	}
+
+    g_clear_handle_id (&priv->check_vpn_service_timeout_id, g_source_remove);
+	priv->check_vpn_service_timeout_id  = 0;
+
+    g_clear_handle_id (&priv->splash_timeout_id, g_source_remove);
+	priv->splash_timeout_id = 0;
+
+	g_clear_object (&priv->proxy);
 
 	G_OBJECT_CLASS (greeter_vpn_page_parent_class)->dispose (object);
 }
@@ -614,11 +741,6 @@ greeter_vpn_page_dispose (GObject *object)
 static void
 greeter_vpn_page_finalize (GObject *object)
 {
-	GreeterVPNPage *self = GREETER_VPN_PAGE (object);
-
-	g_free (self->priv->ip);
-	g_free (self->priv->port);
-
 	G_OBJECT_CLASS (greeter_vpn_page_parent_class)->finalize (object);
 }
 
@@ -628,9 +750,18 @@ greeter_vpn_page_init (GreeterVPNPage *page)
 	GreeterVPNPagePrivate *priv;
 	page->priv = priv = greeter_vpn_page_get_instance_private (page);
 
-	priv->ip = NULL;
-	priv->port = NULL;
-	priv->proxy = get_vpn_dbus_proxy ();
+	priv->dbus_watch_id = 0;
+	priv->dbus_signal_id = 0;
+	priv->splash_timeout_id = 0;
+	priv->check_vpn_service_timeout_id = 0;
+	priv->service_enabled = FALSE;;
+
+	priv->dbus_watch_id = g_bus_watch_name (G_BUS_TYPE_SYSTEM,
+                                            VPN_SERVICE_NAME,
+                                            G_BUS_NAME_WATCHER_FLAGS_NONE,
+                                            name_appeared_cb,
+                                            name_vanished_cb,
+                                            page, NULL);
 
 	gtk_widget_init_template (GTK_WIDGET (page));
 
@@ -638,22 +769,16 @@ greeter_vpn_page_init (GreeterVPNPage *page)
 
 	setup_page_ui (page);
 
-	get_vpn_connection_info (&priv->ip, &priv->port);
-
 	g_signal_connect (G_OBJECT (priv->id_entry), "key-press-event",
                       G_CALLBACK (id_entry_key_press_cb), page);
 	g_signal_connect (G_OBJECT (priv->id_entry), "changed",
                       G_CALLBACK (id_entry_changed_cb), page);
-	g_signal_connect (G_OBJECT (priv->pw_entry), "key-press-event",
-                      G_CALLBACK (pw_entry_key_press_cb), page);
+//	g_signal_connect (G_OBJECT (priv->pw_entry), "key-press-event",
+//                      G_CALLBACK (pw_entry_key_press_cb), page);
 	g_signal_connect (G_OBJECT (priv->pw_entry), "activate",
                       G_CALLBACK (pw_entry_activate_cb), page);
 	g_signal_connect (G_OBJECT (priv->login_button), "clicked",
                       G_CALLBACK (login_button_clicked_cb), page);
-
-	if (priv->proxy)
-		g_signal_connect (G_OBJECT (priv->proxy), "g-signal",
-                          G_CALLBACK (vpn_dbus_signal_handler), page);
 
 	gtk_widget_show (GTK_WIDGET (page));
 }

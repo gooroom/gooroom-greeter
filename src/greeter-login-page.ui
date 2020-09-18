@@ -19,7 +19,7 @@
         <property name="ellipsize">end</property>
         <property name="width_chars">0</property>
         <property name="max_width_chars">0</property>
-        <property name="lines">3</property>
+        <property name="lines">4</property>
         <property name="xalign">0</property>
         <style>
           <class name="dim-label"/>
@@ -47,7 +47,6 @@
             <property name="spacing">12</property>
             <child>
               <object class="GtkEntry" id="id_entry">
-                <property name="name">prompt_entry</property>
                 <property name="height_request">34</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -73,7 +72,6 @@
                 <property name="can_focus">False</property>
                 <child>
                   <object class="GtkEntry" id="pw_entry">
-                    <property name="name">prompt_entry</property>
                     <property name="height_request">34</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
@@ -127,39 +125,42 @@
         </child>
         <child>
           <object class="GtkInfoBar" id="infobar">
-            <property name="name">greeter_infobar</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="valign">start</property>
             <child internal-child="action_area">
               <object class="GtkButtonBox">
                 <property name="can_focus">False</property>
+                <property name="spacing">6</property>
                 <property name="layout_style">end</property>
                 <child>
                   <placeholder/>
                 </child>
               </object>
               <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">-1</property>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child internal-child="content_area">
               <object class="GtkBox">
                 <property name="can_focus">False</property>
+                <property name="spacing">16</property>
                 <child>
                   <object class="GtkLabel" id="msg_label">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" comments="This is a placeholder string and will be replaced with a message from PAM">[message]</property>
-                    <property name="use_markup">True</property>
+                    <property name="label" comments="This is a placeholder string and will be replaced with a message from PAM">[Messages]</property>
                     <property name="wrap">True</property>
-                    <property name="wrap_mode">char</property>
                     <property name="ellipsize">end</property>
-                    <property name="width_chars">1</property>
+                    <property name="width_chars">0</property>
+                    <property name="max_width_chars">0</property>
                     <property name="lines">5</property>
                     <property name="xalign">0</property>
+                    <style>
+                      <class name="error-label"/>
+                    </style>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -171,12 +172,15 @@
               <packing>
                 <property name="expand">True</property>
                 <property name="fill">True</property>
-                <property name="position">-1</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
               <placeholder/>
             </child>
+            <style>
+              <class name="greeter-infobar"/>
+            </style>
           </object>
           <packing>
             <property name="expand">True</property>

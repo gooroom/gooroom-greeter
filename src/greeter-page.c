@@ -142,7 +142,6 @@ greeter_page_dispose (GObject *object)
 static void
 greeter_page_constructed (GObject *object)
 {
-//	g_print ("greeter_page_constructed\n");
 //	GreeterPage *page = GREETER_PAGE (object);
 
 	G_OBJECT_CLASS (greeter_page_parent_class)->constructed (object);
@@ -158,7 +157,6 @@ greeter_page_constructed (GObject *object)
 static void
 greeter_page_class_init (GreeterPageClass *klass)
 {
-//	g_print ("greeter_page_class_init\n");
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
 	object_class->constructed = greeter_page_constructed;

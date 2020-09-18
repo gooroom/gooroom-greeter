@@ -26,10 +26,11 @@
 
 #define MODE_ONLINE_STRING  "ONLINE"
 #define MODE_OFFLINE_STRING "OFFLINE"
-#define MODE_SAVE_FILE_PATH "/var/lib/lightdm/mode"
+#define MODE_SAVE_FILE_PATH "/var/tmp/lightdm.mode"
 
 enum {
 	GO_NEXT,
+	GO_FIRST,
 	LAST_SIGNAL
 };
 
@@ -88,6 +89,14 @@ greeter_page_manager_class_init (GreeterPageManagerClass *klass)
                                      NULL, NULL,
                                      g_cclosure_marshal_VOID__VOID,
                                      G_TYPE_NONE, 0);
+
+	signals[GO_FIRST] = g_signal_new ("go-first",
+                                     GREETER_TYPE_PAGE_MANAGER,
+                                     G_SIGNAL_RUN_FIRST,
+                                     G_STRUCT_OFFSET (GreeterPageManagerClass, go_first),
+                                     NULL, NULL,
+                                     g_cclosure_marshal_VOID__VOID,
+                                     G_TYPE_NONE, 0);
 }
 
 GreeterPageManager *
@@ -111,6 +120,7 @@ greeter_page_manager_set_mode (GreeterPageManager *manager,
 
 	g_file_set_contents (MODE_SAVE_FILE_PATH, contents, -1, &error);
 	if (error) {
+		g_warning ("Error attepting to write %s file : %s", MODE_SAVE_FILE_PATH, error->message);
 		g_error_free (error);
 	}
 
@@ -121,20 +131,27 @@ int
 greeter_page_manager_get_mode (GreeterPageManager *manager)
 {
 	int mode;
+	gsize len, i;
 	GError *error = NULL;
 	gchar *contents = NULL;
 
-	g_file_get_contents (MODE_SAVE_FILE_PATH, &contents, NULL, &error);
+	g_file_get_contents (MODE_SAVE_FILE_PATH, &contents, &len, &error);
 	if (error) {
 		g_error_free (error);
 		mode = manager->priv->mode;
 		goto out;
 	}
 
+	for (i = 0; i < len; i++) {
+		if (contents[i] == '\n')
+			contents[i] = '\0';
+	}
+
 	mode = g_str_equal (contents, MODE_ONLINE_STRING) ? MODE_ONLINE : MODE_OFFLINE;
 
 out:
 	g_free (contents);
+
 	return mode;
 }
 
@@ -142,6 +159,12 @@ void
 greeter_page_manager_go_next (GreeterPageManager *manager)
 {
 	g_signal_emit (G_OBJECT (manager), signals[GO_NEXT], 0);
+}
+
+void
+greeter_page_manager_go_first (GreeterPageManager *manager)
+{
+	g_signal_emit (G_OBJECT (manager), signals[GO_FIRST], 0);
 }
 
 void

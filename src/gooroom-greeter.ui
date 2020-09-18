@@ -17,8 +17,8 @@
         <child>
           <object class="GtkButton" id="btn_shutdown">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
+            <property name="can_focus">False</property>
+            <property name="receives_default">False</property>
             <property name="tooltip_text" translatable="yes">Shutdown system</property>
             <property name="relief">none</property>
             <child>
@@ -70,8 +70,8 @@
         <child>
           <object class="GtkButton" id="btn_hibernate">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
+            <property name="can_focus">False</property>
+            <property name="receives_default">False</property>
             <property name="tooltip_text" translatable="yes">Hibernate system</property>
             <property name="relief">none</property>
             <child>
@@ -123,8 +123,8 @@
         <child>
           <object class="GtkButton" id="btn_suspend">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
+            <property name="can_focus">False</property>
+            <property name="receives_default">False</property>
             <property name="tooltip_text" translatable="yes">Suspend system</property>
             <property name="relief">none</property>
             <child>
@@ -175,8 +175,8 @@
         <child>
           <object class="GtkButton" id="btn_restart">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
+            <property name="can_focus">False</property>
+            <property name="receives_default">False</property>
             <property name="tooltip_text" translatable="yes">Restart system</property>
             <property name="relief">none</property>
             <child>

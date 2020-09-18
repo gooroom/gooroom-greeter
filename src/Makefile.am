@@ -47,6 +47,7 @@ AM_CPPFLAGS = \
 	-DGOOROOM_NOTIFYD=\"$(libdir)/gooroom-notifyd/gooroom-notifyd\" \
 	-DVPN_SERVICE_CONFIG_DIR=\"$(datadir)/gooroom-vpn-service/services\" \
 	-DGOOROOM_VPN_SERVICE_CONFIG_FILE=\"$(sysconfdir)/gooroom-vpn-service/vpn.conf\" \
+	-DGREETER_NETWORK_CONTROL_HELPER=\"$(pkglibexecdir)/greeter-network-control-helper\" \
 	$(WARN_CFLAGS)
 
 gooroom_greeter_CFLAGS = \
@@ -81,6 +82,23 @@ greeter-resources.c: gresource.xml $(resource_files)
 	$(AM_V_GEN) glib-compile-resources --target=$@ --sourcedir=$(srcdir) --generate-source --c-name greeter $<
 greeter-resources.h: gresource.xml $(resource_files)
 	$(AM_V_GEN) glib-compile-resources --target=$@ --sourcedir=$(srcdir) --generate-header --c-name greeter $<
+
+
+#pkglibexec_PROGRAMS = \
+#	greeter-network-control-helper
+#
+#greeter_network_control_helper_SOURCES = \
+#	greeter-network-control-helper.c
+#
+#greeter_network_control_helper_CFLAGS = \
+#	$(GLIB_CFLAGS)
+#
+#greeter_network_control_helper_LDFLAGS = \
+#	$(GLIB_LIBS)
+#
+#install-exec-hook:
+#	chown root "$(DESTDIR)$(pkglibexecdir)/greeter-network-control-helper"
+#	chmod +s "$(DESTDIR)$(pkglibexecdir)/greeter-network-control-helper"
 
 DISTCLEANFILES = \
 	$(BUILT_SOURCES)

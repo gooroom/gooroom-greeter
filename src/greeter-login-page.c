@@ -28,6 +28,7 @@
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 
+#include <pwd.h>
 #include <lightdm.h>
 
 typedef struct
@@ -55,6 +56,7 @@ struct _GreeterLoginPagePrivate {
 	gboolean prompt_active;
 	gboolean changing_password;
 	gboolean password_prompted;
+	gboolean id_entry_focus_out;
 
 	gchar *current_session;
 	gchar *current_language;
@@ -72,14 +74,6 @@ static void start_authentication (GreeterLoginPage *page, const gchar *username)
 
 G_DEFINE_TYPE_WITH_PRIVATE (GreeterLoginPage, greeter_login_page, GREETER_TYPE_PAGE);
 
-
-static void
-sync_complete (GreeterLoginPage *page)
-{
-//	GreeterLoginPagePrivate *priv = page->priv;
-
-	greeter_page_set_complete (GREETER_PAGE (page), TRUE);
-}
 
 static gboolean
 grab_focus_idle (gpointer data)
@@ -100,7 +94,7 @@ set_message_label (GreeterLoginPage *page, LightDMMessageType type, const gchar 
 		gtk_info_bar_set_message_type (GTK_INFO_BAR (priv->infobar), GTK_MESSAGE_ERROR);
 
 	const gchar *str = (text != NULL) ? text : "";
-	gtk_label_set_markup (GTK_LABEL (priv->msg_label), str);
+	gtk_label_set_text (GTK_LABEL (priv->msg_label), str);
 }
 
 static void
@@ -127,6 +121,49 @@ is_valid_session (GList       *items,
 			return TRUE;
 
 	return FALSE;
+}
+
+static gboolean
+is_valid_user (GreeterLoginPage  *page,
+               const char        *user,
+               char             **error)
+{
+	char *error_msg = NULL;
+	gboolean ret = TRUE;
+	gboolean is_local_user = TRUE;
+	GreeterPageManager *manager = GREETER_PAGE (page)->manager;
+
+	struct passwd *user_entry = getpwnam (user);
+	if (user_entry) {
+		char **tokens = g_strsplit (user_entry->pw_gecos, ",", -1);
+		if (tokens && (g_strv_length (tokens) > 4)) {
+			if (tokens[4]) {
+				if (g_str_equal (tokens[4], "gooroom-account")) {
+					is_local_user = FALSE;
+				}
+			}
+		}
+		g_strfreev (tokens);
+	} else {
+		is_local_user = FALSE;
+	}
+
+	if (greeter_page_manager_get_mode (manager) == MODE_OFFLINE) {
+		if (!is_local_user) {
+			error_msg = _("In offline mode, only system (local) users can log in. Please try again.");
+			ret = FALSE;
+		}
+	} else {
+		if (is_local_user) {
+			error_msg = _("In online mode, only online users can log in. Please try again.");
+			ret = FALSE;
+		}
+	}
+
+	if (error && error_msg)
+		*error = g_strdup (error_msg);
+
+	return ret;
 }
 
 static void
@@ -198,7 +235,7 @@ show_message_dialog (GreeterLoginPage *page,
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (page));
 
 	dialog = greeter_message_dialog_new (GTK_WINDOW (toplevel),
-                                         "dialog-information",
+                                         "dialog-warning-symbolic.symbolic",
                                          title,
                                          message);
 
@@ -314,7 +351,7 @@ ask_to_change_password (GreeterLoginPage *page,
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (page));
 
 	dialog = greeter_message_dialog_new (GTK_WINDOW (toplevel),
-                                         "dialog-information",
+                                         "dialog-password-symbolic",
                                          title,
                                          message);
 
@@ -380,12 +417,9 @@ pam_message_finalize (PAMConversationMessage *message)
 static void
 process_prompts (GreeterLoginPage *page)
 {
+	const char *id;
 	GreeterLoginPagePrivate *priv = page->priv;
 	LightDMGreeter *greeter = priv->greeter;
-
-FILE *fp = fopen ("/var/tmp/greeter.debug", "a+");
-fprintf (fp, "process_promptttttttttttttttttt\n");
-fclose (fp);
 
 	if (!priv->pending_questions)
 		return;
@@ -393,6 +427,9 @@ fclose (fp);
 	/* always allow the user to change username again */
 	gtk_widget_set_sensitive (priv->id_entry, TRUE);
 	gtk_widget_set_sensitive (priv->pw_entry, TRUE);
+
+	id = gtk_entry_get_text (GTK_ENTRY (priv->id_entry));
+	gtk_widget_set_sensitive (priv->login_button, strlen (id) > 0);
 
 	/* Special case: no user selected from list, so PAM asks us for the user
 	 * via a prompt. For that case, use the username field */
@@ -434,21 +471,14 @@ fclose (fp);
 		const gchar *filter_msg_150 = "DateTime Error";
 		const gchar *filter_msg_160 = "Trial Period Warning";
 
-FILE *fp = fopen ("/var/tmp/greeter.debug", "a+");
-fprintf (fp, "process_prompt message->is_prompt = %d\n", message->is_prompt);
-fprintf (fp, "process_prompt message->text = %s\n", message->text);
-fclose (fp);
-
 		if ((strstr (message->text, filter_msg_000) != NULL) ||
 		    (strstr (message->text, filter_msg_010) != NULL) ||
             (strstr (message->text, filter_msg_020) != NULL)) {
-//			priv->changing_password = TRUE;
 			ask_to_change_password (page, _("Password Expiration"),
 					_("Your password has expired.\nPlease change your password immediately."),
 					_("Changing Password"), _("Cancel"), "req_no_response");
 			continue;
 		} else if (g_str_has_prefix (message->text, filter_msg_030)) {
-//			priv->changing_password = TRUE;
 			ask_to_change_password (page, _("Temporary Password Warning"),
 					_("Your password has been issued temporarily.\nFor security reasons, please change your password immediately."),
 					_("Changing Password"), _("Cancel"), "req_no_response");
@@ -497,7 +527,7 @@ fclose (fp);
 			}
 			g_strfreev (tokens);
 
-			show_message_dialog (page, _("Account Expiration Warning"), msg, _("Ok"), "ACCT_EXP_OK");
+			show_message_dialog (page, _("Account Expiration Warning"), msg, _("_Ok"), "ACCT_EXP_OK");
 			g_free (msg);
 
 			continue;
@@ -517,7 +547,7 @@ fclose (fp);
 			}
 			g_strfreev (tokens);
 
-			show_message_dialog (page, _("Division Expiration Warning"), msg, _("Ok"), "DEPT_EXP_OK");
+			show_message_dialog (page, _("Division Expiration Warning"), msg, _("_Ok"), "DEPT_EXP_OK");
 			g_free (msg);
 
 			continue;
@@ -537,7 +567,7 @@ fclose (fp);
 			}
 			g_strfreev (tokens);
 
-			show_message_dialog (page, _("Passowrd Expiration Warning"), msg, _("Ok"), "PASS_EXP_OK");
+			show_message_dialog (page, _("Passowrd Expiration Warning"), msg, _("_Ok"), "PASS_EXP_OK");
 			g_free (msg);
 
 			continue;
@@ -545,28 +575,28 @@ fclose (fp);
 			GString *msg = g_string_new (_("Duplicate logins detected with the same ID."));
 			gchar **tokens = g_strsplit (message->text, ":", -1);
 			if (tokens[1]) {
-				gchar *markup = g_markup_printf_escaped ("<i>%s : %s</i>", _("Client ID"), tokens[1]);
-				g_string_append_printf (msg, "\n\n%s", markup);
-				g_free (markup);
+				gchar *text = g_strdup_printf ("%s : %s", _("Client ID"), tokens[1]);
+				g_string_append_printf (msg, "\n\n%s", text);
+				g_free (text);
 			}
 			if (tokens[2]) {
-				gchar *markup = g_markup_printf_escaped ("<i>%s : %s</i>", _("Client Name"), tokens[2]);
-				g_string_append_printf (msg, "\n%s", markup);
-				g_free (markup);
+				gchar *text = g_strdup_printf ("%s : %s", _("Client Name"), tokens[2]);
+				g_string_append_printf (msg, "\n%s", text);
+				g_free (text);
 			}
 			if (tokens[3]) {
-				gchar *markup = g_markup_printf_escaped ("<i>%s : %s</i>", _("IP"), tokens[3]);
-				g_string_append_printf (msg, "\n%s", markup);
-				g_free (markup);
+				gchar *text = g_strdup_printf ("%s : %s", _("IP"), tokens[3]);
+				g_string_append_printf (msg, "\n%s", text);
+				g_free (text);
 			}
 			if (tokens[4]) {
-				gchar *markup = g_markup_printf_escaped ("<i>%s : %s</i>", _("Local IP"), tokens[4]);
-				g_string_append_printf (msg, "\n%s", markup);
-				g_free (markup);
+				gchar *text = g_strdup_printf ("%s : %s", _("Local IP"), tokens[4]);
+				g_string_append_printf (msg, "\n%s", text);
+				g_free (text);
 			}
 
 			show_message_dialog (page, _("Duplicate Login Notification"),
-                                 msg->str, _("Ok"), "DUPLICATE_LOGIN_OK");
+                                 msg->str, _("_Ok"), "DUPLICATE_LOGIN_OK");
 			g_string_free (msg, TRUE);
 
 			continue;
@@ -645,16 +675,13 @@ fclose (fp);
 			}
 			g_strfreev (tokens);
 
-			show_message_dialog (page, _("Trial Period Notification"), msg, _("Ok"), "TRIAL_LOGIN_OK");
+			show_message_dialog (page, _("Trial Period Notification"), msg, _("_Ok"), "TRIAL_LOGIN_OK");
 			g_free (msg);
 			continue;
 		}
 
         if (!message->is_prompt)
         {
-FILE *fp = fopen ("/var/tmp/greeter.debug", "a+");
-fprintf (fp, "message->is_prompt is false text = %s\n", message->text);
-fclose (fp);
 			/* FIXME: this doesn't show multiple messages, but that was
 			 * already the case before. */
 			if (priv->changing_password) {
@@ -662,7 +689,8 @@ fclose (fp);
 					greeter_password_settings_dialog_set_message_label (GREETER_PASSWORD_SETTINGS_DIALOG (priv->pw_dialog), message->text);
 				}
 			} else {
-				set_message_label (page, message->type.message, message->text);
+//				set_message_label (page, message->type.message, message->text);
+				set_message_label (page, LIGHTDM_MESSAGE_TYPE_INFO, message->text);
 			}
 			continue;
         }
@@ -739,10 +767,6 @@ start_authentication (GreeterLoginPage *page, const gchar *username)
 	priv->password_prompted = FALSE;
 	priv->prompt_active = FALSE;
 
-FILE *fp = fopen ("/var/tmp/greeter.debug", "a+");
-fprintf (fp, "start authentication username = %s\n", username);
-fclose (fp);
-
 	if (priv->pending_questions)
 	{
 		g_slist_free_full (priv->pending_questions, (GDestroyNotify) pam_message_finalize);
@@ -793,6 +817,18 @@ fclose (fp);
 }
 
 static void
+set_networking_enable (gboolean enabled)
+{
+	gchar *cmd = NULL;
+	const char *on_off;
+
+	on_off = enabled ? "on" : "off";
+	cmd = g_strdup_printf ("%s --action %s", GREETER_NETWORK_CONTROL_HELPER, on_off);
+	g_spawn_command_line_sync (cmd, NULL, NULL, NULL, NULL);
+	g_free (cmd);
+}
+
+static void
 start_session (GreeterLoginPage *page)
 {
 	GreeterLoginPagePrivate *priv = page->priv;
@@ -810,10 +846,14 @@ start_session (GreeterLoginPage *page)
 
 	//	greeter_background_save_xroot (greeter_background);
 
+	GreeterPageManager *manager = GREETER_PAGE (page)->manager;
+	set_networking_enable (greeter_page_manager_get_mode (manager) == MODE_ONLINE);
+
 	if (!lightdm_greeter_start_session_sync (greeter, priv->current_session, NULL))
 	{
 		set_message_label (page, LIGHTDM_MESSAGE_TYPE_ERROR, _("Failed to start session"));
 		start_authentication (page, lightdm_greeter_get_authentication_user (greeter));
+		set_networking_enable (TRUE);
 	}
 }
 
@@ -825,9 +865,6 @@ show_prompt_cb (LightDMGreeter    *greeter,
 {
 	GreeterLoginPage *page = GREETER_LOGIN_PAGE (user_data);
 	GreeterLoginPagePrivate *priv = page->priv;
-FILE *fp = fopen ("/var/tmp/greeter.debug", "a+");
-fprintf (fp, "show_prompt_cbbbb text = %s\n", text);
-fclose (fp);
 
 	PAMConversationMessage *message_obj = g_new (PAMConversationMessage, 1);
 	if (message_obj)
@@ -850,10 +887,6 @@ show_message_cb (LightDMGreeter     *greeter,
 {
 	GreeterLoginPage *page = GREETER_LOGIN_PAGE (user_data);
 	GreeterLoginPagePrivate *priv = page->priv;
-
-FILE *fp = fopen ("/var/tmp/greeter.debug", "a+");
-fprintf (fp, "show_message_cbbbb text = %s\n", text);
-fclose (fp);
 
     PAMConversationMessage *message_obj = g_new (PAMConversationMessage, 1);
     if (message_obj)
@@ -883,15 +916,9 @@ authentication_complete_cb (LightDMGreeter *greeter,
 		g_slist_free_full (priv->pending_questions, (GDestroyNotify) pam_message_finalize);
 		priv->pending_questions = NULL;
 	}
-FILE *fp = fopen ("/var/tmp/greeter.debug", "a+");
-fprintf (fp, "authentication_complete_cb\n");
-fclose (fp);
 
 	if (lightdm_greeter_get_is_authenticated (greeter))
 	{
-fp = fopen ("/var/tmp/greeter.debug", "a+");
-fprintf (fp, "lightdm_greeter_get_is_authenticated\n");
-fclose (fp);
 		if (priv->pw_dialog)
 		{
 			gtk_widget_destroy (priv->pw_dialog);
@@ -907,9 +934,6 @@ fclose (fp);
 	}
 	else
 	{
-fp = fopen ("/var/tmp/greeter.debug", "a+");
-fprintf (fp, "else lightdm_greeter_get_is_authenticated\n");
-fclose (fp);
 		/* If an error message is already printed we do not print it this statement
 		 * The error message probably comes from the PAM module that has a better knowledge
 		 * of the failure. */
@@ -937,7 +961,7 @@ fclose (fp);
 			}
 			show_message_dialog (page, _("Failure Of Changing Password"),
                                  _("Failed to change password.\nPlease try again."),
-                                 _("Ok"),
+                                 _("_Ok"),
                                  "CHPASSWD_FAILURE_OK");
 		}
 	}
@@ -991,6 +1015,7 @@ login_button_clicked_cb (GtkWidget *widget,
 
 	gtk_widget_set_sensitive (priv->id_entry, FALSE);
 	gtk_widget_set_sensitive (priv->pw_entry, FALSE);
+	gtk_widget_set_sensitive (priv->login_button, FALSE);
 	set_message_label (page, LIGHTDM_MESSAGE_TYPE_INFO, NULL);
 
 	priv->prompt_active = FALSE;
@@ -998,9 +1023,6 @@ login_button_clicked_cb (GtkWidget *widget,
 	if (lightdm_greeter_get_is_authenticated (greeter)) {
 		start_session (page);
 	} else if (lightdm_greeter_get_in_authentication (greeter)) {
-FILE *fp = fopen ("/var/tmp/greeter.debug", "a+");
-fprintf (fp, "get_in_authenticatedddddddd pw entry\n");
-fclose (fp);
 #ifdef HAVE_LIBLIGHTDMGOBJECT_1_19_2
 		lightdm_greeter_respond (greeter, gtk_entry_get_text (GTK_ENTRY (priv->pw_entry)), NULL);
 #else
@@ -1026,30 +1048,30 @@ pw_entry_activate_cb (GtkWidget *widget,
 	login_button_clicked_cb (page->priv->login_button, page);
 }
 
-static gboolean
-pw_entry_key_press_cb (GtkWidget   *widget,
-                       GdkEventKey *event,
-                       gpointer     user_data)
-{
-	GreeterLoginPage *page = GREETER_LOGIN_PAGE (user_data);
-	GreeterLoginPagePrivate *priv = page->priv;
-
-	if ((event->keyval == GDK_KEY_Up || event->keyval == GDK_KEY_Down))
-	{
-		/* Back to login_win_username_entry if it is available */
-		if (event->keyval == GDK_KEY_Up &&
-            gtk_widget_get_visible (priv->id_entry) &&
-            widget == priv->pw_entry)
-		{
-			gtk_widget_grab_focus (priv->id_entry);
-			return TRUE;
-		}
-
-		return TRUE;
-	}
-
-	return FALSE;
-}
+//static gboolean
+//pw_entry_key_press_cb (GtkWidget   *widget,
+//                       GdkEventKey *event,
+//                       gpointer     user_data)
+//{
+//	GreeterLoginPage *page = GREETER_LOGIN_PAGE (user_data);
+//	GreeterLoginPagePrivate *priv = page->priv;
+//
+//	if ((event->keyval == GDK_KEY_Up || event->keyval == GDK_KEY_Down))
+//	{
+//		/* Back to login_win_username_entry if it is available */
+//		if (event->keyval == GDK_KEY_Up &&
+//            gtk_widget_get_visible (priv->id_entry) &&
+//            widget == priv->pw_entry)
+//		{
+//			gtk_widget_grab_focus (priv->id_entry);
+//			return TRUE;
+//		}
+//
+//		return TRUE;
+//	}
+//
+//	return FALSE;
+//}
 
 static gboolean
 id_entry_focus_out_cb (GtkWidget *widget,
@@ -1059,7 +1081,43 @@ id_entry_focus_out_cb (GtkWidget *widget,
 	GreeterLoginPage *page = GREETER_LOGIN_PAGE (user_data);
 	GreeterLoginPagePrivate *priv = page->priv;
 
-	start_authentication (page, gtk_entry_get_text (GTK_ENTRY (priv->id_entry)));
+	priv->id_entry_focus_out = TRUE;
+
+	return FALSE;
+}
+
+static gboolean
+pw_entry_focus_in_cb (GtkWidget *widget,
+                      GdkEvent  *event,
+                      gpointer   user_data)
+{
+	GreeterLoginPage *page = GREETER_LOGIN_PAGE (user_data);
+	GreeterLoginPagePrivate *priv = page->priv;
+
+	if (priv->id_entry_focus_out) {
+		priv->id_entry_focus_out = FALSE;
+
+		const char *user;
+		gchar *error_message = NULL;
+		GreeterLoginPage *page = GREETER_LOGIN_PAGE (user_data);
+		GreeterLoginPagePrivate *priv = page->priv;
+
+		user = gtk_entry_get_text (GTK_ENTRY (priv->id_entry));
+
+		if (strlen (user) == 0)
+			return FALSE;
+
+		if (is_valid_user (page, user, &error_message)) {
+			set_message_label (page, LIGHTDM_MESSAGE_TYPE_INFO, NULL);
+			start_authentication (page, gtk_entry_get_text (GTK_ENTRY (priv->id_entry)));
+		} else {
+			if (error_message) {
+				set_message_label (page, LIGHTDM_MESSAGE_TYPE_INFO, error_message);
+				g_free (error_message);
+			}
+			start_authentication (GREETER_LOGIN_PAGE (page), "*other");
+		}
+	}
 
 	return FALSE;
 }
@@ -1072,17 +1130,28 @@ id_entry_key_press_cb (GtkWidget   *widget,
 	GreeterLoginPage *page = GREETER_LOGIN_PAGE (user_data);
 	GreeterLoginPagePrivate *priv = page->priv;
 
-    /* Acts as pw_entry */
-    if (event->keyval == GDK_KEY_Up)
-        return pw_entry_key_press_cb (widget, event, user_data);
-    /* Enter activates the password entry */
-    else if (event->keyval == GDK_KEY_Return && gtk_widget_get_visible (priv->pw_entry))
-    {
-        gtk_widget_grab_focus (priv->pw_entry);
-        return TRUE;
-    }
-    else
-        return FALSE;
+	/* Enter activates the password entry */
+	if ((event->keyval == GDK_KEY_Return || event->keyval == GDK_KEY_Tab) &&
+         gtk_widget_get_visible (priv->pw_entry))
+	{
+		gtk_widget_grab_focus (priv->pw_entry);
+		return TRUE;
+	}
+	else
+		return FALSE;
+}
+
+static void
+id_entry_changed_cb (GtkWidget *widget,
+                     gpointer   user_data)
+{
+	const char *text;
+	GreeterLoginPage *page = GREETER_LOGIN_PAGE (user_data);
+	GreeterLoginPagePrivate *priv = page->priv;
+
+	text = gtk_entry_get_text (GTK_ENTRY (priv->id_entry));
+
+	gtk_widget_set_sensitive (priv->login_button, strlen (text) > 0);
 }
 
 static void
@@ -1154,10 +1223,23 @@ greeter_login_page_shown (GreeterPage *page)
 	GreeterLoginPage *self = GREETER_LOGIN_PAGE (page);
 	GreeterLoginPagePrivate *priv = self->priv;
 
+	priv->prompted = FALSE;
+	priv->prompt_active = FALSE;
+	priv->password_prompted = FALSE;
+	priv->changing_password = FALSE;
+	priv->pending_questions = NULL;
+	priv->current_session = NULL;
+	priv->current_language = NULL;
+	priv->id_entry_focus_out = FALSE;
+
 	gtk_widget_set_visible (priv->id_entry, TRUE);
 	gtk_widget_set_visible (priv->pw_entry, TRUE);
+	gtk_widget_set_sensitive (priv->id_entry, TRUE);
+	gtk_widget_set_sensitive (priv->pw_entry, TRUE);
 	gtk_entry_set_text (GTK_ENTRY (priv->id_entry), "");
 	gtk_entry_set_text (GTK_ENTRY (priv->pw_entry), "");
+	gtk_widget_set_sensitive (priv->login_button, FALSE);
+
 	set_message_label (self, LIGHTDM_MESSAGE_TYPE_INFO, NULL);
 
 	start_authentication (GREETER_LOGIN_PAGE (page), "*other");
@@ -1186,6 +1268,7 @@ greeter_login_page_init (GreeterLoginPage *page)
 	priv->pending_questions = NULL;
 	priv->current_session = NULL;
 	priv->current_language = NULL;
+	priv->id_entry_focus_out = FALSE;
 
 	greeter_page_set_title (GREETER_PAGE (page), _("Login System"));
 
@@ -1194,9 +1277,11 @@ greeter_login_page_init (GreeterLoginPage *page)
 	if (!lightdm_greeter_init (page)) {
 	}
 
+	g_signal_connect (priv->id_entry, "changed", G_CALLBACK (id_entry_changed_cb), page);
 	g_signal_connect (priv->id_entry, "focus-out-event", G_CALLBACK (id_entry_focus_out_cb), page);
 	g_signal_connect (priv->id_entry, "key-press-event", G_CALLBACK (id_entry_key_press_cb), page);
-	g_signal_connect (priv->pw_entry, "key-press-event", G_CALLBACK (pw_entry_key_press_cb), page);
+//	g_signal_connect (priv->pw_entry, "key-press-event", G_CALLBACK (pw_entry_key_press_cb), page);
+	g_signal_connect (priv->pw_entry, "focus-in-event", G_CALLBACK (pw_entry_focus_in_cb), page);
 	g_signal_connect (priv->pw_entry, "activate", G_CALLBACK (pw_entry_activate_cb), page);
 
 	g_signal_connect (priv->login_button, "clicked", G_CALLBACK (login_button_clicked_cb), page);
@@ -1227,7 +1312,6 @@ greeter_login_page_class_init (GreeterLoginPageClass *klass)
 	page_class->shown = greeter_login_page_shown;
 	page_class->should_show = greeter_login_page_should_show;
 
-//	object_class->constructed = greeter_login_page_constructed;
 	object_class->dispose = greeter_login_page_dispose;
 }
 

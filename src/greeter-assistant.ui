@@ -3,8 +3,8 @@
 <interface>
   <requires lib="gtk+" version="3.20"/>
   <template class="GreeterAssistant" parent="GtkBox">
-    <property name="width_request">680</property>
-    <property name="height_request">480</property>
+    <property name="width_request">720</property>
+    <property name="height_request">600</property>
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="orientation">vertical</property>
@@ -86,7 +86,8 @@
                   <object class="GtkButton" id="first">
                     <property name="label" translatable="yes">First</property>
                     <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="tooltip_text" translatable="yes">Return to the operation mode selection page, the first step of logging in, and perform the login process again. If you are already connected to a VPN, disconnect and reconnect.</property>
                     <property name="halign">center</property>
                     <style>
                       <class name="assistant-button"/>
@@ -103,7 +104,7 @@
                     <property name="label" translatable="yes">Next</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
+                    <property name="receives_default">False</property>
                     <property name="halign">end</property>
                     <style>
                       <class name="assistant-button"/>
@@ -121,7 +122,7 @@
                     <property name="label" translatable="yes">Prev</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
+                    <property name="receives_default">False</property>
                     <property name="halign">start</property>
                     <style>
                       <class name="assistant-button"/>
