@@ -24,9 +24,9 @@
 #include "splash-window.h"
 #include "greeter-page-manager.h"
 
-#define MODE_ONLINE_STRING  "ONLINE"
-#define MODE_OFFLINE_STRING "OFFLINE"
-#define MODE_SAVE_FILE_PATH "/var/tmp/lightdm.mode"
+#define MODE_EXTERNAL_STRING  "EXTERNAL"
+#define MODE_INTERNAL_STRING  "INTERNAL"
+#define MODE_SAVE_FILE_PATH   "/var/tmp/lightdm.mode"
 
 enum {
 	GO_NEXT,
@@ -34,11 +34,22 @@ enum {
 	LAST_SIGNAL
 };
 
+//enum
+//{
+//    PROP_0,
+//    PROP_NETWORK_AVAILABLE,
+//    PROP_LAST,
+//};
+
 static guint signals[LAST_SIGNAL];
+//static GParamSpec *obj_props[PROP_LAST];
 
 
 struct _GreeterPageManagerPrivate {
 	SplashWindow *splash;
+
+	gboolean      network_available;
+	gboolean      is_vpn_logined;
 
 	int           mode;
 };
@@ -72,7 +83,9 @@ greeter_page_manager_init (GreeterPageManager *manager)
 {
 	manager->priv = greeter_page_manager_get_instance_private (manager);
 
-	manager->priv->mode = MODE_ONLINE;
+	manager->priv->mode = MODE_INTERNAL;
+	manager->priv->network_available = FALSE;
+	manager->priv->is_vpn_logined = FALSE;
 }
 
 static void
@@ -81,6 +94,11 @@ greeter_page_manager_class_init (GreeterPageManagerClass *klass)
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
 	object_class->finalize = greeter_page_manager_finalize;
+
+//	obj_props[PROP_NETWORK_AVAILABLE] =
+//		g_param_spec_boolean ("network-available", "", "", FALSE,
+//				G_PARAM_STATIC_STRINGS | G_PARAM_READWRITE);
+
 
 	signals[GO_NEXT] = g_signal_new ("go-next",
                                      GREETER_TYPE_PAGE_MANAGER,
@@ -116,7 +134,7 @@ greeter_page_manager_set_mode (GreeterPageManager *manager,
 	GError *error = NULL;
 	const char *contents;
 
-	contents = (mode == MODE_ONLINE) ? MODE_ONLINE_STRING : MODE_OFFLINE_STRING;
+	contents = (mode == MODE_INTERNAL) ? MODE_INTERNAL_STRING : MODE_EXTERNAL_STRING;
 
 	g_file_set_contents (MODE_SAVE_FILE_PATH, contents, -1, &error);
 	if (error) {
@@ -147,12 +165,40 @@ greeter_page_manager_get_mode (GreeterPageManager *manager)
 			contents[i] = '\0';
 	}
 
-	mode = g_str_equal (contents, MODE_ONLINE_STRING) ? MODE_ONLINE : MODE_OFFLINE;
+	mode = g_str_equal (contents, MODE_INTERNAL_STRING) ? MODE_INTERNAL : MODE_EXTERNAL;
 
 out:
 	g_free (contents);
 
 	return mode;
+}
+
+void
+greeter_page_manager_set_is_vpn_logined (GreeterPageManager *manager,
+                                         gboolean            is_logined)
+{
+	manager->priv->is_vpn_logined = is_logined;
+}
+
+gboolean
+greeter_page_manager_get_is_vpn_logined (GreeterPageManager *manager)
+{
+	return manager->priv->is_vpn_logined;
+}
+
+void
+greeter_page_manager_set_network_available (GreeterPageManager *manager,
+                                            gboolean            available)
+{
+	manager->priv->network_available = available;
+
+//	g_object_notify_by_pspec (G_OBJECT (manager), obj_props[PROP_NETWORK_AVAILABLE]);
+}
+
+gboolean
+greeter_page_manager_get_network_available (GreeterPageManager *manager)
+{
+	return manager->priv->network_available;
 }
 
 void
@@ -170,19 +216,16 @@ greeter_page_manager_go_first (GreeterPageManager *manager)
 void
 greeter_page_manager_show_splash (GreeterPageManager *manager,
                                   GtkWidget          *parent,
-                                  const char         *message)
+                                  const char         *message,
+                                  const char         *theme)
 {
-//	GdkRectangle geometry;
 	GreeterPageManagerPrivate *priv = manager->priv;
-
-//	get_monitor_geometry (parent, &geometry);
 
 	greeter_page_manager_hide_splash (manager);
 
 	priv->splash = splash_window_new (GTK_WINDOW (parent));
-//	gtk_widget_set_size_request (GTK_WIDGET (priv->splash), geometry.width, geometry.height);
-//	gtk_window_move (GTK_WINDOW (priv->splash), geometry.x, geometry.y);
 	splash_window_set_message_label (SPLASH_WINDOW (priv->splash), message);
+	splash_window_set_theme (SPLASH_WINDOW (priv->splash), theme);
 
 	splash_window_show (priv->splash);
 }

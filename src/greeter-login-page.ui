@@ -7,115 +7,29 @@
   <object class="GtkBox">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="valign">start</property>
     <property name="orientation">vertical</property>
-    <property name="spacing">30</property>
-    <child>
-      <object class="GtkLabel">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="label" translatable="yes">Proceed with system login. When operating in online mode, use an online account, and when operating in offline mode, use a local account.</property>
-        <property name="wrap">True</property>
-        <property name="ellipsize">end</property>
-        <property name="width_chars">0</property>
-        <property name="max_width_chars">0</property>
-        <property name="lines">4</property>
-        <property name="xalign">0</property>
-        <style>
-          <class name="dim-label"/>
-          <class name="subtitle-label"/>
-        </style>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">0</property>
-      </packing>
-    </child>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="valign">start</property>
         <property name="orientation">vertical</property>
-        <property name="spacing">16</property>
+        <property name="spacing">10</property>
         <child>
-          <object class="GtkBox" id="box8">
+          <object class="GtkEntry" id="id_entry">
+            <property name="width_request">256</property>
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="halign">start</property>
-            <property name="orientation">vertical</property>
-            <property name="spacing">12</property>
-            <child>
-              <object class="GtkEntry" id="id_entry">
-                <property name="height_request">34</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="has_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="max_length">32</property>
-                <property name="invisible_char">●</property>
-                <property name="width_chars">40</property>
-                <property name="max_width_chars">32</property>
-                <property name="primary_icon_activatable">False</property>
-                <property name="secondary_icon_activatable">False</property>
-                <property name="placeholder_text" translatable="yes">Enter your username</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkOverlay">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <child>
-                  <object class="GtkEntry" id="pw_entry">
-                    <property name="height_request">34</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="max_length">32</property>
-                    <property name="visibility">False</property>
-                    <property name="invisible_char">●</property>
-                    <property name="width_chars">40</property>
-                    <property name="max_width_chars">32</property>
-                    <property name="primary_icon_activatable">False</property>
-                    <property name="placeholder_text" translatable="yes">Enter your password</property>
-                  </object>
-                  <packing>
-                    <property name="index">-1</property>
-                  </packing>
-                </child>
-                <child type="overlay">
-                  <object class="GtkButton" id="login_button">
-                    <property name="name">login_button</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="halign">end</property>
-                    <child>
-                      <object class="GtkImage" id="login_button_icon">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                      </object>
-                    </child>
-                    <style>
-                      <class name="login-button"/>
-                      <class name="suggested-action"/>
-                    </style>
-                  </object>
-                  <packing>
-                    <property name="pass_through">True</property>
-                  </packing>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
+            <property name="can_focus">True</property>
+            <property name="has_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="invisible_char">●</property>
+            <property name="primary_icon_name">entry-username-symbolic</property>
+            <property name="primary_icon_activatable">False</property>
+            <property name="secondary_icon_activatable">False</property>
+            <property name="placeholder_text" translatable="yes">Enter your username</property>
+            <style>
+              <class name="login-entry"/>
+            </style>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -124,10 +38,55 @@
           </packing>
         </child>
         <child>
+          <object class="GtkEntry" id="pw_entry">
+            <property name="width_request">256</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="visibility">False</property>
+            <property name="invisible_char">●</property>
+            <property name="primary_icon_name">entry-password-symbolic</property>
+            <property name="primary_icon_activatable">False</property>
+            <property name="placeholder_text" translatable="yes">Enter your password</property>
+            <style>
+              <class name="login-entry"/>
+            </style>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="login_button">
+            <property name="name">login_button</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="margin_top">8</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Login</property>
+              </object>
+            </child>
+            <style>
+              <class name="login-button"/>
+              <class name="suggested-action"/>
+            </style>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
           <object class="GtkInfoBar" id="infobar">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="valign">start</property>
+            <property name="margin_top">12</property>
             <child internal-child="action_area">
               <object class="GtkButtonBox">
                 <property name="can_focus">False</property>
@@ -185,14 +144,14 @@
           <packing>
             <property name="expand">True</property>
             <property name="fill">True</property>
-            <property name="position">1</property>
+            <property name="position">3</property>
           </packing>
         </child>
       </object>
       <packing>
         <property name="expand">True</property>
         <property name="fill">True</property>
-        <property name="position">1</property>
+        <property name="position">0</property>
       </packing>
     </child>
   </object>

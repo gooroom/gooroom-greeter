@@ -5,7 +5,6 @@
 		<file preprocess="xml-stripblanks">greeter-assistant.ui</file>
 		<file preprocess="xml-stripblanks">greeter-mode-page.ui</file>
 		<file preprocess="xml-stripblanks">greeter-network-page.ui</file>
-		<file preprocess="xml-stripblanks">greeter-vpn-page.ui</file>
 		<file preprocess="xml-stripblanks">greeter-login-page.ui</file>
 		<file preprocess="xml-stripblanks">splash-window.ui</file>
 		<file preprocess="xml-stripblanks">greeter-message-dialog.ui</file>
@@ -17,10 +16,9 @@
     </gresource>
 
 	<gresource prefix="/kr/gooroom/greeter">
-        <file alias="arrow.png">../data/images/arrow.png</file>
-        <file alias="password.png">../data/images/password.png</file>
-        <file alias="username.png">../data/images/username.png</file>
+        <file alias="call">../data/images/call.svg</file>
+        <file alias="help">../data/images/help.svg</file>
         <file alias="logo">../data/images/logo.svg</file>
-        <file alias="gooroom-greeter-bg.jpg">../data/images/gooroom-greeter-bg.jpg</file>
+        <file alias="brand">../data/images/brand.svg</file>
 	</gresource>
 </gresources>

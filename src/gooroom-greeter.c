@@ -60,6 +60,7 @@
 
 /* Screen window */
 static GtkWidget *main_box;
+static GtkWidget *assistant_box;
 /* Assistant */
 static GtkWidget *assistant;
 /* Panel */
@@ -783,35 +784,32 @@ sigterm_cb (gpointer user_data)
     }
 }
 
-static void
-assistant_realize_cb (GtkWidget *widget,
-                      gpointer   user_data)
-{
-	GdkMonitor *m;
-	GdkRectangle geometry;
-	gint panel_height = 0, pref_w = 0, pref_h = 0;
-
-	GreeterAssistant *assistant = GREETER_ASSISTANT (widget);
-
-	m = gdk_display_get_primary_monitor (gdk_display_get_default ());
-
-	gdk_monitor_get_geometry (m, &geometry);
-
-	gtk_widget_get_preferred_height (panel_box, NULL, &panel_height);
-	gtk_widget_get_preferred_height (GTK_WIDGET (assistant), NULL, &pref_h);
-	gtk_widget_get_preferred_width (GTK_WIDGET (assistant), NULL, &pref_w);
-
-	int max_width = geometry.width;
-	int max_height = geometry.height - panel_height;
-
-	pref_w = (pref_w > max_width) ? max_width : pref_w;
-	pref_h = (pref_h > max_height) ? max_height : pref_h;
-
-	gtk_widget_set_size_request (GTK_WIDGET (assistant), pref_w, pref_h);
-
-	g_debug ("preferred width = %d", pref_w);
-	g_debug ("preferred height = %d", pref_h);
-}
+//static void
+//assistant_realize_cb (GtkWidget *widget,
+//                      gpointer   user_data)
+//{
+//	GdkMonitor *m;
+//	GdkRectangle geometry;
+//	gint panel_height = 0, pref_w = 0, pref_h = 0;
+//
+//	GreeterAssistant *assistant = GREETER_ASSISTANT (widget);
+//
+//	m = gdk_display_get_primary_monitor (gdk_display_get_default ());
+//
+//	gdk_monitor_get_geometry (m, &geometry);
+//
+//	gtk_widget_get_preferred_height (panel_box, NULL, &panel_height);
+//	gtk_widget_get_preferred_height (GTK_WIDGET (assistant), NULL, &pref_h);
+//	gtk_widget_get_preferred_width (GTK_WIDGET (assistant), NULL, &pref_w);
+//
+//	int max_width = geometry.width;
+//	int max_height = geometry.height - panel_height;
+//
+//	pref_w = (pref_w > max_width) ? max_width : pref_w;
+//	pref_h = (pref_h > max_height) ? max_height : pref_h;
+//
+//	gtk_widget_set_size_request (GTK_WIDGET (assistant), pref_w, pref_h);
+//}
 
 static void
 apply_gtk_config (void)
@@ -937,6 +935,7 @@ main (int argc, char **argv)
 
 	/* main box */
 	main_box = GTK_WIDGET (gtk_builder_get_object (builder, "main_box"));
+	assistant_box = GTK_WIDGET (gtk_builder_get_object (builder, "assistant_box"));
 	/* bottom panel */
 	panel_box = GTK_WIDGET (gtk_builder_get_object (builder, "panel_box"));
 	/* indicator box in panel */
@@ -955,9 +954,9 @@ main (int argc, char **argv)
 	gtk_widget_set_halign (assistant, GTK_ALIGN_CENTER);
 	gtk_widget_set_valign (assistant, GTK_ALIGN_CENTER);
 
-	gtk_box_pack_start (GTK_BOX (main_box), assistant, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (assistant_box), assistant, TRUE, TRUE, 0);
 
-	g_signal_connect (G_OBJECT (assistant), "realize", G_CALLBACK (assistant_realize_cb), NULL);
+//	g_signal_connect (G_OBJECT (assistant), "realize", G_CALLBACK (assistant_realize_cb), NULL);
 
 	clock_format = config_get_string (NULL, CONFIG_KEY_CLOCK_FORMAT, "%F      %p %I:%M");
 

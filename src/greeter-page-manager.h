@@ -37,8 +37,8 @@ typedef struct _GreeterPageManagerPrivate GreeterPageManagerPrivate;
 
 enum
 {
-	MODE_ONLINE = 0,
-	MODE_OFFLINE
+	MODE_INTERNAL = 0,
+	MODE_EXTERNAL
 };
 
 struct _GreeterPageManager
@@ -65,12 +65,21 @@ int                 greeter_page_manager_get_mode     (GreeterPageManager *manag
 void                greeter_page_manager_set_mode     (GreeterPageManager *manager,
                                                        int                 mode);
 
+void                greeter_page_manager_set_is_vpn_logined (GreeterPageManager *manager,
+                                                             gboolean            success);
+gboolean            greeter_page_manager_get_is_vpn_logined (GreeterPageManager *manager);
+
+void                greeter_page_manager_set_network_available (GreeterPageManager *manager,
+                                                                gboolean            available);
+gboolean            greeter_page_manager_get_network_available (GreeterPageManager *manager);
+
 void                greeter_page_manager_go_next      (GreeterPageManager *manager);
 void                greeter_page_manager_go_first     (GreeterPageManager *manager);
 
 void                greeter_page_manager_show_splash  (GreeterPageManager *manager,
                                                        GtkWidget          *parent,
-                                                       const char         *message);
+                                                       const char         *message,
+                                                       const char         *theme);
 void                greeter_page_manager_hide_splash  (GreeterPageManager *manager);
 
 

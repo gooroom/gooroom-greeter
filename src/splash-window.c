@@ -27,6 +27,7 @@
 
 struct _SplashWindowPrivate
 {
+	GtkWidget *main_box;
 	GtkWidget *message_label;
 	GtkWidget *spinner;
 };
@@ -36,19 +37,6 @@ struct _SplashWindowPrivate
 G_DEFINE_TYPE_WITH_PRIVATE (SplashWindow, splash_window, GTK_TYPE_WINDOW);
 
 
-//static gboolean
-//splash_window_draw (GtkWidget *widget,
-//                    cairo_t   *cr)
-//{
-//	cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
-//	cairo_set_source_rgba (cr, 255, 0.0, 0.0, 0.1); /* transparent */
-//	cairo_paint (cr);
-//
-//	if (GTK_WIDGET_CLASS (splash_window_parent_class)->draw)
-//		return GTK_WIDGET_CLASS (splash_window_parent_class)->draw (widget, cr);
-//
-//	return FALSE;
-//}
 
 static void
 splash_window_finalize (GObject *object)
@@ -66,8 +54,6 @@ splash_window_init (SplashWindow *window)
 	gtk_window_set_decorated (GTK_WINDOW (window), FALSE);
 	gtk_window_set_skip_taskbar_hint (GTK_WINDOW (window), TRUE);
 	gtk_window_set_skip_pager_hint (GTK_WINDOW (window), TRUE);
-//	gtk_window_set_keep_above (GTK_WINDOW (window), TRUE);
-//	gtk_window_fullscreen (GTK_WINDOW (window));
 	gtk_widget_set_app_paintable (GTK_WIDGET (window), TRUE);
 
 	GdkScreen *screen = gtk_window_get_screen (GTK_WINDOW (window));
@@ -84,19 +70,15 @@ static void
 splash_window_class_init (SplashWindowClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-//	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
 	gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass),
                                                  "/kr/gooroom/greeter/splash-window.ui");
 
 	object_class->finalize = splash_window_finalize;
 
-//	widget_class->draw = splash_window_draw;
-
-	gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass),
-                                                  SplashWindow, message_label);
-	gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass),
-                                                  SplashWindow, spinner);
+	gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), SplashWindow, main_box);
+	gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), SplashWindow, message_label);
+	gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), SplashWindow, spinner);
 }
 
 
@@ -107,7 +89,6 @@ splash_window_new (GtkWindow *parent)
 
 	result = g_object_new (SPLASH_TYPE_WINDOW,
                            "transient-for", parent,
-//                           "type", GTK_WINDOW_POPUP,
                            NULL);
 
 	return SPLASH_WINDOW (result);
@@ -143,5 +124,27 @@ splash_window_set_message_label (SplashWindow *window,
 		gtk_label_set_text (GTK_LABEL (priv->message_label), message);
 	} else {
 		gtk_label_set_text (GTK_LABEL (priv->message_label), "");
+	}
+}
+
+void
+splash_window_set_theme (SplashWindow *window,
+                         const char   *theme)
+{
+	GtkStyleContext *style_box;
+	SplashWindowPrivate *priv = window->priv;
+
+	style_box = gtk_widget_get_style_context (GTK_WIDGET (priv->main_box));
+
+	if (theme) {
+		gtk_style_context_add_class (style_box, theme);
+		if (g_str_equal (theme, "internal")) {
+			gtk_style_context_remove_class (style_box, "external");
+		} else {
+			gtk_style_context_remove_class (style_box, "internal");
+		}
+	} else {
+		gtk_style_context_remove_class (style_box, "internal");
+		gtk_style_context_remove_class (style_box, "external");
 	}
 }

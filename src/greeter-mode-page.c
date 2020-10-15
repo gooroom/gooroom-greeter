@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2015-2020 Gooroom <gooroom@gooroom.kr>
  * Copyright (C) 2012 Red Hat
  *
  * This program is free software; you can redistribute it and/or
@@ -16,66 +17,66 @@
  *
  */
 
-#define PAGE_ID "mode"
-
-#include "config.h"
-#include "greeter-mode-page.h"
-#include "greeter-message-dialog.h"
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 
+#include "greeter-mode-page.h"
+#include "greeter-message-dialog.h"
+
+#define PAGE_ID "STEP 1"
 
 struct _GreeterModePagePrivate {
-	GtkWidget *on_button;
-	GtkWidget *off_button;
+	GtkWidget *mode_internal_button;
+	GtkWidget *mode_external_button;
+	GtkWidget *forward_button;
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (GreeterModePage, greeter_mode_page, GREETER_TYPE_PAGE);
 
 
-static void
-set_networking_enable (void)
-{
-	g_spawn_command_line_sync ("/usr/bin/nmcli networking on", NULL, NULL, NULL, NULL);
-
-#if 0
-	gchar *cmd;
-
-	cmd = g_strdup_printf ("%s --action on", GREETER_NETWORK_CONTROL_HELPER);
-	g_spawn_command_line_sync (cmd, NULL, NULL, NULL, NULL);
-	g_free (cmd);
-#endif
-
-
-#if 0
-	gboolean ret;
-    GError *error = NULL;
-    NMClient *nm_client = NULL;
-
-    nm_client = nm_client_new (NULL, &error);
-
-	ret = nm_client_networking_get_enabled (nm_client);
-
-	g_clear_object (&nm_client);
-#endif
-}
+//static void
+//set_networking_enable (gboolean enabled)
+//{
+//	gchar *cmd = NULL;
+//	const gchar *on_off;
+//
+//	on_off = enabled ? "on" : "off";
+//
+//	cmd = g_strdup_printf ("/usr/bin/nmcli networking %s", on_off);
+//
+//	g_spawn_command_line_sync (cmd, NULL, NULL, NULL, NULL);
+//
+//	g_free (cmd);
+//}
 
 static void
 mode_button_toggled_cb (GtkToggleButton *button,
                         gpointer         user_data)
 {
-	int mode = MODE_OFFLINE;
+	int mode = MODE_EXTERNAL;
 	GreeterModePage *page = GREETER_MODE_PAGE (user_data);
 	GreeterPageManager *manager = GREETER_PAGE (page)->manager;
 
 	if (!gtk_toggle_button_get_active (button))
 		return;
 
-	if (GTK_WIDGET (button) == page->priv->on_button)
-		mode = MODE_ONLINE;
+	if (GTK_WIDGET (button) == page->priv->mode_internal_button)
+		mode = MODE_INTERNAL;
 
 	greeter_page_manager_set_mode (manager, mode);
+}
+
+static void
+forward_button_clicked_cb (GtkWidget *button,
+                           gpointer   user_data)
+{
+//	set_networking_enable (TRUE);
+
+	greeter_page_manager_go_next (GREETER_PAGE (user_data)->manager);
 }
 
 static void
@@ -84,24 +85,18 @@ greeter_mode_page_finalize (GObject *object)
 	G_OBJECT_CLASS (greeter_mode_page_parent_class)->finalize (object);
 }
 
-//static void
-//greeter_mode_page_out (GreeterPage *page,
-//                       gboolean     next)
-//{
-//	if (!next)
-//		return;
-//
-//	set_networking_enable (greeter_page_manager_get_mode (page->manager) == MODE_ONLINE);
-//}
-
 static void
 greeter_mode_page_shown (GreeterPage *page)
 {
 	GreeterModePage *self = GREETER_MODE_PAGE (page);
 
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->priv->on_button), TRUE);
+//	set_networking_enable (FALSE);
 
-	greeter_page_manager_set_mode (page->manager, MODE_ONLINE);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->priv->mode_internal_button), TRUE);
+
+	greeter_page_manager_set_mode (page->manager, MODE_INTERNAL);
+
+	gtk_widget_grab_focus (self->priv->forward_button);
 }
 
 static gboolean
@@ -126,13 +121,13 @@ greeter_mode_page_should_show (GreeterPage *page)
 //	if ((event->keyval == GDK_KEY_Up || event->keyval == GDK_KEY_Down)) {
 //		GtkWidget *active_button = NULL;
 //		if (event->keyval == GDK_KEY_Up &&
-//            !gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->on_button))) {
-//			active_button = priv->on_button;
+//            !gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->mode_internal_button))) {
+//			active_button = priv->mode_internal_button;
 //		}
 //
 //		if (event->keyval == GDK_KEY_Down &&
-//            !gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->off_button))) {
-//			active_button = priv->off_button;
+//            !gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->mode_external_button))) {
+//			active_button = priv->mode_external_button;
 //		}
 //
 //		if (active_button)
@@ -153,15 +148,16 @@ greeter_mode_page_init (GreeterModePage *page)
 
 	gtk_widget_init_template (GTK_WIDGET (page));
 
-	greeter_page_set_title (GREETER_PAGE (page), _("System operation mode setting"));
+	greeter_page_set_title (GREETER_PAGE (page), _("Selecting Connection Environment"));
 
-	g_signal_connect (G_OBJECT (priv->on_button), "toggled",
+	g_signal_connect (G_OBJECT (priv->mode_internal_button), "toggled",
                       G_CALLBACK (mode_button_toggled_cb), page);
 
-	g_signal_connect (G_OBJECT (priv->off_button), "toggled",
+	g_signal_connect (G_OBJECT (priv->mode_external_button), "toggled",
                       G_CALLBACK (mode_button_toggled_cb), page);
 
-	set_networking_enable ();
+	g_signal_connect (G_OBJECT (priv->forward_button), "clicked",
+                      G_CALLBACK (forward_button_clicked_cb), page);
 
 	greeter_page_set_complete (GREETER_PAGE (page), TRUE);
 
@@ -172,22 +168,18 @@ static void
 greeter_mode_page_class_init (GreeterModePageClass *klass)
 {
 	GreeterPageClass *page_class = GREETER_PAGE_CLASS (klass);
-//	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-
 
 	gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass),
                                                  "/kr/gooroom/greeter/greeter-mode-page.ui");
 
-	gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GreeterModePage, on_button);
-	gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GreeterModePage, off_button);
+	gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GreeterModePage, mode_internal_button);
+	gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GreeterModePage, mode_external_button);
+	gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GreeterModePage, forward_button);
 
 	page_class->page_id = PAGE_ID;
-//	page_class->out = greeter_mode_page_out;
 	page_class->shown = greeter_mode_page_shown;
 	page_class->should_show = greeter_mode_page_should_show;
-
-//	widget_class->key_press_event = greeter_mode_page_key_press_event;
 
 	object_class->finalize = greeter_mode_page_finalize;
 }

@@ -54,6 +54,8 @@ void           splash_window_show              (SplashWindow *window);
 void           splash_window_destroy           (SplashWindow *window);
 void           splash_window_set_message_label (SplashWindow *window,
                                                 const char   *message);
+void           splash_window_set_theme         (SplashWindow *window,
+                                                const char   *theme);
 
 G_END_DECLS
 

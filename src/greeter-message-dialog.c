@@ -85,12 +85,9 @@ greeter_message_dialog_class_init (GreeterMessageDialogClass *klass)
 	gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass),
                                                  "/kr/gooroom/greeter/greeter-message-dialog.ui");
 
-	gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass),
-                                                  GreeterMessageDialog, icon_image);
-	gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass),
-                                                 GreeterMessageDialog, title_label);
-	gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass),
-                                                 GreeterMessageDialog, message_label);
+	gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GreeterMessageDialog, icon_image);
+	gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GreeterMessageDialog, title_label);
+	gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GreeterMessageDialog, message_label);
 }
 
 GtkWidget *

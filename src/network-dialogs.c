@@ -1,5 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
- *
+/*
  * Copyright (C) 2011 Giovanni Campagna <scampa.giovanni@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify

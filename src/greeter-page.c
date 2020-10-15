@@ -192,10 +192,6 @@ greeter_page_class_init (GreeterPageClass *klass)
 static void
 greeter_page_init (GreeterPage *page)
 {
-//	gtk_widget_set_margin_start (GTK_WIDGET (page), 10);
-//	gtk_widget_set_margin_top (GTK_WIDGET (page), 10);
-//	gtk_widget_set_margin_bottom (GTK_WIDGET (page), 10);
-//	gtk_widget_set_margin_end (GTK_WIDGET (page), 10);
 }
 
 char *
