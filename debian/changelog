@@ -1,3 +1,11 @@
+gooroom-greeter (0.2.6+grm2u1+mofa01) unstable; urgency=medium
+
+  [ cjheo ]
+  * [c92d1543] Initial Release on mofa-2.0
+  * [86c555f2] Update functions #1 VPN 패스워드 변경 기능 추가 (Uploaded patch set 8)
+
+ -- Gooroom Autobuilder <jenkins@gooroom.kr>  Tue, 08 Dec 2020 17:34:20 +0900
+
 gooroom-greeter (0.2.6+grm2u1) unstable; urgency=medium
 
   [ cjheo ]
