@@ -1,3 +1,11 @@
+gooroom-greeter (0.2.6+grm2u1+mofa02) unstable; urgency=medium
+
+  [ cjheo ]
+  * [ec41d35d] Greeter에서 VPN 패스워드를 강제로 바꿀수 있도록
+               하는 파일(/var/lib/lightdm/chpasswd-force) 추가
+
+ -- Gooroom Autobuilder <jenkins@gooroom.kr>  Wed, 09 Dec 2020 17:40:59 +0900
+
 gooroom-greeter (0.2.6+grm2u1+mofa01) unstable; urgency=medium
 
   [ cjheo ]
