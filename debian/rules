@@ -13,6 +13,4 @@ override_dh_auto_configure:
 override_dh_fixperms:
 	dh_fixperms
 
-	find debian -name 'greeter-network-control-helper' -exec chown root {} \;
-	find debian -name 'greeter-network-control-helper' -exec chmod +s {} \;
-
+	find debian -name 'chpasswd-force' -exec chown lightdm:lightdm {} \;

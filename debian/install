@@ -1,1 +1,2 @@
 debian/50_gooroom-greeter.pkla /var/lib/polkit-1/localauthority/10-vendor.d/
+debian/chpasswd-force /var/lib/lightdm

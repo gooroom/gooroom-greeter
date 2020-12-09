@@ -26,8 +26,9 @@
 #include "greeter-message-dialog.h"
 #include "greeter-vpn-passwd-dialog.h"
 
-#include <glib/gi18n.h>
 #include <gio/gio.h>
+#include <glib/gstdio.h>
+#include <glib/gi18n.h>
 
 
 #define VPN_LOGIN_TIMEOUT_SECS 60
@@ -35,6 +36,8 @@
 #define VPN_SERVICE_NAME      "kr.gooroom.VPN"
 #define VPN_SERVICE_PATH      "/kr/gooroom/VPN"
 #define VPN_SERVICE_INTERFACE "kr.gooroom.VPN"
+
+#define CHPASSWD_FORCE_FILE   "/var/lib/lightdm/chpasswd-force"
 
 enum {
 	VPN_LOGIN_FAILURE               = 1001,
@@ -60,6 +63,7 @@ enum {
 };
 
 
+static gboolean try_to_logout (GreeterVPNPage *page);
 static void login_button_clicked_cb (GtkButton *button, gpointer user_data);
 static gboolean show_password_change_dialog (gpointer user_data);
 
@@ -302,6 +306,12 @@ handle_result (GreeterVPNPage *page,
 	{
 		case VPN_LOGIN_SUCCESS:
 		{
+			// 패스워드 변경창 강제로 팝업
+			if (g_file_test (CHPASSWD_FORCE_FILE, G_FILE_TEST_EXISTS)) {
+				g_idle_add ((GSourceFunc)show_password_change_dialog, page);
+				break;
+			}
+
 			priv->login_success = TRUE;
 			show_message_dialog (page,
                              "dialog-information-symbolic",
@@ -326,6 +336,14 @@ handle_result (GreeterVPNPage *page,
                                  _("Success Of Changing VPN Password"),
                                  _("You have completed the password change.\n"
                                    "Please login again after clicking the 'OK' button."));
+
+			if (g_file_test (CHPASSWD_FORCE_FILE, G_FILE_TEST_EXISTS)) {
+				// 패스워드 변경 완료 시 패스워드 변경창 강제 팝업용 파일 삭제
+				g_remove (CHPASSWD_FORCE_FILE);
+
+				try_to_logout (page);
+			}
+
 			gtk_widget_grab_focus (priv->id_entry);
 		}
 		break;
@@ -578,6 +596,10 @@ show_password_change_dialog (gpointer user_data)
                              _("Cancelling VPN Password Change"),
                              _("The password change has been cancelled.\n"
                                "Please be sure to change your password for VPN access."));
+
+		if (g_file_test (CHPASSWD_FORCE_FILE, G_FILE_TEST_EXISTS))
+			try_to_logout (page);
+
 		gtk_widget_grab_focus (priv->id_entry);
 		goto fail;
 	}
