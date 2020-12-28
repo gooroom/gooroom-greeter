@@ -39,6 +39,7 @@ struct _GreeterAssistantPrivate {
 	GtkWidget *first;
 	GtkWidget *forward;
 	GtkWidget *backward;
+	GtkWidget *step;
 	GtkWidget *title;
 	GtkWidget *logo_image;
 
@@ -225,6 +226,32 @@ update_current_page (GreeterAssistant *assistant,
 }
 
 static void
+update_step (GreeterAssistant *assistant)
+{
+	int idx = 1, steps = 0;
+	GtkWidget *cur_page = NULL;
+	GreeterAssistantPrivate *priv = assistant->priv;
+
+	cur_page = gtk_stack_get_visible_child (GTK_STACK (priv->stack));
+	if (!cur_page)
+		return;
+
+	GList *l = g_list_first (priv->pages);
+	for (; l; l = l->next) {
+		GreeterPage *page = GREETER_PAGE (l->data);
+		if (greeter_page_should_show (page)) {
+			++steps;
+			if (page == GREETER_PAGE (cur_page))
+				idx = steps;
+		}
+	}
+
+	gchar *text = g_strdup_printf ("%d%s / %d", idx, _("Step"), steps);
+	gtk_label_set_text (GTK_LABEL (priv->step), text);
+	g_free (text);
+}
+
+static void
 go_first_button_cb (GtkWidget *button,
                     gpointer   user_data)
 {
@@ -304,10 +331,16 @@ current_page_changed_cb (GObject    *gobject,
                          GParamSpec *pspec,
                          gpointer    user_data)
 {
+	GtkWidget *new_page = NULL;
 	GreeterAssistant *assistant = GREETER_ASSISTANT (user_data);
-	GtkWidget *new_page = gtk_stack_get_visible_child (GTK_STACK (gobject));
+
+	new_page = gtk_stack_get_visible_child (GTK_STACK (gobject));
+	if (!new_page)
+		return;
 
 	update_current_page (assistant, GREETER_PAGE (new_page));
+
+	update_step (assistant);
 }
 
 static gboolean
@@ -318,6 +351,14 @@ change_current_page_idle (gpointer user_data)
 	current_page_changed_cb (G_OBJECT (assistant->priv->stack), NULL, assistant);
 
 	return FALSE;
+}
+
+static void
+mode_changed_cb (GreeterPageManager *manager,
+                 int                 mode,
+                 gpointer            user_data)
+{
+	update_step (GREETER_ASSISTANT (user_data));
 }
 
 static void
@@ -403,6 +444,7 @@ greeter_assistant_init (GreeterAssistant *assistant)
 
 	g_signal_connect (priv->manager, "go-next", G_CALLBACK (go_next_page_cb), assistant);
 	g_signal_connect (priv->manager, "go-first", G_CALLBACK (go_first_page_cb), assistant);
+	g_signal_connect (priv->manager, "mode-changed", G_CALLBACK (mode_changed_cb), assistant);
 
 	g_signal_connect (priv->stack, "notify::visible-child",
                       G_CALLBACK (current_page_changed_cb), assistant);
@@ -418,10 +460,8 @@ static void
 greeter_assistant_class_init (GreeterAssistantClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-//	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
 	gobject_class->finalize = greeter_assistant_finalize;
-//	widget_class->realize = greeter_assistant_realize;
 
 	gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass),
                                                  "/kr/gooroom/greeter/greeter-assistant.ui");
@@ -431,6 +471,7 @@ greeter_assistant_class_init (GreeterAssistantClass *klass)
 	gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GreeterAssistant, forward);
 	gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GreeterAssistant, backward);
 	gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GreeterAssistant, title);
+	gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GreeterAssistant, step);
 	gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GreeterAssistant, logo_image);
 }
 

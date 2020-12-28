@@ -52,8 +52,9 @@ struct _GreeterPageManagerClass
 {
 	GObjectClass __parent_class__;
 
-	void (*go_next)  (GreeterPageManager *manager);
-	void (*go_first) (GreeterPageManager *manager);
+	void (*go_next)      (GreeterPageManager *manager);
+	void (*go_first)     (GreeterPageManager *manager);
+	void (*mode_changed) (GreeterPageManager *manager, int mode);
 };
 
 
@@ -72,6 +73,10 @@ void                greeter_page_manager_show_splash  (GreeterPageManager *manag
                                                        GtkWidget          *parent,
                                                        const char         *message);
 void                greeter_page_manager_hide_splash  (GreeterPageManager *manager);
+
+void                greeter_page_manager_update_splash_message (GreeterPageManager *manager,
+                                                                const char         *message);
+
 
 
 G_END_DECLS

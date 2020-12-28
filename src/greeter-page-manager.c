@@ -31,6 +31,7 @@
 enum {
 	GO_NEXT,
 	GO_FIRST,
+	MODE_CHANGED,
 	LAST_SIGNAL
 };
 
@@ -46,20 +47,6 @@ struct _GreeterPageManagerPrivate {
 G_DEFINE_TYPE_WITH_PRIVATE (GreeterPageManager, greeter_page_manager, G_TYPE_OBJECT)
 
 
-//static void
-//get_monitor_geometry (GtkWidget    *widget,
-//                      GdkRectangle *geometry)
-//{
-//	GdkDisplay *d;
-//	GdkWindow  *w;
-//	GdkMonitor *m;
-//
-//	d = gdk_display_get_default ();
-//	w = gtk_widget_get_window (widget);
-//	m = gdk_display_get_monitor_at_window (d, w);
-//
-//	gdk_monitor_get_geometry (m, geometry);
-//}
 
 static void
 greeter_page_manager_finalize (GObject *object)
@@ -97,6 +84,14 @@ greeter_page_manager_class_init (GreeterPageManagerClass *klass)
                                      NULL, NULL,
                                      g_cclosure_marshal_VOID__VOID,
                                      G_TYPE_NONE, 0);
+
+	signals[MODE_CHANGED] = g_signal_new ("mode-changed",
+                                     GREETER_TYPE_PAGE_MANAGER,
+                                     G_SIGNAL_RUN_FIRST,
+                                     G_STRUCT_OFFSET (GreeterPageManagerClass, mode_changed),
+                                     NULL, NULL,
+                                     g_cclosure_marshal_VOID__INT,
+                                     G_TYPE_NONE, 1, G_TYPE_INT);
 }
 
 GreeterPageManager *
@@ -125,6 +120,8 @@ greeter_page_manager_set_mode (GreeterPageManager *manager,
 	}
 
 	manager->priv->mode = mode;
+
+	g_signal_emit (G_OBJECT (manager), signals[MODE_CHANGED], 0, mode);
 }
 
 int
@@ -172,16 +169,11 @@ greeter_page_manager_show_splash (GreeterPageManager *manager,
                                   GtkWidget          *parent,
                                   const char         *message)
 {
-//	GdkRectangle geometry;
 	GreeterPageManagerPrivate *priv = manager->priv;
-
-//	get_monitor_geometry (parent, &geometry);
 
 	greeter_page_manager_hide_splash (manager);
 
 	priv->splash = splash_window_new (GTK_WINDOW (parent));
-//	gtk_widget_set_size_request (GTK_WIDGET (priv->splash), geometry.width, geometry.height);
-//	gtk_window_move (GTK_WINDOW (priv->splash), geometry.x, geometry.y);
 	splash_window_set_message_label (SPLASH_WINDOW (priv->splash), message);
 
 	splash_window_show (priv->splash);
@@ -196,4 +188,14 @@ greeter_page_manager_hide_splash (GreeterPageManager *manager)
 		splash_window_destroy (priv->splash);
 		priv->splash = NULL;
 	}
+}
+
+void
+greeter_page_manager_update_splash_message (GreeterPageManager *manager,
+                                            const char         *message)
+{
+	GreeterPageManagerPrivate *priv = manager->priv;
+
+	if (priv->splash)
+		splash_window_set_message_label (SPLASH_WINDOW (priv->splash), message);
 }

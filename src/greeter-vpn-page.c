@@ -40,26 +40,44 @@
 #define CHPASSWD_FORCE_FILE   "/var/lib/lightdm/chpasswd-force"
 
 enum {
-	VPN_LOGIN_FAILURE               = 1001,
-	VPN_LOGIN_SUCCESS               = 1002,
-	VPN_AUTH_FAILURE                = 1003,
-	VPN_ACCOUNT_LOCKED              = 1004,
-	VPN_ID_EXPIRED                  = 1005,
-	VPN_PW_EXPIRED                  = 1006,
-	VPN_LOGIN_EXPIRED               = 1007,
-	VPN_LOGIN_TIME_BLOCKED          = 1008,
-	VPN_LOGIN_WEEK_BLOCKED          = 1009,
-    VPN_LOGIN_REQUEST_CHPASSWD      = 1010,
-	VPN_LOGIN_CHPASSWD_SUCCESS      = 1011,
-	VPN_LOGIN_CHPASSWD_FAILURE      = 1012,
-	VPN_SERVER_CONNECTION_ERROR     = 1013,
-	VPN_SERVER_RESPONSE_ERROR       = 1014,
-	VPN_SERVER_DISCONNECTED         = 1015,
-	VPN_UNKNOWN_ERROR               = 1016,
-	VPN_SERVICE_DAEMON_ERROR        = 1017,
-	VPN_SERVICE_LOGIN_REQUEST_ERROR = 1018,
-	VPN_SERVICE_INFO_ERROR          = 1019,
-	VPN_SERVICE_TIMEOUT_ERROR       = 1020
+	VPN_LOGIN_SUCCESS                  = 1001,
+	VPN_LOGIN_FAILURE                  = 1002,
+	VPN_LOGIN_ALREADY                  = 1003,
+	VPN_LOGIN_AUTH_FAILURE             = 1004,
+	VPN_LOGIN_PERIOD_EXPIRED           = 1005,
+	VPN_LOGIN_TIME_BLOCKED             = 1006,
+	VPN_LOGIN_WEEK_BLOCKED             = 1007,
+	VPN_LOGIN_PROGRESS_ERROR           = 1008,
+	VPN_ACCOUNT_LOCKED                 = 2001,
+	VPN_ACCOUNT_ID_EXPIRED             = 2002,
+	VPN_ACCOUNT_PW_EXPIRED             = 2003,
+	VPN_ACCOUNT_CHPW_REQUEST           = 2004,
+	VPN_ACCOUNT_CHPW_SUCCESS           = 2005,
+	VPN_ACCOUNT_CHPW_FAILURE           = 2006,
+	VPN_SERVER_CONNECTION_ERROR        = 3001,
+	VPN_SERVER_RESPONSE_ERROR          = 3002,
+	VPN_SERVER_DISCONNECTED            = 3003,
+	VPN_EXECUTION_ERROR                = 4001,
+	VPN_CONFIGURATION_ERROR            = 4002,
+	VPN_AUTH_FAILURE_001               = 5001, // VPNE-5001
+	VPN_AUTH_FAILURE_002               = 5002, // VPNE-5002
+	VPN_AUTH_FAILURE_003               = 5003, // VPNE-5003
+	VPN_AUTH_FAILURE_004               = 5004, // VPNE-5004
+	VPN_AUTH_FAILURE_005               = 5005, // VPNE-5005
+	VPN_AUTH_FAILURE_006               = 5006, // VPNE-5006
+	VPN_AUTH_FAILURE_007               = 5007, // VPNE-5007
+	VPN_AUTH_FAILURE_008               = 5008, // VPNE-5008
+	VPN_AUTH_FAILURE_009               = 5009, // VPNE-5009
+	VPN_AUTH_FAILURE_010               = 5010, // VPNE-5010
+	VPN_AUTH_FAILURE_011               = 5011, // VPNE-5011
+	VPN_AUTH_FAILURE_012               = 5012, // VPNE-5012
+	VPN_AUTH_FAILURE_013               = 5013, // VPNE-5013
+	VPN_UNKNOWN_ERROR                  = 9001,
+	VPN_SERVICE_INFO_ERROR             = 9101,
+	VPN_SERVICE_DAEMON_ERROR           = 9102,
+	VPN_SERVICE_TIMEOUT_ERROR          = 9103,
+	VPN_SERVICE_LOGIN_REQUEST_ERROR    = 9104,
+//	VPN_SERVICE_USERINFO_REQUEST_ERROR = 9105
 };
 
 
@@ -87,6 +105,7 @@ struct _GreeterVPNPagePrivate {
 	gchar      *pw;
 	gchar      *ip;
 	gchar      *port;
+//	gchar      *phone_number;
 
 	GDBusProxy *proxy;
 };
@@ -217,13 +236,77 @@ update_error_message_label (GtkWidget *label, int result)
 			message = NULL;
 		break;
 
+		case VPN_LOGIN_AUTH_FAILURE:
+			message = _("User authentication failed.\n"
+                        "If authentication fails more than 5 times, "
+                        "you can no longer log in.");
+		break;
+
+		case VPN_LOGIN_ALREADY:
+			message = _("You are already logged in.\n"
+                        "Log out of the other device and try again.\n"
+                        "If the problem persists, please contact your administrator.");
+		break;
+
+		case VPN_LOGIN_TIME_BLOCKED:
+			message = _("It is not the VPN connection time.\n"
+                        "Please contact the administrator to check the access time and try again.");
+		break;
+
+		case VPN_LOGIN_WEEK_BLOCKED:
+			message = _("It is not the day of the week for VPN access.\n"
+                        "Please contact the administrator to check the access time and try again.");
+		break;
+
+		case VPN_LOGIN_PERIOD_EXPIRED:
+			message = _("The VPN connection cannot proceed because the login period has been exceeded. "
+                        "Please try again later or contact the administrator.");
+		break;
+
+		case VPN_ACCOUNT_LOCKED:
+			message = _("Login is not possible because user "
+                        "authentication has failed more than 5 times. "
+                        "Please contact the administrator.");
+		break;
+
+		case VPN_ACCOUNT_ID_EXPIRED:
+			message = _("The VPN connection cannot be proceeded due to the ID usage period exceeded. "
+                        "Please try again later or contact the administrator.");
+		break;
+
+		case VPN_ACCOUNT_PW_EXPIRED:
+			message = _("VPN connection cannot be proceeded because the password has expired. "
+                        "Please try again later or contact the administrator.");
+		break;
+
+		case VPN_SERVER_CONNECTION_ERROR:
+			message = _("The server cannot be reached due to network problems.\n"
+                        "Please check the network status and try again.");
+		break;
+
+		case VPN_SERVER_RESPONSE_ERROR:
+			message = _("VPN connection cannot proceed due to a VPN server response error. "
+                        "Please try again later or contact the administrator.");
+		break;
+
+		case VPN_SERVER_DISCONNECTED:
+			message = _("The connection to the server has been lost.\n"
+                        "Check the network status and connect again.");
+		break;
+
+		case VPN_EXECUTION_ERROR:
+			message = _("VPN connection cannot proceed due to VPN execution failure. "
+                        "Please try again later or contact the administrator.");
+		break;
+
+		case VPN_CONFIGURATION_ERROR:
+			message = _("VPN connection cannot proceed due to a VPN setting error. "
+                        "Please try again later or contact the administrator.");
+		break;
+
 		case VPN_SERVICE_DAEMON_ERROR:
 			message = _("An error has occurred in the system's VPN service.\n"
                         "Reboot your system and try again.");
-		break;
-
-		case VPN_SERVICE_LOGIN_REQUEST_ERROR:
-			message = _("VPN login request failed.\nReboot your system and try again.");
 		break;
 
 		case VPN_SERVICE_TIMEOUT_ERROR:
@@ -235,32 +318,26 @@ update_error_message_label (GtkWidget *label, int result)
                         "Check the configuration file and try again.");
 		break;
 
-		case VPN_AUTH_FAILURE:
-			message = _("User authentication failed.\n"
-                        "If authentication fails more than 5 times, "
-                        "you can no longer log in.");
+		case VPN_SERVICE_LOGIN_REQUEST_ERROR:
+			message = _("VPN login request failed.\nReboot your system and try again.");
 		break;
 
-		case VPN_ACCOUNT_LOCKED:
-			message = _("Login is not possible because user "
-                        "authentication has failed more than 5 times.\n"
-                        "Please contact the administrator.");
-		break;
-
-		case VPN_SERVER_CONNECTION_ERROR:
-			message = _("The server cannot be reached due to network problems.\n"
-                        "Please check the network status and try again.");
-		break;
-
-		case VPN_SERVER_DISCONNECTED:
-			message = _("The connection to the server has been lost. "
-                        "Check the network status and connect again.");
-		break;
+//		case VPN_SERVICE_USERINFO_REQUEST_ERROR:
+//			message = _("VPN login request failed.\nReboot your system and try again.");
+//		break;
 
 		default:
-			message = _("Login failed due to an unknown error.\n"
-                        "Please try again later or contact the administrator.");
-		break;
+		{
+			gchar *msg = NULL;
+			msg = g_strdup_printf ("%s [%s: VPNE-%d]\n%s",
+                                   _("Authentication Failure"),
+                                   _("Error Code"),
+                                   result,
+                                   _("Please try again later or contact the administrator."));
+			gtk_label_set_text (GTK_LABEL (label), msg);
+			g_free (msg);
+		}
+		return;
 	}
 
 	if (message)
@@ -314,22 +391,22 @@ handle_result (GreeterVPNPage *page,
 
 			priv->login_success = TRUE;
 			show_message_dialog (page,
-                             "dialog-information-symbolic",
-                             _("VPN Login Success"),
-                             _("You have successfully login to the VPN.\n"
-                               "Click the 'OK' button and proceed with system login."));
+                                 "dialog-information-symbolic",
+                                 _("VPN Login Success"),
+                                 _("You have successfully login to the VPN.\n"
+                                   "Click the 'OK' button and proceed with system login."));
 			greeter_page_set_complete (GREETER_PAGE (page), TRUE);
 			greeter_page_manager_go_next (GREETER_PAGE (page)->manager);
 		}
 		break;
 
 		// 최초 접속 시 비밀번호 변경 요구
-		case VPN_LOGIN_REQUEST_CHPASSWD:
+		case VPN_ACCOUNT_CHPW_REQUEST:
 			g_idle_add ((GSourceFunc)show_password_change_dialog, page);
 		break;
 
 		// 비밀번호 변경 성공
-		case VPN_LOGIN_CHPASSWD_SUCCESS:
+		case VPN_ACCOUNT_CHPW_SUCCESS:
 		{
 			show_message_dialog (page,
                                  "dialog-information-symbolic",
@@ -349,7 +426,7 @@ handle_result (GreeterVPNPage *page,
 		break;
 
 		// 비밀번호 변경 실패
-		case VPN_LOGIN_CHPASSWD_FAILURE:
+		case VPN_ACCOUNT_CHPW_FAILURE:
 		{
 			show_message_dialog (page,
                              "dialog-information-symbolic",
@@ -418,7 +495,7 @@ try_to_chpasswd_done_cb (GObject      *source_object,
 	if (error) {
 		g_warning ("Failed to chpasswd VPN: %s", error->message);
 		g_error_free (error);
-		handle_result (page, VPN_LOGIN_CHPASSWD_FAILURE);
+		handle_result (page, VPN_ACCOUNT_CHPW_FAILURE);
 		return;
 	}
 
@@ -548,6 +625,38 @@ try_to_login_done_cb (GObject      *source_object,
 	}
 }
 
+//static void
+//try_to_get_userinfo_done_cb (GObject      *source_object,
+//                             GAsyncResult *res,
+//                             gpointer      user_data)
+//{
+//	gint32 result = -1;
+//	GVariant *variant;
+//	GError *error = NULL;
+//	GreeterVPNPage *page = GREETER_VPN_PAGE (user_data);
+//
+//	variant = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object), res, &error);
+//	if (error) {
+//		g_warning ("Failed to get userinfo: %s", error->message);
+//		g_error_free (error);
+//		handle_result (page, VPN_SERVICE_USERINFO_REQUEST_ERROR);
+//		return;
+//	}
+//
+//	// 사용자 정보(전화번호) 획득은 등록한 시그널 핸들러(vpn_dbus_signal_handler)에서 처리됨.
+//	if (variant) {
+//		g_variant_get (variant, "(i)", &result);
+//		g_variant_unref (variant);
+//	}
+//
+//	if (result == 0) {
+//		g_debug ("succeeded to get userinfo");
+//	} else {
+//		g_debug ("Failed to get userinfo");
+//		handle_result (page, VPN_SERVICE_USERINFO_REQUEST_ERROR);
+//	}
+//}
+
 static gboolean
 try_to_login (GreeterVPNPage *page,
                const gchar    *ip,
@@ -568,6 +677,35 @@ try_to_login (GreeterVPNPage *page,
                            -1,
                            NULL,
                            try_to_login_done_cb,
+                           page);
+
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+static gboolean
+try_to_get_userinfo (GreeterVPNPage *page,
+                     const gchar    *ip,
+                     const gchar    *port,
+                     const gchar    *id,
+                     const gchar    *pw)
+{
+	GreeterVPNPagePrivate *priv = page->priv;
+
+	if (!priv->proxy)
+		priv->proxy = get_vpn_dbus_proxy ();
+
+	if (priv->proxy) {
+		g_dbus_proxy_call (priv->proxy,
+                           "Userinfo",
+                           g_variant_new ("(ssss)", ip, port, id, pw),
+                           G_DBUS_CALL_FLAGS_NONE,
+                           -1,
+                           NULL,
+                           NULL,
+//                           try_to_get_userinfo_done_cb,
                            page);
 
 		return TRUE;
@@ -606,7 +744,7 @@ show_password_change_dialog (gpointer user_data)
 
 	if (new_pw) {
 		if (!try_to_chpasswd (page, priv->ip, priv->port, priv->id, priv->pw, new_pw))
-			handle_result (page, VPN_LOGIN_CHPASSWD_FAILURE);
+			handle_result (page, VPN_ACCOUNT_CHPW_FAILURE);
 	}
 
 fail:
@@ -631,6 +769,23 @@ vpn_dbus_signal_handler (GDBusProxy *proxy,
 
 		handle_result (page, result);
 	}
+
+//	if (g_str_equal (signal_name, "UserinfoObtained")) {
+//		if (parameters) {
+//			if (priv->phone_number) {
+//				g_free (priv->phone_number);
+//				priv->phone_number = NULL;
+//			}
+//			g_variant_get (parameters, "(s)", &priv->phone_number);
+//
+//			if (priv->phone_number) {
+//				gchar *message = NULL;
+//				message = g_strdup_printf (_("Calling the registered number\n(%s)"), priv->phone_number);
+//				greeter_page_manager_update_splash_message (GREETER_PAGE (page)->manager, message);
+//				g_free (message);
+//			}
+//		}
+//	}
 }
 
 static gboolean
@@ -755,15 +910,17 @@ login_button_clicked_cb (GtkButton *button,
 	GreeterVPNPage *page = GREETER_VPN_PAGE (user_data);
 	GreeterVPNPagePrivate *priv = page->priv;
 
-	pre_login (page);
-
 	priv->login_success = FALSE;
+
+	pre_login (page);
 
 	g_clear_pointer (&priv->id, (GDestroyNotify) g_free);
 	g_clear_pointer (&priv->pw, (GDestroyNotify) g_free);
 
 	priv->id = g_strdup (gtk_entry_get_text (GTK_ENTRY (priv->id_entry)));
 	priv->pw = g_strdup (gtk_entry_get_text (GTK_ENTRY (priv->pw_entry)));
+
+	try_to_get_userinfo (page, priv->ip, priv->port, priv->id, priv->pw);
 
 	if (!try_to_login (page, priv->ip, priv->port, priv->id, priv->pw))
 		handle_result (page, VPN_SERVICE_DAEMON_ERROR);
@@ -866,6 +1023,7 @@ greeter_vpn_page_finalize (GObject *object)
 	g_clear_pointer (&priv->port, (GDestroyNotify) g_free);
 	g_clear_pointer (&priv->id, (GDestroyNotify) g_free);
 	g_clear_pointer (&priv->pw, (GDestroyNotify) g_free);
+//	g_clear_pointer (&priv->phone_number, (GDestroyNotify) g_free);
 
 	G_OBJECT_CLASS (greeter_vpn_page_parent_class)->finalize (object);
 }
@@ -880,6 +1038,7 @@ greeter_vpn_page_init (GreeterVPNPage *page)
 	priv->port = NULL;
 	priv->id = NULL;
 	priv->pw = NULL;
+//	priv->phone_number = NULL;
 	priv->dbus_watch_id = 0;
 	priv->dbus_signal_id = 0;
 	priv->splash_timeout_id = 0;

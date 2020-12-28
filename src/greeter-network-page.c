@@ -1051,19 +1051,21 @@ wired_switch_toggled_cb (GtkSwitch *sw,
   return FALSE;
 }
 
+static void
+greeter_network_page_shown (GreeterPage *page)
+{
+  GreeterNetworkPage *self = GREETER_NETWORK_PAGE (page);
+
+  if (self->priv->nm_client) {
+    gboolean on = greeter_page_manager_get_mode (page->manager) == MODE_ONLINE;
+    nm_client_networking_set_enabled (self->priv->nm_client, on, NULL);
+  }
+}
+
 static gboolean
 greeter_network_page_should_show (GreeterPage *page)
 {
-  gboolean should_show = FALSE;
-  GreeterPageManager *manager = page->manager;
-
-  if (greeter_page_manager_get_mode (manager) == MODE_OFFLINE)
-    goto out;
-
-  should_show = TRUE;
-
-out:
-  return should_show;
+  return (greeter_page_manager_get_mode (page->manager) == MODE_ONLINE);
 }
 
 static void
@@ -1274,6 +1276,7 @@ greeter_network_page_class_init (GreeterNetworkPageClass *klass)
   gtk_widget_class_bind_template_child_private (widget_class, GreeterNetworkPage, network_enable_button);
 
   page_class->page_id = PAGE_ID;
+  page_class->shown = greeter_network_page_shown;
   page_class->should_show  = greeter_network_page_should_show;
 
   object_class->constructed = greeter_network_page_constructed;

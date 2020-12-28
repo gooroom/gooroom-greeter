@@ -42,3 +42,44 @@ Action=org.freedesktop.NetworkManager.network-control
 ResultActive=yes
 ResultInactive=no
 ResultAny=no
+
+[Disable suspend (upower)]
+Identity=unix-user:*
+Action=org.freedesktop.upower.suspend
+ResultActive=no
+ResultInactive=no
+ResultAny=no
+
+[Disable suspend (logind)]
+Identity=unix-user:*
+Action=org.freedesktop.login1.suspend
+ResultActive=no
+ResultInactive=no
+ResultAny=no
+
+[Disable suspend for all sessions (logind)]
+Identity=unix-user:*
+Action=org.freedesktop.login1.suspend-multiple-sessions
+ResultActive=no
+ResultInactive=no
+ResultAny=no
+
+[Disable hibernate (upower)]
+Identity=unix-user:*
+Action=org.freedesktop.upower.hibernate
+ResultActive=no
+ResultInactive=no
+ResultAny=no
+
+[Disable hibernate (logind)]
+Identity=unix-user:*
+Action=org.freedesktop.login1.hibernate
+ResultActive=no
+ResultInactive=no
+ResultAny=no
+
+[Disable hibernate for all sessions (logind)]
+Identity=unix-user:*
+Action=org.freedesktop.login1.hibernate-multiple-sessions
+ResultActive=no
+ResultInactive=no

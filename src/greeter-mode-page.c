@@ -35,9 +35,9 @@ G_DEFINE_TYPE_WITH_PRIVATE (GreeterModePage, greeter_mode_page, GREETER_TYPE_PAG
 
 
 static void
-set_networking_enable (void)
+set_networking_disable (void)
 {
-	g_spawn_command_line_sync ("/usr/bin/nmcli networking on", NULL, NULL, NULL, NULL);
+	g_spawn_command_line_sync ("/usr/bin/nmcli networking off", NULL, NULL, NULL, NULL);
 
 #if 0
 	gchar *cmd;
@@ -102,6 +102,8 @@ greeter_mode_page_shown (GreeterPage *page)
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->priv->on_button), TRUE);
 
 	greeter_page_manager_set_mode (page->manager, MODE_ONLINE);
+
+	set_networking_disable ();
 }
 
 static gboolean
@@ -161,7 +163,7 @@ greeter_mode_page_init (GreeterModePage *page)
 	g_signal_connect (G_OBJECT (priv->off_button), "toggled",
                       G_CALLBACK (mode_button_toggled_cb), page);
 
-	set_networking_enable ();
+	set_networking_disable ();
 
 	greeter_page_set_complete (GREETER_PAGE (page), TRUE);
 

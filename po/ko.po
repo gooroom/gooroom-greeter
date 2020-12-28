@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gooroom-greeter\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-07 17:00+0900\n"
+"POT-Creation-Date: 2021-01-06 18:15+0900\n"
 "PO-Revision-Date: 2019-09-04 17:37-0400\n"
 "Last-Translator: Gooroom <gooroom@gooroom.kr>\n"
 "Language-Team: Gooroom <gooroom@gooroom.kr>\n"
@@ -24,16 +24,16 @@ msgid_plural "Warning: There are still %d users logged in."
 msgstr[0] "경고: %d명의 사용자가 로그인 되어 있습니다."
 msgstr[1] "경고: %d명의 사용자가 로그인 되어 있습니다."
 
-#: ../src/gooroom-greeter.c:383 ../src/greeter-assistant.c:251
-#: ../src/greeter-vpn-page.c:197 ../src/greeter-login-page.c:242
-#: ../src/greeter-login-page.c:358 ../src/greeter-login-page.c:530
-#: ../src/greeter-login-page.c:550 ../src/greeter-login-page.c:570
-#: ../src/greeter-login-page.c:599 ../src/greeter-login-page.c:678
-#: ../src/greeter-login-page.c:964
+#: ../src/gooroom-greeter.c:383 ../src/greeter-assistant.c:278
+#: ../src/greeter-vpn-page.c:220 ../src/greeter-login-page.c:242
+#: ../src/greeter-login-page.c:358 ../src/greeter-login-page.c:539
+#: ../src/greeter-login-page.c:559 ../src/greeter-login-page.c:579
+#: ../src/greeter-login-page.c:610 ../src/greeter-login-page.c:706
+#: ../src/greeter-login-page.c:996
 msgid "_Ok"
 msgstr "확인"
 
-#: ../src/gooroom-greeter.c:384 ../src/greeter-assistant.c:252
+#: ../src/gooroom-greeter.c:384 ../src/greeter-assistant.c:279
 #: ../src/greeter-login-page.c:359
 msgid "_Cancel"
 msgstr "취소"
@@ -70,11 +70,15 @@ msgstr "시스템 최대절전"
 msgid "Are you sure you want to hibernate the computer?"
 msgstr "컴퓨터를 최대 절전 모드로 전환하시겠습니까?"
 
-#: ../src/greeter-assistant.c:240
+#: ../src/greeter-assistant.c:249
+msgid "Step"
+msgstr "단계"
+
+#: ../src/greeter-assistant.c:267
 msgid "VPN Connection Termination Warning"
 msgstr "VPN 접속 종료 안내"
 
-#: ../src/greeter-assistant.c:241
+#: ../src/greeter-assistant.c:268
 msgid ""
 "If you return to the first step, the VPN connection is terminated and you "
 "need to proceed with the authentication process again.Would you like to "
@@ -83,7 +87,7 @@ msgstr ""
 "현재 연결된 VPN 접속을 종료하고 다시 접속해야 합니다. 그래도 계속 하시겠습니"
 "까?"
 
-#: ../src/greeter-mode-page.c:156
+#: ../src/greeter-mode-page.c:158
 msgid "System operation mode setting"
 msgstr "동작모드 선택"
 
@@ -116,30 +120,133 @@ msgstr "유선네트워크 - 장치없음"
 msgid "Wireless - No Device"
 msgstr "무선네트워크 - 장치없음"
 
-#: ../src/greeter-network-page.c:1229
+#: ../src/greeter-network-page.c:1231
 msgid "Network Settings"
 msgstr "네트워크 설정"
 
-#: ../src/greeter-vpn-page.c:217
+#: ../src/greeter-vpn-page.c:240
+msgid ""
+"User authentication failed.\n"
+"If authentication fails more than 5 times, you can no longer log in."
+msgstr ""
+"사용자를 인증할 수 없습니다.\n"
+"5회이상 인증 실패시 로그인이 제한되므로 주의하시기 바랍니다."
+
+#: ../src/greeter-vpn-page.c:246 ../src/greeter-login-page.c:657
+msgid ""
+"You are already logged in.\n"
+"Log out of the other device and try again.\n"
+"If the problem persists, please contact your administrator."
+msgstr ""
+"이미 로그인 된 사용자 입니다.\n"
+"다른기기에서 로그아웃 후 다시 시도하십시오.\n"
+"그래도 문제가 계속된다면 관리자에게 문의하십시오."
+
+#: ../src/greeter-vpn-page.c:252
+msgid ""
+"It is not the VPN connection time.\n"
+"Please contact the administrator to check the access time and try again."
+msgstr ""
+"VPN 접속 가능시간이 아닙니다.\n"
+"접속 가능시간 확인후 다시 시도하거나 관리자에게 문의하십시오."
+
+#: ../src/greeter-vpn-page.c:257
+msgid ""
+"It is not the day of the week for VPN access.\n"
+"Please contact the administrator to check the access time and try again."
+msgstr ""
+"VPN 접속 가능요일이 아닙니다.\n"
+"접속 가능요일 확인후 다시 시도하거나 관리자에게 문의하십시오."
+
+#: ../src/greeter-vpn-page.c:262
+msgid ""
+"The VPN connection cannot proceed because the login period has been "
+"exceeded. Please try again later or contact the administrator."
+msgstr ""
+"로그인 가능기간이 초과되어 VPN 접속을 진행할 수 없습니다.\n"
+"잠시 후 다시 시도하거나 관리자에게 문의하십시오."
+
+#: ../src/greeter-vpn-page.c:267
+msgid ""
+"Login is not possible because user authentication has failed more than 5 "
+"times. Please contact the administrator."
+msgstr ""
+"사용자 인증을 5회이상 실패하여 더 이상 로그인 할 수 없습니다. 관리자에게 연락"
+"하여 접속 제한 해제를 요청하시기 바랍니다."
+
+#: ../src/greeter-vpn-page.c:273
+msgid ""
+"The VPN connection cannot be proceeded due to the ID usage period exceeded. "
+"Please try again later or contact the administrator."
+msgstr ""
+"아이디 사용기간이 초과되어 VPN 접속을 진행할 수 없습니다. 잠시 후 다시 시도하"
+"거나 관리자에게 문의하십시오"
+
+#: ../src/greeter-vpn-page.c:278
+msgid ""
+"VPN connection cannot be proceeded because the password has expired. Please "
+"try again later or contact the administrator."
+msgstr ""
+"비밀번호 사용기간이 초과되어 VPN 접속을 진행할 수 없습니다. 잠시 후 다시 시도"
+"하거나 관리자에게 문의하십시오."
+
+#: ../src/greeter-vpn-page.c:283
+msgid ""
+"The server cannot be reached due to network problems.\n"
+"Please check the network status and try again."
+msgstr ""
+"VPN 서버에 접속할 수 없습니다.\n"
+"네트워크 상태 확인 후 다시 시도하십시오."
+
+#: ../src/greeter-vpn-page.c:288
+msgid ""
+"VPN connection cannot proceed due to a VPN server response error. Please try "
+"again later or contact the administrator."
+msgstr ""
+"VPN 서버 응답오류로 인해 VPN 접속을 진행할 수 없습니다. 잠시 후 다시 시도하거"
+"나 관리자에게 문의하십시오."
+
+#: ../src/greeter-vpn-page.c:293
+msgid ""
+"The connection to the server has been lost.\n"
+"Check the network status and connect again."
+msgstr ""
+"VPN 접속이 끊겼습니다.\n"
+"네트워크 상태 확인 후 다시 시도하십시오."
+
+#: ../src/greeter-vpn-page.c:298
+msgid ""
+"VPN connection cannot proceed due to VPN execution failure. Please try again "
+"later or contact the administrator."
+msgstr ""
+"VPN 실행 실패로 인해 VPN 접속을 진행할 수 없습니다.\n"
+"잠시 후 다시 시도하거나 관리자에게 문의하십시오."
+
+#: ../src/greeter-vpn-page.c:303
+msgid ""
+"VPN connection cannot proceed due to a VPN setting error. Please try again "
+"later or contact the administrator."
+msgstr ""
+"VPN 설정 오류로 인해 VPN 접속을 진행할 수 없습니다.\n"
+"잠시 후 다시 시도하거나 관리자에게 문의하십시오."
+
+#: ../src/greeter-vpn-page.c:308
 msgid ""
 "An error has occurred in the system's VPN service.\n"
 "Reboot your system and try again."
 msgstr ""
-"VPN 접속 서비스에 오류가 발생하였습니다. 시스템 재부팅 후 다시 시도하십시오."
+"VPN 접속 서비스에 오류가 발생하였습니다.\n"
+"시스템 재부팅 후 다시 시도하십시오."
 
-#: ../src/greeter-vpn-page.c:222
-msgid ""
-"VPN login request failed.\n"
-"Reboot your system and try again."
-msgstr "VPN 접속 요청에 실패하였습니다. 시스템 재부팅 후 다시 시도하십시오."
-
-#: ../src/greeter-vpn-page.c:226
+#: ../src/greeter-vpn-page.c:313
 msgid ""
 "VPN login request failed.\n"
 "There is no reponse from server."
-msgstr "VPN 접속 요청에 실패하였습니다. 서버로부터 응답이 없습니다."
+msgstr ""
+"VPN 접속 요청에 실패하였습니다.\n"
+"서버로부터 응답이 없습니다."
 
-#: ../src/greeter-vpn-page.c:230 ../src/greeter-vpn-page.c:694
+#: ../src/greeter-vpn-page.c:317 ../src/greeter-vpn-page.c:871
 msgid ""
 "VPN connection information is incorrect.\n"
 "Check the configuration file and try again."
@@ -147,48 +254,31 @@ msgstr ""
 "VPN 접속 정보가 올바르지 않습니다.\n"
 "설정파일 확인 후 다시 시도하십시오."
 
-#: ../src/greeter-vpn-page.c:235
+#: ../src/greeter-vpn-page.c:322
 msgid ""
-"User authentication failed.\n"
-"If authentication fails more than 5 times, you can no longer log in."
-msgstr "사용자를 인증할 수 없습니다. 5회이상 인증 실패시 로그인이 제한됩니다."
-
-#: ../src/greeter-vpn-page.c:241
-msgid ""
-"Login is not possible because user authentication has failed more than 5 "
-"times.\n"
-"Please contact the administrator."
+"VPN login request failed.\n"
+"Reboot your system and try again."
 msgstr ""
-"사용자의 인증을 5회이상 실패하여 더 이상 로그인 할 수 없습니다. 관리자에게 문"
-"의하십시오"
+"VPN 접속 요청에 실패하였습니다.\n"
+"시스템 재부팅 후 다시 시도하십시오."
 
-#: ../src/greeter-vpn-page.c:247
-msgid ""
-"The server cannot be reached due to network problems.\n"
-"Please check the network status and try again."
-msgstr ""
-"네트워크 문제로 VPN 접속을 진행할 수 없습니다. 네트워크 상태 확인 후 다시 시"
-"도하십시오."
+#: ../src/greeter-vpn-page.c:333
+msgid "Authentication Failure"
+msgstr "사용자 인증 실패"
 
-#: ../src/greeter-vpn-page.c:252
-msgid ""
-"The connection to the server has been lost. Check the network status and "
-"connect again."
-msgstr "VPN 접속이 끊겼습니다. 네트워크 상태 확인 후 다시 시도하십시오."
+#: ../src/greeter-vpn-page.c:334
+msgid "Error Code"
+msgstr "오류코드"
 
-#: ../src/greeter-vpn-page.c:257
-msgid ""
-"Login failed due to an unknown error.\n"
-"Please try again later or contact the administrator."
-msgstr ""
-"알 수 없는 오류로 인해 VPN 접속을 진행할 수 없습니다. 잠시 후 다시 시도하거"
-"나 관리자에게 문의하십시오."
+#: ../src/greeter-vpn-page.c:336
+msgid "Please try again later or contact the administrator."
+msgstr "잠시 후 다시 시도하거나 관리자에게 문의하십시오."
 
-#: ../src/greeter-vpn-page.c:308
+#: ../src/greeter-vpn-page.c:395
 msgid "VPN Login Success"
 msgstr "VPN 접속 완료 안내"
 
-#: ../src/greeter-vpn-page.c:309
+#: ../src/greeter-vpn-page.c:396
 msgid ""
 "You have successfully login to the VPN.\n"
 "Click the 'OK' button and proceed with system login."
@@ -196,11 +286,11 @@ msgstr ""
 "VPN 접속이 완료되었습니다.\n"
 "'확인'버튼을 눌러 시스템에 로그인 하십시오."
 
-#: ../src/greeter-vpn-page.c:326
+#: ../src/greeter-vpn-page.c:413
 msgid "Success Of Changing VPN Password"
 msgstr "VPN 비밀번호 변경 완료 안내"
 
-#: ../src/greeter-vpn-page.c:327
+#: ../src/greeter-vpn-page.c:414
 msgid ""
 "You have completed the password change.\n"
 "Please login again after clicking the 'OK' button."
@@ -208,11 +298,11 @@ msgstr ""
 "VPN 비밀번호 변경이 완료되었습니다.\n"
 "'확인'버튼을 눌러 변경된 비밀번호로 VPN 접속을 다시 시도하시기 바랍니다."
 
-#: ../src/greeter-vpn-page.c:338
+#: ../src/greeter-vpn-page.c:433
 msgid "Failure Of Changing VPN Password"
 msgstr "VPN 비밀번호 변경 실패 안내"
 
-#: ../src/greeter-vpn-page.c:339
+#: ../src/greeter-vpn-page.c:434
 msgid ""
 "Password change failed.\n"
 "You must change your password the first time you connect to the VPN."
@@ -220,7 +310,7 @@ msgstr ""
 "VPN 비밀번호 변경에 실패하였습니다.\n"
 "개인정보 보호를 위해 반드시 비밀번호를 변경하시기 바랍니다."
 
-#: ../src/greeter-vpn-page.c:376
+#: ../src/greeter-vpn-page.c:471
 msgid ""
 "Authentication is in progress.\n"
 "Please wait..."
@@ -228,7 +318,7 @@ msgstr ""
 "인증이 진행중 입니다.\n"
 "잠시만 기다려 주십시오..."
 
-#: ../src/greeter-vpn-page.c:477
+#: ../src/greeter-vpn-page.c:572
 msgid ""
 "Initializing Settings for VPN.\n"
 "Please wait..."
@@ -236,11 +326,11 @@ msgstr ""
 "VPN 접속을 초기화합니다.\n"
 "잠시만 기다려 주십시오..."
 
-#: ../src/greeter-vpn-page.c:578
+#: ../src/greeter-vpn-page.c:734
 msgid "Cancelling VPN Password Change"
 msgstr "VPN 비밀번호 변경 취소 안내"
 
-#: ../src/greeter-vpn-page.c:579
+#: ../src/greeter-vpn-page.c:735
 msgid ""
 "The password change has been cancelled.\n"
 "Please be sure to change your password for VPN access."
@@ -248,17 +338,17 @@ msgstr ""
 "비밀번호 변경을 취소하였습니다.\n"
 "VPN 접속을 위해 비밀번호를 반드시 변경해 주시기 바랍니다."
 
-#: ../src/greeter-vpn-page.c:626 ../src/greeter-vpn-page.c:684
-#: ../src/greeter-vpn-page.c:693
+#: ../src/greeter-vpn-page.c:803 ../src/greeter-vpn-page.c:861
+#: ../src/greeter-vpn-page.c:870
 msgid "VPN Service Error"
 msgstr "VPN 접속 장애 안내"
 
-#: ../src/greeter-vpn-page.c:627 ../src/greeter-vpn-page.c:685
+#: ../src/greeter-vpn-page.c:804 ../src/greeter-vpn-page.c:862
 msgid "VPN service is down. Please enable VPN service and try again."
 msgstr ""
 "VPN 접속 서비스가 중지되었습니다. 서비스 활성화 후 다시 시도해 주십시오."
 
-#: ../src/greeter-vpn-page.c:878
+#: ../src/greeter-vpn-page.c:1059
 msgid "Connecting VPN"
 msgstr "VPN 접속"
 
@@ -288,11 +378,11 @@ msgstr ""
 "비밀번호가 만료되었습니다.\n"
 "비밀번호를 즉시 변경해 주시기 바랍니다."
 
-#: ../src/greeter-login-page.c:477
+#: ../src/greeter-login-page.c:479
 msgid "Password Expiration"
 msgstr "비밀번호 만료"
 
-#: ../src/greeter-login-page.c:478
+#: ../src/greeter-login-page.c:480
 msgid ""
 "Your password has expired.\n"
 "Please change your password immediately."
@@ -300,19 +390,19 @@ msgstr ""
 "비밀번호가 만료되었습니다.\n"
 "비밀번호를 즉시 변경해 주시기 바랍니다."
 
-#: ../src/greeter-login-page.c:479 ../src/greeter-login-page.c:484
+#: ../src/greeter-login-page.c:482 ../src/greeter-login-page.c:491
 msgid "Changing Password"
 msgstr "비밀번호 변경"
 
-#: ../src/greeter-login-page.c:479 ../src/greeter-login-page.c:484
+#: ../src/greeter-login-page.c:483 ../src/greeter-login-page.c:492
 msgid "Cancel"
 msgstr "취소"
 
-#: ../src/greeter-login-page.c:482
+#: ../src/greeter-login-page.c:488
 msgid "Temporary Password Warning"
 msgstr "임시 비밀번호 경고"
 
-#: ../src/greeter-login-page.c:483
+#: ../src/greeter-login-page.c:489
 msgid ""
 "Your password has been issued temporarily.\n"
 "For security reasons, please change your password immediately."
@@ -320,7 +410,7 @@ msgstr ""
 "임시로 발급된 비밀번호 입니다.\n"
 "보안을 위해서 비밀번호를 즉시 변경해 주시기 바랍니다."
 
-#: ../src/greeter-login-page.c:491
+#: ../src/greeter-login-page.c:500
 #, c-format
 msgid ""
 "Please change your password for security.\n"
@@ -333,7 +423,7 @@ msgstr ""
 "수 없습니다.\n"
 "지금 비밀번호를 변경하시겠습니까?"
 
-#: ../src/greeter-login-page.c:496
+#: ../src/greeter-login-page.c:505
 #, c-format
 msgid ""
 "Please change your password for security.\n"
@@ -346,7 +436,7 @@ msgstr ""
 "수 없습니다.\n"
 "지금 비밀번호를 변경하시겠습니까?"
 
-#: ../src/greeter-login-page.c:502
+#: ../src/greeter-login-page.c:511
 msgid ""
 "Please change your password for security.\n"
 "If you do not change your password within a few days, your password expires."
@@ -358,19 +448,19 @@ msgstr ""
 "수 없습니다.\n"
 "지금 비밀번호를 변경하시겠습니까?"
 
-#: ../src/greeter-login-page.c:509
+#: ../src/greeter-login-page.c:518
 msgid "Password Maxday Warning"
 msgstr "비밀번호 변경 안내"
 
-#: ../src/greeter-login-page.c:510
+#: ../src/greeter-login-page.c:519
 msgid "Change now"
 msgstr "지금 변경"
 
-#: ../src/greeter-login-page.c:510
+#: ../src/greeter-login-page.c:519
 msgid "Later"
 msgstr "나중에"
 
-#: ../src/greeter-login-page.c:519
+#: ../src/greeter-login-page.c:528
 #, c-format
 msgid ""
 "Your account will not be available after %s.\n"
@@ -379,7 +469,7 @@ msgstr ""
 "이 계정은 %s일 이후로 사용할 수 없습니다.\n"
 "계정 만료까지 %s일 남았습니다."
 
-#: ../src/greeter-login-page.c:523
+#: ../src/greeter-login-page.c:532
 #, c-format
 msgid ""
 "Your account will not be available after %s.\n"
@@ -388,11 +478,11 @@ msgstr ""
 "이 계정은 %s일 이후로 사용할 수 없습니다.\n"
 "계정 만료까지 %s일 남았습니다."
 
-#: ../src/greeter-login-page.c:530
+#: ../src/greeter-login-page.c:539
 msgid "Account Expiration Warning"
 msgstr "계정 만료 경고"
 
-#: ../src/greeter-login-page.c:539
+#: ../src/greeter-login-page.c:548
 #, c-format
 msgid ""
 "Your organization will not be available after %s.\n"
@@ -401,7 +491,7 @@ msgstr ""
 "이 계정이 속한 조직은 %s일 이후로 사용할 수 없습니다.\n"
 "조직 만료까지 %s일 남았습니다."
 
-#: ../src/greeter-login-page.c:543
+#: ../src/greeter-login-page.c:552
 #, c-format
 msgid ""
 "Your organization will not be available after %s.\n"
@@ -410,11 +500,11 @@ msgstr ""
 "이 계정이 속한 조직은 %s일 이후로 사용할 수 없습니다.\n"
 "조직 만료까지 %s일 남았습니다."
 
-#: ../src/greeter-login-page.c:550
+#: ../src/greeter-login-page.c:559
 msgid "Division Expiration Warning"
 msgstr "조직 만료 경고"
 
-#: ../src/greeter-login-page.c:559
+#: ../src/greeter-login-page.c:568
 #, c-format
 msgid ""
 "Your password will not be available after %s.\n"
@@ -423,7 +513,7 @@ msgstr ""
 "이 비밀번호는 %s일 이후로 사용할 수 없습니다.\n"
 "비밀번호 만료까지 %s일 남았습니다."
 
-#: ../src/greeter-login-page.c:563
+#: ../src/greeter-login-page.c:572
 #, c-format
 msgid ""
 "Your password will not be available after %s.\n"
@@ -432,35 +522,35 @@ msgstr ""
 "이 비밀번호는 %s일 이후로 사용할 수 없습니다.\n"
 "비밀번호 만료까지 %s일 남았습니다."
 
-#: ../src/greeter-login-page.c:570
+#: ../src/greeter-login-page.c:579
 msgid "Passowrd Expiration Warning"
 msgstr "비밀번호 만료 경고"
 
-#: ../src/greeter-login-page.c:575
+#: ../src/greeter-login-page.c:584
 msgid "Duplicate logins detected with the same ID."
 msgstr "동일 아이디로 중복로그인이 감지되었습니다."
 
-#: ../src/greeter-login-page.c:578
+#: ../src/greeter-login-page.c:587
 msgid "Client ID"
 msgstr "클라이언트 ID"
 
-#: ../src/greeter-login-page.c:583
+#: ../src/greeter-login-page.c:592
 msgid "Client Name"
 msgstr "클라이언트 이름"
 
-#: ../src/greeter-login-page.c:588
+#: ../src/greeter-login-page.c:597
 msgid "IP"
 msgstr "IP"
 
-#: ../src/greeter-login-page.c:593
+#: ../src/greeter-login-page.c:602
 msgid "Local IP"
 msgstr "로컬 IP"
 
-#: ../src/greeter-login-page.c:598
+#: ../src/greeter-login-page.c:608
 msgid "Duplicate Login Notification"
 msgstr "중복로그인 알림"
 
-#: ../src/greeter-login-page.c:607
+#: ../src/greeter-login-page.c:619
 #, c-format
 msgid ""
 "Authentication Failure\n"
@@ -469,18 +559,28 @@ msgid ""
 "You can no longer log in when the maximum number of login attempts is "
 "exceeded."
 msgstr ""
-"로그인 실패 (사용자 인증 오류)\n"
+"사용자 인증 실패\n"
 "\n"
 "로그인 시도 가능 횟수가 %s회 남았습니다.\n"
 "로그인 시도 최대 가능 횟수 초과시 더이상 로그인 할 수 없습니다."
 
-#: ../src/greeter-login-page.c:610 ../src/greeter-login-page.c:946
-#, c-format
-msgid "Login Failure (Authentication Failure)"
-msgstr "로그인 실패 (사용자 인증 오류)"
+#: ../src/greeter-login-page.c:624
+msgid ""
+"The user could not be authenticated due to an unknown error.\n"
+"Please contact the administrator."
+msgstr ""
+"알 수 없는 오류로 인해 사용자를 인증할 수 없습니다.\n"
+"관리자에게 문의하십시오."
 
-#: ../src/greeter-login-page.c:617
-#, c-format
+#: ../src/greeter-login-page.c:632
+msgid ""
+"This account has deleted and is no longer available.\n"
+"Please contact the administrator."
+msgstr ""
+"이 계정은 삭제되어 더이상 사용할 수 없습니다.\n"
+"관리자에게 문의하십시오."
+
+#: ../src/greeter-login-page.c:638
 msgid ""
 "Your account has been locked because you have exceeded the number of login "
 "attempts.\n"
@@ -489,41 +589,32 @@ msgstr ""
 "로그인 시도 횟수를 초과하여 계정이 잠겼습니다.\n"
 "잠시 후 다시 시도해 주시기 바랍니다."
 
-#: ../src/greeter-login-page.c:623
-#, c-format
+#: ../src/greeter-login-page.c:645
 msgid ""
 "This account has expired and is no longer available.\n"
 "Please contact the administrator."
 msgstr ""
 "이 계정은 사용기간 만료로 더이상 사용할 수 없습니다.\n"
-"관리자에게 문의하여 주시기 바랍니다."
+"관리자에게 문의하십시오."
 
-#: ../src/greeter-login-page.c:629
-#, c-format
+#: ../src/greeter-login-page.c:651
 msgid ""
 "The password for your account has expired.\n"
 "Please contact the administrator."
 msgstr ""
 "비밀번호가 만료되어 로그인 할 수 없습니다.\n"
-"관리자에게 문의하여 주시기 바랍니다."
+"관리자에게 문의하십시오."
 
-#: ../src/greeter-login-page.c:635
-#, c-format
-msgid "Login Failure (Duplicate Login)"
-msgstr "로그인 실패 (중복 로그인)"
-
-#: ../src/greeter-login-page.c:640
-#, c-format
+#: ../src/greeter-login-page.c:664
 msgid ""
 "Due to the expiration of your organization, this account is no longer "
 "available.\n"
 "Please contact the administrator."
 msgstr ""
 "조직의 사용기간 만료로 이 계정은 더이상 사용할 수 없습니다.\n"
-"관리자에게 문의하여 주시기 바랍니다."
+"관리자에게 문의하십시오."
 
-#: ../src/greeter-login-page.c:645
-#, c-format
+#: ../src/greeter-login-page.c:671
 msgid ""
 "Login attempts exceeded the number of times, so you cannot login for a "
 "certain period of time.\n"
@@ -532,19 +623,17 @@ msgstr ""
 "로그인 시도횟수를 초과하여 일정시간 접속할 수 없습니다.\n"
 "잠시 후 다시 시도해 주시기 바랍니다."
 
-#: ../src/greeter-login-page.c:650
-#, c-format
+#: ../src/greeter-login-page.c:678
 msgid "Trial period has expired."
 msgstr "평가판 사용기간이 만료되었습니다."
 
-#: ../src/greeter-login-page.c:655
-#, c-format
+#: ../src/greeter-login-page.c:683
 msgid "Time error occurred."
 msgstr ""
 "인터넷으로부터 시간을 가져오지 못했습니다.\n"
 "네트워크 연결 확인 후 다시 시도해 주시기 바랍니다."
 
-#: ../src/greeter-login-page.c:664
+#: ../src/greeter-login-page.c:692
 #, c-format
 msgid ""
 "The trial period is up to %s days.\n"
@@ -553,7 +642,7 @@ msgstr ""
 "평가판 사용기간이 %s까지 입니다.\n"
 "사용기간이 오늘 만료됩니다."
 
-#: ../src/greeter-login-page.c:667
+#: ../src/greeter-login-page.c:695
 #, c-format
 msgid ""
 "The trial period is up to %s days.\n"
@@ -562,7 +651,7 @@ msgstr ""
 "평가판 사용기간이 %s까지 입니다.\n"
 "만료까지 %s일 남았습니다."
 
-#: ../src/greeter-login-page.c:670
+#: ../src/greeter-login-page.c:698
 #, c-format
 msgid ""
 "The trial period is up to %s days.\n"
@@ -571,66 +660,76 @@ msgstr ""
 "평가판 사용기간이 %s까지 입니다.\n"
 "만료까지 %s일 남았습니다."
 
-#: ../src/greeter-login-page.c:674
+#: ../src/greeter-login-page.c:702
 msgid "The trial period is unknown."
 msgstr "평가판 사용기간을 확인할 수 없습니다."
 
-#: ../src/greeter-login-page.c:678
+#: ../src/greeter-login-page.c:706
 msgid "Trial Period Notification"
 msgstr "평가판 사용기간 알림"
 
 # 주의, Linux-PAM 의 "Current %s%spassword: "의 번역과 동일
-#: ../src/greeter-login-page.c:704
+#: ../src/greeter-login-page.c:732
 msgid "Current password: "
 msgstr "현재  암호:"
 
-#: ../src/greeter-login-page.c:705
+#: ../src/greeter-login-page.c:733
 msgid "Changing Password - [Step 1]"
 msgstr "비밀번호 변경 [1단계]"
 
-#: ../src/greeter-login-page.c:706
+#: ../src/greeter-login-page.c:734
 msgid "Enter current password :"
 msgstr "현재 비밀번호 입력 :"
 
 # 주의, Linux-PAM / libpwquality의 "New %s%spassword: " 의 번역과 동일
-#: ../src/greeter-login-page.c:708
+#: ../src/greeter-login-page.c:736
 msgid "New password: "
 msgstr "새  암호:"
 
-#: ../src/greeter-login-page.c:709
+#: ../src/greeter-login-page.c:737
 msgid "Changing Password - [Step 2]"
 msgstr "비밀번호 변경 [2단계]"
 
-#: ../src/greeter-login-page.c:710
+#: ../src/greeter-login-page.c:738
 msgid "Enter new password :"
 msgstr "새 비밀번호 입력 :"
 
 # 주의, Linux-PAM / libpwquality의 "Retype new %s%spassword: " 의 번역과 동일
-#: ../src/greeter-login-page.c:712
+#: ../src/greeter-login-page.c:740
 msgid "Retype new password: "
 msgstr "새  암호 재입력:"
 
-#: ../src/greeter-login-page.c:713
+#: ../src/greeter-login-page.c:741
 msgid "Changing Password - [Step 3]"
 msgstr "비밀번호 변경 [3단계]"
 
-#: ../src/greeter-login-page.c:714
+#: ../src/greeter-login-page.c:742
 msgid "Retype new password :"
 msgstr "새 비밀번호 재입력 :"
 
-#: ../src/greeter-login-page.c:854
+#: ../src/greeter-login-page.c:882
 msgid "Failed to start session"
 msgstr "세션을 시작할 수 없습니다."
 
-#: ../src/greeter-login-page.c:953
+#: ../src/greeter-login-page.c:975
+msgid ""
+"Authentication Failure\n"
+"\n"
+"Please check the username and password and try again."
+msgstr ""
+"사용자 인증 실패\n"
+"\n"
+"사용자(ID) 및 비밀번호 확인 후 다시 시도해 주십시오."
+
+#: ../src/greeter-login-page.c:984
 msgid "Failed to authenticate"
 msgstr "인증에 실패하였습니다."
 
-#: ../src/greeter-login-page.c:962
+#: ../src/greeter-login-page.c:994
 msgid "Failure Of Changing Password"
 msgstr "비밀번호 변경 실패"
 
-#: ../src/greeter-login-page.c:963
+#: ../src/greeter-login-page.c:995
 msgid ""
 "Failed to change password.\n"
 "Please try again."
@@ -638,7 +737,7 @@ msgstr ""
 "비밀번호 변경에 실패하였습니다.\n"
 "다시 시도해 주시기 바랍니다."
 
-#: ../src/greeter-login-page.c:1273
+#: ../src/greeter-login-page.c:1305
 msgid "Login System"
 msgstr "시스템 로그인"
 
@@ -867,7 +966,7 @@ msgid ""
 "Please contact the administrator."
 msgstr ""
 "네트워크 장치를 찾을 수 없습니다.\n"
-"관리자에게 문의하여 주시기 바랍니다."
+"관리자에게 문의하십시오."
 
 #: ../src/greeter-network-page.ui.h:4
 msgid "Exit"
@@ -879,7 +978,7 @@ msgid ""
 "Please contact the administrator."
 msgstr ""
 "네트워크 정보를 찾을 수 없습니다.\n"
-"관리자에게 문의하여 주시기 바랍니다."
+"관리자에게 문의하십시오."
 
 #: ../src/greeter-network-page.ui.h:7
 msgid ""
@@ -955,3 +1054,10 @@ msgstr "새 비밀번호"
 #: ../src/greeter-vpn-passwd-dialog.ui.h:5
 msgid "Retype Password"
 msgstr "새 비밀번호 확인"
+
+#~ msgid ""
+#~ "Calling the registered number\n"
+#~ "(%s)"
+#~ msgstr ""
+#~ "등록된 번호(%s)로\n"
+#~ "전화를 걸고 있습니다."

@@ -36,20 +36,6 @@ struct _SplashWindowPrivate
 G_DEFINE_TYPE_WITH_PRIVATE (SplashWindow, splash_window, GTK_TYPE_WINDOW);
 
 
-//static gboolean
-//splash_window_draw (GtkWidget *widget,
-//                    cairo_t   *cr)
-//{
-//	cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
-//	cairo_set_source_rgba (cr, 255, 0.0, 0.0, 0.1); /* transparent */
-//	cairo_paint (cr);
-//
-//	if (GTK_WIDGET_CLASS (splash_window_parent_class)->draw)
-//		return GTK_WIDGET_CLASS (splash_window_parent_class)->draw (widget, cr);
-//
-//	return FALSE;
-//}
-
 static void
 splash_window_finalize (GObject *object)
 {
@@ -59,6 +45,8 @@ splash_window_finalize (GObject *object)
 static void
 splash_window_init (SplashWindow *window)
 {
+//	SplashWindowPrivate *priv;
+
 	window->priv = splash_window_get_instance_private (window);
 
 	gtk_widget_init_template (GTK_WIDGET (window));
@@ -78,20 +66,26 @@ splash_window_init (SplashWindow *window)
 
 		gtk_widget_set_visual (GTK_WIDGET(window), visual);
 	}
+
+//	PangoAttrList *attrs;
+//	PangoAttribute *attr;
+//
+//	attrs = pango_attr_list_new ();
+//	attr = pango_attr_rise_new (20000);
+//	pango_attr_list_insert (attrs, attr);
+//
+//	gtk_label_set_attributes (GTK_LABEL (priv->message_label), attrs);
 }
 
 static void
 splash_window_class_init (SplashWindowClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-//	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
 	gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass),
                                                  "/kr/gooroom/greeter/splash-window.ui");
 
 	object_class->finalize = splash_window_finalize;
-
-//	widget_class->draw = splash_window_draw;
 
 	gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass),
                                                   SplashWindow, message_label);
