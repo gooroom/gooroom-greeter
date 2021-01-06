@@ -1,3 +1,10 @@
+gooroom-greeter (0.2.6+grm2u1+mofa03) unstable; urgency=medium
+
+  [ cjheo ]
+  * [ef3e15aa] 보안적합성 검토에 따른 패치(2020-12-18 G4K 3단계 회의결과 반영)
+
+ -- Gooroom Autobuilder <jenkins@gooroom.kr>  Wed, 06 Jan 2021 18:53:12 +0900
+
 gooroom-greeter (0.2.6+grm2u1+mofa02) unstable; urgency=medium
 
   [ cjheo ]
