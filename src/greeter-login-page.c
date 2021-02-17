@@ -87,6 +87,8 @@ struct _GreeterLoginPagePrivate {
 	gboolean prompt_active;
 	gboolean changing_password;
 
+	gchar *id;
+	gchar *pw;
 	gchar *current_session;
 	gchar *current_language;
 
@@ -157,9 +159,9 @@ get_id (GtkWidget *id_entry)
 	if (strlen (text) == 0)
 		return g_strdup ("");
 
-    for (i = 0; text[i] != '\0'; i++) 
+	for (i = 0; text[i] != '\0'; i++)
 		if (!isdigit (text[i]))
-            return g_strdup (text); 
+			return g_strdup (text);
 
 	return g_strdup_printf ("kepco-%s", text); 
 }
@@ -1276,6 +1278,7 @@ start_session (GreeterLoginPage *page)
 {
 	GreeterLoginPagePrivate *priv = page->priv;
 	LightDMGreeter *greeter = priv->greeter;
+	GreeterPageManager *manager = GREETER_PAGE (page)->manager;
 
 	if (priv->current_language)
 #ifdef HAVE_LIBLIGHTDMGOBJECT_1_19_2
@@ -1288,6 +1291,38 @@ start_session (GreeterLoginPage *page)
 	config_set_string (STATE_SECTION_GREETER, STATE_KEY_LAST_SESSION, priv->current_session);
 
 	//	greeter_background_save_xroot (greeter_background);
+
+	if (greeter_page_manager_get_mode (manager) == MODE_INTERNAL) {
+		const gchar *json;
+		gchar *arg = NULL;
+		GVariant *variant = NULL;
+		GDBusProxy *proxy = NULL;
+
+		proxy = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
+                                               G_DBUS_CALL_FLAGS_NONE,
+                                               NULL,
+                                               "kr.gooroom.ssohelper",
+                                               "/kr/gooroom/ssohelper",
+                                               "kr.gooroom.ssohelper",
+                                               NULL,
+                                               NULL);
+
+		json = "{\"task\":\"setpw\",\"id\":\"%s\",\"pw\":\"%s\"}";
+
+		arg = g_strdup_printf (json, priv->id, priv->pw);
+
+		variant = g_dbus_proxy_call_sync (proxy,
+                                          "do_task",
+                                          g_variant_new ("(s)", arg),
+                                          G_DBUS_CALL_FLAGS_NONE, -1,
+                                          NULL, NULL);
+		if (variant)
+			g_variant_unref (variant);
+
+		g_free (arg);
+
+		g_clear_object (&proxy);
+	}
 
 	if (!lightdm_greeter_start_session_sync (greeter, priv->current_session, NULL)) {
 		update_message_label (page, LIGHTDM_MESSAGE_TYPE_ERROR, _("Failed to start session"));
@@ -1522,6 +1557,12 @@ out:
 		return;
 	}
 
+	g_clear_pointer (&priv->id, g_free);
+	g_clear_pointer (&priv->pw, g_free);
+
+	priv->id = g_strdup (gtk_entry_get_text (GTK_ENTRY (priv->id_entry)));
+	priv->pw = g_strdup (gtk_entry_get_text (GTK_ENTRY (priv->pw_entry)));
+
 	try_to_login_system (page);
 }
 
@@ -1697,6 +1738,9 @@ greeter_login_page_dispose (GObject *object)
 
 	g_clear_object (&priv->vpn_dbus_proxy);
 
+	g_clear_pointer (&priv->id, g_free);
+	g_clear_pointer (&priv->pw, g_free);
+
 	G_OBJECT_CLASS (greeter_login_page_parent_class)->dispose (object);
 }
 
@@ -1714,6 +1758,8 @@ greeter_login_page_init (GreeterLoginPage *page)
 	priv->pending_questions = NULL;
 	priv->current_session = NULL;
 	priv->current_language = NULL;
+	priv->id = NULL;
+	priv->pw = NULL;
 
 	priv->vpn_dbus_watch_id = 0;
 	priv->vpn_dbus_signal_id = 0; 

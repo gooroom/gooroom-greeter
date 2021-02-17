@@ -23,7 +23,7 @@ Standards-Version: 3.9.8
 
 Package: gooroom-greeter
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, lightdm
+Depends: ${shlibs:Depends}, ${misc:Depends}, lightdm, gooroom-sso-helper
 Description: Simple display manager
  gooroom-greeter is greeter shell for the LightDM login manager.
  It uses the GTK+ toolkit and integrates well with Gooroom platform.
