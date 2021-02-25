@@ -1,3 +1,10 @@
+gooroom-greeter (0.2.6+grm2u1+kepco02) unstable; urgency=medium
+
+  [ cjheo ]
+  * [5b879c58] SSO 지원을 위해 gooroom-sso-helper서비스에 ID/PW 전달 작업 추가
+
+ -- Gooroom Autobuilder <jenkins@gooroom.kr>  Thu, 25 Feb 2021 17:57:39 +0900
+
 gooroom-greeter (0.2.6+grm2u1+kepco01) unstable; urgency=medium
 
   [ cjheo ]
