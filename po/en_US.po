@@ -1,4 +1,4 @@
-# Korean translation for gooroom-greeter
+# English (United States) translation for gooroom-greeter
 # Copyright (c) 2011 Rosetta Contributors and Canonical Ltd 2011
 # Copyright (C) 2015-2019 Gooroom <gooroom@gooroom.kr>
 # This file is distributed under the same license as the gooroom-greeter package.
@@ -12,89 +12,88 @@ msgstr ""
 "PO-Revision-Date: 2019-09-04 17:37-0400\n"
 "Last-Translator: Gooroom <gooroom@gooroom.kr>\n"
 "Language-Team: Gooroom <gooroom@gooroom.kr>\n"
-"Language: ko\n"
+"Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../src/gooroom-greeter.c:138
 msgid "%B %-d %Y  %l:%M %p"
-msgstr "%Y년 %B %-d일  %p %l:%M"
+msgstr "%B %-d %Y  %l:%M %p"
 
 #: ../src/gooroom-greeter.c:395
 #, c-format
 msgid "Warning: There is still %d user logged in."
 msgid_plural "Warning: There are still %d users logged in."
-msgstr[0] "경고: %d명의 사용자가 로그인 되어 있습니다."
-msgstr[1] "경고: %d명의 사용자가 로그인 되어 있습니다."
+msgstr[0] "Warning: There is still %d user logged in."
+msgstr[1] "Warning: There are still %d users logged in."
 
 #: ../src/gooroom-greeter.c:413 ../src/greeter-assistant.c:89
 #: ../src/greeter-login-page.c:372 ../src/greeter-login-page.c:398
 #: ../src/greeter-login-page.c:477
 msgid "Ok"
-msgstr "확인"
+msgstr "Ok"
 
 #: ../src/gooroom-greeter.c:414 ../src/greeter-login-page.c:478
 #: ../src/greeter-login-page.c:1050 ../src/greeter-login-page.c:1060
 #: ../src/greeter-network-page.ui.h:8
 msgid "Cancel"
-msgstr "취소"
+msgstr "Cancel"
 
 #: ../src/gooroom-greeter.c:459
 msgid "System Shutdown"
-msgstr "시스템 종료"
+msgstr "System Shutdown"
 
 #: ../src/gooroom-greeter.c:460
 msgid "Are you sure you want to close all programs and shut down the computer?"
-msgstr "모든 프로그램을 닫고 컴퓨터를 종료 하시겠습니까?"
+msgstr ""
+"Are you sure you want to close all programs and shut down the computer?"
 
 #: ../src/gooroom-greeter.c:465
 msgid "System Restart"
-msgstr "시스템 재시작"
+msgstr "System Restart"
 
 #: ../src/gooroom-greeter.c:466
 msgid "Are you sure you want to close all programs and restart the computer?"
-msgstr "모든 프로그램을 닫고 컴퓨터를 다시 시작하겠습니까?"
+msgstr "Are you sure you want to close all programs and restart the computer?"
 
 #: ../src/gooroom-greeter.c:471
 msgid "System Suspend"
-msgstr "시스템 절전"
+msgstr "System Suspend"
 
 #: ../src/gooroom-greeter.c:472
 msgid "Are you sure you want to suspend the computer?"
-msgstr "컴퓨터를 절전 모드로 전환하시겠습니까?"
+msgstr "Are you sure you want to suspend the computer?"
 
 #: ../src/gooroom-greeter.c:477
 msgid "System Hibernate"
-msgstr "시스템 최대절전"
+msgstr "System Hibernate"
 
 #: ../src/gooroom-greeter.c:478
 msgid "Are you sure you want to hibernate the computer?"
-msgstr "컴퓨터를 최대 절전 모드로 전환하시겠습니까?"
+msgstr "Are you sure you want to hibernate the computer?"
 
 #: ../src/greeter-assistant.c:88
 msgid ""
 "Help cannot be launched.\n"
 "Install the help package."
 msgstr ""
-"도움말을 실행할 수 없습니다.\n"
-"도움말 패키지 설치 후 다시 시도하십시오."
 
 #: ../src/greeter-login-page.c:290
 msgid ""
 "Initializing Settings for VPN.\n"
 "Please wait."
 msgstr ""
-"VPN 접속을 초기화합니다.\n"
-"잠시만 기다려 주십시오."
+"Initializing Settings for VPN.\n"
+"Please wait."
 
 #: ../src/greeter-login-page.c:545
 msgid ""
 "User authentication failed.\n"
 "If authentication fails more than 5 times, you can no longer log in."
 msgstr ""
-"사용자를 인증할 수 없습니다.\n"
-"5회이상 인증 실패시 로그인이 제한됩니다."
+"User authentication failed.\n"
+"If authentication fails more than 5 times, you can no longer log in."
 
 #: ../src/greeter-login-page.c:551 ../src/greeter-login-page.c:1273
 msgid ""
@@ -102,25 +101,25 @@ msgid ""
 "Log out of the other device and try again.\n"
 "If the problem persists, please contact your administrator."
 msgstr ""
-"이미 로그인 된 사용자 입니다.\n"
-"다른기기에서 로그아웃 후 다시 시도하십시오.\n"
-"그래도 문제가 계속된다면 관리자에게 문의하십시오."
+"You are already logged in.\n"
+"Log out of the other device and try again.\n"
+"If the problem persists, please contact your administrator."
 
 #: ../src/greeter-login-page.c:557
 msgid ""
 "It is not the VPN connection time.\n"
 "Please contact the administrator to check the access time and try again."
 msgstr ""
-"VPN 접속 가능시간이 아닙니다.\n"
-"접속 가능시간 확인후 다시 시도하거나 관리자에게 문의하십시오."
+"It is not the VPN connection time.\n"
+"Please contact the administrator to check the access time and try again."
 
 #: ../src/greeter-login-page.c:562
 msgid ""
 "It is not the day of the week for VPN access.\n"
 "Please contact the administrator to check the access time and try again."
 msgstr ""
-"VPN 접속 가능요일이 아닙니다.\n"
-"접속 가능요일 확인후 다시 시도하거나 관리자에게 문의하십시오."
+"It is not the day of the week for VPN access.\n"
+"Please contact the administrator to check the access time and try again."
 
 #: ../src/greeter-login-page.c:567
 msgid ""
@@ -128,8 +127,9 @@ msgid ""
 "exceeded.\n"
 "Please try again later or contact the administrator."
 msgstr ""
-"로그인 가능기간이 초과되어 VPN 접속을 진행할 수 없습니다.\n"
-"잠시 후 다시 시도하거나 관리자에게 문의하십시오."
+"The VPN connection cannot proceed because the login period has been "
+"exceeded.\n"
+"Please try again later or contact the administrator."
 
 #: ../src/greeter-login-page.c:572
 msgid ""
@@ -137,154 +137,150 @@ msgid ""
 "times.\n"
 "Please contact the administrator."
 msgstr ""
-"사용자 인증을 5회이상 실패하여 더 이상 로그인 할 수 없습니다.\n"
-"관리자에게 연락하여 접속 제한 해제를 요청하시기 바랍니다."
+"Login is not possible because user authentication has failed more than 5 "
+"times.\n"
+"Please contact the administrator."
 
 #: ../src/greeter-login-page.c:578
 msgid ""
 "The VPN connection cannot be proceeded due to the ID usage period exceeded.\n"
 "Please try again later or contact the administrator."
 msgstr ""
-"아이디 사용기간이 초과되어 VPN 접속을 진행할 수 없습니다.\n"
-"잠시 후 다시 시도하거나 관리자에게 문의하십시오"
+"The VPN connection cannot be proceeded due to the ID usage period exceeded.\n"
+"Please try again later or contact the administrator."
 
 #: ../src/greeter-login-page.c:583
 msgid ""
 "VPN connection cannot be proceeded because the password has expired.\n"
 "Please try again later or contact the administrator."
 msgstr ""
-"비밀번호 사용기간이 초과되어 VPN 접속을 진행할 수 없습니다.\n"
-"잠시 후 다시 시도하거나 관리자에게 문의하십시오."
+"VPN connection cannot be proceeded because the password has expired.\n"
+"Please try again later or contact the administrator."
 
 #: ../src/greeter-login-page.c:588
 msgid ""
 "The server cannot be reached due to network problems.\n"
 "Please check the network status and try again."
 msgstr ""
-"VPN 서버에 접속할 수 없습니다.\n"
-"네트워크 상태 확인 후 다시 시도하십시오."
+"The server cannot be reached due to network problems.\n"
+"Please check the network status and try again."
 
 #: ../src/greeter-login-page.c:593
 msgid ""
 "VPN connection cannot proceed due to a VPN server response error.\n"
 "Please try again later or contact the administrator."
 msgstr ""
-"VPN 서버 응답오류로 인해 VPN 접속을 진행할 수 없습니다.\n"
-"잠시 후 다시 시도하거나 관리자에게 문의하십시오."
+"VPN connection cannot proceed due to a VPN server response error.\n"
+"Please try again later or contact the administrator."
 
 #: ../src/greeter-login-page.c:598
 msgid ""
 "The connection to the server has been lost.\n"
 "Check the network status and connect again."
 msgstr ""
-"VPN 접속이 끊겼습니다.\n"
-"네트워크 상태 확인 후 다시 시도하십시오."
 
 #: ../src/greeter-login-page.c:603
 msgid ""
 "VPN connection cannot proceed due to VPN execution failure.\n"
 "Please try again later or contact the administrator."
 msgstr ""
-"VPN 실행 실패로 인해 VPN 접속을 진행할 수 없습니다.\n"
-"잠시 후 다시 시도하거나 관리자에게 문의하십시오."
+"VPN connection cannot proceed due to VPN execution failure.\n"
+"Please try again later or contact the administrator."
 
 #: ../src/greeter-login-page.c:608
 msgid ""
 "VPN connection cannot proceed due to a VPN setting error.\n"
 "Please try again later or contact the administrator."
 msgstr ""
-"VPN 설정 오류로 인해 VPN 접속을 진행할 수 없습니다.\n"
-"잠시 후 다시 시도하거나 관리자에게 문의하십시오."
+"VPN connection cannot proceed due to a VPN setting error.\n"
+"Please try again later or contact the administrator."
 
 #: ../src/greeter-login-page.c:613
 msgid ""
 "An error has occurred in the system's VPN service.\n"
 "Reboot your system and try again."
 msgstr ""
-"VPN 접속 서비스에 오류가 발생하였습니다.\n"
-"시스템 재부팅 후 다시 시도하십시오."
+"An error has occurred in the system's VPN service.\n"
+"Reboot your system and try again."
 
 #: ../src/greeter-login-page.c:618
 msgid ""
 "VPN login request failed.\n"
 "There is no reponse from server."
 msgstr ""
-"VPN 접속 요청에 실패하였습니다.\n"
-"서버로부터 응답이 없습니다."
+"VPN login request failed.\n"
+"There is no reponse from server."
 
 #: ../src/greeter-login-page.c:622
 msgid ""
 "VPN connection information is incorrect.\n"
 "Check the configuration file and try again."
 msgstr ""
-"VPN 접속 정보가 올바르지 않습니다.\n"
-"설정파일 확인 후 다시 시도하십시오."
+"VPN connection information is incorrect.\n"
+"Check the configuration file and try again."
 
 #: ../src/greeter-login-page.c:627
 msgid ""
 "VPN login request failed.\n"
 "Reboot your system and try again."
 msgstr ""
-"VPN 접속 요청에 실패하였습니다.\n"
-"시스템 재부팅 후 다시 시도하십시오."
+"VPN login request failed.\n"
+"Reboot your system and try again."
 
 #: ../src/greeter-login-page.c:638
 msgid "Authentication Failure"
-msgstr "인증 실패"
+msgstr "Login Failure (Authentication Failure)"
 
 #: ../src/greeter-login-page.c:639
 msgid "Error Code"
-msgstr "오류코드"
+msgstr "Error Code"
 
 #: ../src/greeter-login-page.c:641
 msgid "Please try again later or contact the administrator."
-msgstr "잠시 후 다시 시도하거나 관리자에게 문의하십시오."
+msgstr "Please try again later or contact the administrator."
 
 #: ../src/greeter-login-page.c:724 ../src/splash-window.ui.h:1
 msgid ""
 "Authentication is in progress.\n"
 "Please wait."
 msgstr ""
-"인증이 진행중 입니다.\n"
-"잠시만 기다려 주십시오."
+"Authentication is in progress.\n"
+"Please wait."
 
 #: ../src/greeter-login-page.c:1016
 msgid ""
 "You are required to change your password immediately (administrator enforced)"
 msgstr ""
-"비밀번호가 만료되었습니다.\n"
-"비밀번호를 즉시 변경하십시오."
+"You are required to change your password immediately (administrator enforced)"
 
 #: ../src/greeter-login-page.c:1017
 msgid "You are required to change your password immediately (password expired)"
 msgstr ""
-"비밀번호가 만료되었습니다.\n"
-"비밀번호를 즉시 변경하십시오."
+"You are required to change your password immediately (password expired)"
 
-# 주의, Linux-PAM 의 "Warning: your password will expire in %d day"의 번역의 일부분과 일치해야함
 #: ../src/greeter-login-page.c:1023
 msgid "your password will expire in"
-msgstr "일 내로 암호가 만료됩니다"
+msgstr "your password will expire in"
 
 #: ../src/greeter-login-page.c:1047
 msgid ""
 "Your password has expired.\n"
 "Please change your password immediately."
 msgstr ""
-"비밀번호가 만료되었습니다.\n"
-"비밀번호를 즉시 변경하십시오."
+"Your password has expired.\n"
+"Please change your password immediately."
 
 #: ../src/greeter-login-page.c:1049 ../src/greeter-login-page.c:1059
 msgid "Changing Password"
-msgstr "비밀번호 변경"
+msgstr "Changing Password"
 
 #: ../src/greeter-login-page.c:1057
 msgid ""
 "Your password has been issued temporarily.\n"
 "For security reasons, please change your password immediately."
 msgstr ""
-"임시로 발급된 비밀번호 입니다.\n"
-"보안을 위해서 비밀번호를 즉시 변경하십시오."
+"Your password has been issued temporarily.\n"
+"For security reasons, please change your password immediately."
 
 #: ../src/greeter-login-page.c:1070
 #, c-format
@@ -294,10 +290,10 @@ msgid ""
 "You can no longer log in.\n"
 "Do you want to change password now?"
 msgstr ""
-"보안을 위하여 비밀번호를 변경하시기 바랍니다.\n"
-"%s일 이내로 비밀번호를 변경하지 않으면\n"
-"비밀번호가 만료되어 더 이상 로그인 할 수 없습니다.\n"
-"지금 비밀번호를 변경하시겠습니까?"
+"Please change your password for security.\n"
+"If you do not change your password within %s day, your password expires.\n"
+"You can no longer log in.\n"
+"Do you want to change password now?"
 
 #: ../src/greeter-login-page.c:1076
 #, c-format
@@ -307,10 +303,10 @@ msgid ""
 "You can no longer log in.\n"
 "Do you want to change password now?"
 msgstr ""
-"보안을 위하여 비밀번호를 변경하시기 바랍니다.\n"
-"%s일 이내로 비밀번호를 변경하지 않으면\n"
-"비밀번호가 만료되어 더 이상 로그인 할 수 없습니다.\n"
-"지금 비밀번호를 변경하시겠습니까?"
+"Please change your password for security.\n"
+"If you do not change your password within %s days, your password expires.\n"
+"You can no longer log in.\n"
+"Do you want to change password now?"
 
 #: ../src/greeter-login-page.c:1083
 msgid ""
@@ -320,18 +316,19 @@ msgid ""
 "You can no longer log in.\n"
 "Do you want to change password now?"
 msgstr ""
-"보안을 위하여 비밀번호를 변경하시기 바랍니다.\n"
-"며칠 이내로 비밀번호를 변경하지 않으면\n"
-"비밀번호가 만료되어 더 이상 로그인 할 수 없습니다.\n"
-"지금 비밀번호를 변경하시겠습니까?"
+"Please change your password for security.\n"
+"If you do not change your password within a few days, your password "
+"expires.\n"
+"You can no longer log in.\n"
+"Do you want to change password now?"
 
 #: ../src/greeter-login-page.c:1091
 msgid "Change now"
-msgstr "지금 변경"
+msgstr "Change now"
 
 #: ../src/greeter-login-page.c:1091
 msgid "Later"
-msgstr "나중에"
+msgstr "Later"
 
 #: ../src/greeter-login-page.c:1102
 #, c-format
@@ -339,8 +336,8 @@ msgid ""
 "Your account will not be available after %s.\n"
 "Your account will expire in %s day."
 msgstr ""
-"이 계정은 %s일 이후로 사용할 수 없습니다.\n"
-"계정 만료까지 %s일 남았습니다."
+"Your account will not be available after %s.\n"
+"Your account will expire in %s day."
 
 #: ../src/greeter-login-page.c:1106
 #, c-format
@@ -348,8 +345,8 @@ msgid ""
 "Your account will not be available after %s.\n"
 "Your account will expire in %s days."
 msgstr ""
-"이 계정은 %s일 이후로 사용할 수 없습니다.\n"
-"계정 만료까지 %s일 남았습니다."
+"Your account will not be available after %s.\n"
+"Your account will expire in %s days."
 
 #: ../src/greeter-login-page.c:1124
 #, c-format
@@ -357,8 +354,8 @@ msgid ""
 "Your organization will not be available after %s.\n"
 "Your organization will expire in %s day."
 msgstr ""
-"이 계정이 속한 조직은 %s일 이후로 사용할 수 없습니다.\n"
-"조직 만료까지 %s일 남았습니다."
+"Your organization will not be available after %s.\n"
+"Your organization will expire in %s day."
 
 #: ../src/greeter-login-page.c:1128
 #, c-format
@@ -366,8 +363,8 @@ msgid ""
 "Your organization will not be available after %s.\n"
 "Your organization will expire in %s days."
 msgstr ""
-"이 계정이 속한 조직은 %s일 이후로 사용할 수 없습니다.\n"
-"조직 만료까지 %s일 남았습니다."
+"Your organization will not be available after %s.\n"
+"Your organization will expire in %s days."
 
 #: ../src/greeter-login-page.c:1146
 #, c-format
@@ -375,8 +372,8 @@ msgid ""
 "Your password will not be available after %s.\n"
 "Your password will expire in %s day."
 msgstr ""
-"이 비밀번호는 %s일 이후로 사용할 수 없습니다.\n"
-"비밀번호 만료까지 %s일 남았습니다."
+"Your password will not be available after %s.\n"
+"Your password will expire in %s day."
 
 #: ../src/greeter-login-page.c:1150
 #, c-format
@@ -384,20 +381,20 @@ msgid ""
 "Your password will not be available after %s.\n"
 "Your password will expire in %s days."
 msgstr ""
-"이 비밀번호는 %s일 이후로 사용할 수 없습니다.\n"
-"비밀번호 만료까지 %s일 남았습니다."
+"Your password will not be available after %s.\n"
+"Your password will expire in %s days."
 
 #: ../src/greeter-login-page.c:1168
 msgid "Duplicate logins detected with the same ID."
-msgstr "동일한 사번으로 중복로그인이 감지되었습니다."
+msgstr "Duplicate logins detected with the same ID."
 
 #: ../src/greeter-login-page.c:1171
 msgid "Client ID"
-msgstr "클라이언트 ID"
+msgstr "Client ID"
 
 #: ../src/greeter-login-page.c:1176
 msgid "Client Name"
-msgstr "클라이언트 이름"
+msgstr "Client Name"
 
 #: ../src/greeter-login-page.c:1181
 msgid "IP"
@@ -405,7 +402,7 @@ msgstr "IP"
 
 #: ../src/greeter-login-page.c:1186
 msgid "Local IP"
-msgstr "로컬 IP"
+msgstr "Local IP"
 
 #: ../src/greeter-login-page.c:1201
 #, c-format
@@ -415,49 +412,50 @@ msgid ""
 "You can no longer log in when the maximum number of login attempts is "
 "exceeded."
 msgstr ""
-"로그인 실패 (사용자 인증 오류)\n"
-"로그인 시도 가능 횟수가 %s회 남았습니다.\n"
-"로그인 시도 최대 가능 횟수 초과시 더이상 로그인 할 수 없습니다."
+"Authentication Failure\n"
+"You have %s login attempts remaining.\n"
+"You can no longer log in when the maximum number of login attempts is "
+"exceeded."
 
 #: ../src/greeter-login-page.c:1206
 msgid ""
 "The user could not be authenticated due to an unknown error.\n"
 "Please contact the administrator."
 msgstr ""
-"알 수 없는 오류로 인해 사용자를 인증할 수 없습니다.\n"
-"관리자에게 문의하십시오."
+"The user could not be authenticated due to an unknown error.\n"
+"Please contact the administrator."
 
 #: ../src/greeter-login-page.c:1214
 msgid ""
 "This account has deleted and is no longer available.\n"
 "Please contact the administrator."
 msgstr ""
-"이 계정은 삭제되어 더이상 사용할 수 없습니다.\n"
-"관리자에게 문의하십시오."
+"This account has deleted and is no longer available.\n"
+"Please contact the administrator."
 
 #: ../src/greeter-login-page.c:1220
 msgid ""
 "You attempted to log in from an unregistered device.\n"
 "Please contact the administrator."
 msgstr ""
-"등록되지 않은 기기에서 로그인을 시도하여 사용자를 인증할 수 없습니다.\n"
-"관리자에게 문의하십시오."
+"You attempted to log in from an unregistered device.\n"
+"Please contact the administrator."
 
 #: ../src/greeter-login-page.c:1226 ../src/greeter-login-page.c:1623
 msgid ""
 "Authentication Failure\n"
 "Please check the username and password and try again."
 msgstr ""
-"로그인 실패 (사용자 인증 오류)\n"
-"사용자(ID) 및 비밀번호 확인 후 다시 시도해 주십시오."
+"Authentication Failure\n"
+"Please check the username and password and try again."
 
 #: ../src/greeter-login-page.c:1232
 msgid ""
 "Login was denied because it violated the policy set by the GPMS.\n"
 "Please contact the administrator."
 msgstr ""
-"GPMS에 IP 정책이 존재하지 않아 로그인이 거부되었습니다.\n"
-"관리자에게 문의하십시오."
+"Login was denied because it violated the policy set by the GPMS.\n"
+"Please contact the administrator."
 
 #: ../src/greeter-login-page.c:1239
 msgid ""
@@ -465,8 +463,9 @@ msgid ""
 "GPMS.\n"
 "Please contact the administrator."
 msgstr ""
-"GPMS에서 설정한 정책(허용 IP)에 위배되어 로그인이 거부되었습니다.\n"
-"관리자에게 문의하십시오."
+"Login was denied because it violated the policy(Allowed IP) set by the "
+"GPMS.\n"
+"Please contact the administrator."
 
 #: ../src/greeter-login-page.c:1248
 msgid ""
@@ -474,24 +473,25 @@ msgid ""
 "you have exceeded the number of login attempts.\n"
 "Please try again in a moment."
 msgstr ""
-"로그인 시도 횟수를 초과하여 계정이 잠겼습니다.\n"
-"잠시 후 다시 시도해 주시기 바랍니다."
+"Your account has been locked because\n"
+"you have exceeded the number of login attempts.\n"
+"Please try again in a moment."
 
 #: ../src/greeter-login-page.c:1257
 msgid ""
 "This account has expired and is no longer available.\n"
 "Please contact the administrator."
 msgstr ""
-"이 계정은 사용기간 만료로 더이상 사용할 수 없습니다.\n"
-"관리자에게 문의하여 주시기 바랍니다."
+"This account has expired and is no longer available.\n"
+"Please contact the administrator."
 
 #: ../src/greeter-login-page.c:1265
 msgid ""
 "The password for your account has expired.\n"
 "Please contact the administrator."
 msgstr ""
-"비밀번호가 만료되어 로그인 할 수 없습니다.\n"
-"관리자에게 문의하여 주시기 바랍니다."
+"The password for your account has expired.\n"
+"Please contact the administrator."
 
 #: ../src/greeter-login-page.c:1282
 msgid ""
@@ -499,9 +499,9 @@ msgid ""
 "available.\n"
 "Please contact the administrator."
 msgstr ""
-"이 계정이 속한 조직의 사용기간이 만료되어\n"
-"해당 계정은 더이상 사용할 수 없습니다.\n"
-"관리자에게 문의하여 주시기 바랍니다."
+"Due to the expiration of your organization, this account is no longer "
+"available.\n"
+"Please contact the administrator."
 
 #: ../src/greeter-login-page.c:1291
 msgid ""
@@ -509,18 +509,17 @@ msgid ""
 "so you cannot login for a certain period of time.\n"
 "Please try again in a moment."
 msgstr ""
-"로그인 시도횟수를 초과하여 일정시간 접속할 수 없습니다.\n"
-"잠시 후 다시 시도해 주시기 바랍니다."
+"Login attempts exceeded the number of times,\n"
+"so you cannot login for a certain period of time.\n"
+"Please try again in a moment."
 
 #: ../src/greeter-login-page.c:1300
 msgid "Trial period has expired."
-msgstr "평가판 사용기간이 만료되었습니다."
+msgstr "Trial period has expired."
 
 #: ../src/greeter-login-page.c:1307
 msgid "Time error occurred."
-msgstr ""
-"인터넷으로부터 시간을 가져오지 못했습니다.\n"
-"네트워크 연결 확인 후 다시 시도해 주시기 바랍니다."
+msgstr "Time error occurred."
 
 #: ../src/greeter-login-page.c:1318
 #, c-format
@@ -528,8 +527,8 @@ msgid ""
 "The trial period is up to %s days.\n"
 "The trial period expires today."
 msgstr ""
-"평가판 사용기간이 %s까지 입니다.\n"
-"사용기간이 오늘 만료됩니다."
+"The trial period is up to %s days.\n"
+"The trial period expires today."
 
 #: ../src/greeter-login-page.c:1321
 #, c-format
@@ -537,8 +536,8 @@ msgid ""
 "The trial period is up to %s days.\n"
 "%s day left to expire."
 msgstr ""
-"평가판 사용기간이 %s까지 입니다.\n"
-"만료까지 %s일 남았습니다."
+"The trial period is up to %s days.\n"
+"%s day left to expire."
 
 #: ../src/greeter-login-page.c:1324
 #, c-format
@@ -546,55 +545,52 @@ msgid ""
 "The trial period is up to %s days.\n"
 "%s days left to expire."
 msgstr ""
-"평가판 사용기간이 %s까지 입니다.\n"
-"만료까지 %s일 남았습니다."
+"The trial period is up to %s days.\n"
+"%s days left to expire."
 
 #: ../src/greeter-login-page.c:1328
 msgid "The trial period is unknown."
-msgstr "평가판 사용기간을 확인할 수 없습니다."
+msgstr "The trial period is unknown"
 
-# 주의, Linux-PAM 의 "Current %s%spassword: "의 번역과 동일
 #: ../src/greeter-login-page.c:1361
 msgid "Current password: "
-msgstr "현재  암호:"
+msgstr "Current password: "
 
 #: ../src/greeter-login-page.c:1363
 msgid "Changing Password - [Step 1]"
-msgstr "비밀번호 변경 [1단계]"
+msgstr "Changing Password - [Step 1]"
 
 #: ../src/greeter-login-page.c:1364
 msgid "Enter current password :"
-msgstr "현재 비밀번호 입력 :"
+msgstr "Enter current password :"
 
-# 주의, Linux-PAM / libpwquality의 "New %s%spassword: " 의 번역과 동일
 #: ../src/greeter-login-page.c:1366
 msgid "New password: "
-msgstr "새  암호:"
+msgstr "New password: "
 
 #: ../src/greeter-login-page.c:1368
 msgid "Changing Password - [Step 2]"
-msgstr "비밀번호 변경 [2단계]"
+msgstr "Changing Password - [Step 2]"
 
 #: ../src/greeter-login-page.c:1369
 msgid "Enter new password :"
-msgstr "새 비밀번호 입력 :"
+msgstr "Enter new password :"
 
-# 주의, Linux-PAM / libpwquality의 "Retype new %s%spassword: " 의 번역과 동일
 #: ../src/greeter-login-page.c:1371
 msgid "Retype new password: "
-msgstr "새  암호 재입력:"
+msgstr "Retype new password: "
 
 #: ../src/greeter-login-page.c:1373
 msgid "Changing Password - [Step 3]"
-msgstr "비밀번호 변경 [3단계]"
+msgstr "Changing Password - [Step 3]"
 
 #: ../src/greeter-login-page.c:1374
 msgid "Retype new password :"
-msgstr "새 비밀번호 재입력 :"
+msgstr "Retype new password :"
 
 #: ../src/greeter-login-page.c:1519
 msgid "Failed to start session"
-msgstr "세션을 시작할 수 없습니다."
+msgstr "Failed to start session"
 
 #: ../src/greeter-login-page.c:1601
 msgid ""
@@ -602,9 +598,9 @@ msgid ""
 "the current password does not match.\n"
 "Please try again later."
 msgstr ""
-"현재 비밀번호가 일치하지 않아\n"
-"비밀번호 변경하기를 종료합니다.\n"
-"나중에 다시 시도하십시오."
+"Changing password is terminated because\n"
+"the current password does not match.\n"
+"Please try again later."
 
 #: ../src/greeter-login-page.c:1605
 msgid ""
@@ -612,9 +608,9 @@ msgid ""
 "so the change of the password is terminated.\n"
 "Please try again later."
 msgstr ""
-"새 비밀번호가 보안적합성에 위배되어\n"
-"비밀번호 변경하기를 종료합니다.\n"
-"나중에 다시 시도하십시오."
+"New password violates the security conformity,\n"
+"so the change of the password is terminated.\n"
+"Please try again later."
 
 #: ../src/greeter-login-page.c:1609
 msgid ""
@@ -622,126 +618,126 @@ msgid ""
 "so the change of password is terminated.\n"
 "Please try again later."
 msgstr ""
-"새 비밀번호 확인에서 비밀번호가 일치하지 않아\n"
-"비밀번호 변경하기를 종료합니다.\n"
-"나중에 다시 시도하십시오."
+"In Confirm New Password, the password did not match,\n"
+"so the change of password is terminated.\n"
+"Please try again later."
 
 #: ../src/greeter-login-page.c:1776
 msgid ""
 "You are not currently connected to the network.\n"
 "Click the 'Network Settings' button to set up the network first."
 msgstr ""
-"현재 네트워크에 연결되어 있지 않습니다.\n"
-"'네트워크 설정하기' 버튼을 눌러 네트워크를 먼저 설정하십시오."
+"You are not currently connected to the network.\n"
+"Click the 'Network Settings' button to set up the network first."
 
 #: ../src/greeter-login-page.c:1940
 msgid "Connect from external"
-msgstr "재택 접속하기"
+msgstr "Accessing from external"
 
 #: ../src/greeter-login-page.c:1941
 msgid "Connecting from internal"
-msgstr "SSO 통합 인증"
+msgstr "SSO Authentication"
 
 #: ../src/greeter-login-page.c:1946
 msgid "Connect from internal"
-msgstr "사내 접속하기"
+msgstr "Accessing from in-house"
 
 #: ../src/greeter-login-page.c:1947
 msgid "Connecting from external"
-msgstr "VPN 인증"
+msgstr "VPN Authentication"
 
 #: ../src/greeter-login-page.c:1973
 msgid ""
 "VPN service is down.\n"
 "Please enable VPN service and try again."
 msgstr ""
-"VPN 접속 서비스가 실행중이 아닙니다.\n"
-"서비스 실행 후 다시 시도해 주십시오."
+"VPN service is down.\n"
+"Please enable VPN service and try again."
 
 #: ../src/greeter-network-page.c:334
 msgctxt "Wireless access point"
 msgid "Other…"
-msgstr "기타 네트워크…"
+msgstr "Other…"
 
 #: ../src/greeter-network-page.c:445
 msgid "Wireless - No Use"
-msgstr "무선네트워크 - 사용안함"
+msgstr "Wireless - No Use"
 
 #: ../src/greeter-network-page.c:451
 msgid "Wireless - Use"
-msgstr "무선네트워크 - 사용"
+msgstr "Wireless - Use"
 
 #: ../src/greeter-network-page.c:494
 msgid ""
 "Completing Network Setup\n"
 "Connected to network"
-msgstr "네트워크 설정완료 - 연결됨"
+msgstr "Setup complete - Online"
 
 #: ../src/greeter-network-page.c:496
 msgid ""
 "Completing Network Setup\n"
 "No network connection"
-msgstr "네트워크 설정완료 - 연결없음"
+msgstr "Setup complete - Offline"
 
 #: ../src/greeter-network-page.c:658
 msgid "Wired - No Use"
-msgstr "유선네트워크 - 사용안함"
+msgstr "Wired - No Use"
 
 #: ../src/greeter-network-page.c:660
 msgid "Wired - Disconnected"
-msgstr "유선네트워크 - 연결끊김"
+msgstr "Wired - Disconnected"
 
 #: ../src/greeter-network-page.c:666
 msgid "Wired - Connected"
-msgstr "유선네트워크 - 연결됨"
+msgstr "Wired - Connected"
 
 #: ../src/greeter-network-page.c:716
 msgid "Wired - No Device"
-msgstr "유선네트워크 - 장치없음"
+msgstr "Wired - No Device"
 
 #: ../src/greeter-network-page.c:719
 msgid "Wireless - No Device"
-msgstr "무선네트워크 - 장치없음"
+msgstr "Wireless - No Device"
 
 #: ../src/greeter-network-page.c:1164 ../src/greeter-login-page.ui.h:5
 msgid "Network Settings"
-msgstr "네트워크 설정하기"
+msgstr "Network Settings"
 
 #: ../src/gooroom-greeter.ui.h:1
 msgid "Shutdown system"
-msgstr "시스템을 종료합니다."
+msgstr "Shut down the system."
 
 #: ../src/gooroom-greeter.ui.h:2
 msgid "Shutdown"
-msgstr "종료"
+msgstr "Shutdown"
 
 #: ../src/gooroom-greeter.ui.h:3
 msgid "Hibernate system"
-msgstr "시스템을 최대절전모드로 전환합니다."
+msgstr "Put the system into hibernation mode."
 
 #: ../src/gooroom-greeter.ui.h:4
 msgid "Hibernate"
-msgstr "최대절전"
+msgstr "Hibernation"
 
 #: ../src/gooroom-greeter.ui.h:5
 msgid "Suspend system"
-msgstr "시스템을 절전모드로 전환합니다."
+msgstr "Put the system into suspend mode."
 
 #: ../src/gooroom-greeter.ui.h:6
 msgid "Suspend"
-msgstr "절전"
+msgstr "Suspend"
 
 #: ../src/gooroom-greeter.ui.h:7
 msgid "Restart system"
-msgstr "시스템을 다시 시작합니다."
+msgstr "Restart the system."
 
 #: ../src/gooroom-greeter.ui.h:8
 msgid "Restart"
-msgstr "재시작"
+msgstr "Restart"
 
 #: ../src/greeter-assistant.ui.h:1
 msgid "Working From Home"
-msgstr "재택용"
+msgstr "Working from home"
 
 #: ../src/greeter-assistant.ui.h:2
 msgid ""
@@ -749,68 +745,68 @@ msgid ""
 "anywhere, including offices and homes, using the latest security technology "
 "and cloud infrastructure"
 msgstr ""
-"최신 보안기술 및 클라우드 인프라를 활용하여\n"
-"사무실, 재택 등 어디서나 스마트한 업무수행이 가능한\n"
-"KEPCO 노트북PC 보안 플랫폼"
+"KEPCO notebook PC security platform that enables\n"
+"smart business execution anywhere, including offices and homes,\n"
+"using the latest security technology and cloud infrastructure"
 
 #: ../src/greeter-assistant.ui.h:3
 msgid "Internal Inquiry Call"
-msgstr "사내문의"
+msgstr "In-house Inquiry Call"
 
 #: ../src/greeter-assistant.ui.h:4
 msgid "External Inquiry Call"
-msgstr "사외문의"
+msgstr "External Inquiry Call"
 
 #: ../src/greeter-assistant.ui.h:5
 msgid "Help"
-msgstr "도움말"
+msgstr "Help"
 
 #: ../src/greeter-login-page.ui.h:1
 msgid "Enter your username"
-msgstr "사번 입력"
+msgstr "Enter your employee number"
 
 #: ../src/greeter-login-page.ui.h:2
 msgid "Enter your password"
-msgstr "비밀번호 입력"
+msgstr "Enter your password"
 
 #: ../src/greeter-login-page.ui.h:3
 msgid "Login"
-msgstr "로그인"
+msgstr "Login"
 
 #: ../src/greeter-login-page.ui.h:4
 msgid "Remember ID"
-msgstr "ID 저장하기"
+msgstr "Remember ID"
 
 #: ../src/greeter-network-page.ui.h:1
 msgid ""
 "No network device\n"
 "Please contact the administrator."
 msgstr ""
-"네트워크 장치를 찾을 수 없습니다.\n"
-"관리자에게 문의하십시오."
+"No network device\n"
+"Please contact the administrator."
 
 #: ../src/greeter-network-page.ui.h:3
 msgid ""
 "Network information could not be found.\n"
 "Please contact the administrator."
 msgstr ""
-"네트워크 정보를 찾을 수 없습니다.\n"
-"관리자에게 문의하십시오."
+"Network information could not be found.\n"
+"Please contact the administrator."
 
 #: ../src/greeter-network-page.ui.h:5
 msgid ""
 "The system's network is inactive.\n"
 "Please click the button below to enable networking."
 msgstr ""
-"네트워크가 비활성화 상태입니다.\n"
-"아래 버튼을 눌러 네트워크를 활성화 하십시오."
+"The system's network is inactive.\n"
+"Please click the button below to enable networking."
 
 #: ../src/greeter-network-page.ui.h:7
 msgid "Enable Networking"
-msgstr "네트워크 사용하기"
+msgstr "Enable Networking"
 
 #~ msgid "VPN Connection Termination Warning"
-#~ msgstr "VPN 접속 종료 안내"
+#~ msgstr "VPN Connection Termination Warning"
 
 #~ msgid ""
 #~ "If you return to the first step,\n"
@@ -818,5 +814,7 @@ msgstr "네트워크 사용하기"
 #~ "you need to proceed with the authentication process again.\n"
 #~ "Would you like to continue anyway?"
 #~ msgstr ""
-#~ "현재 연결된 VPN 접속을 종료하고 다시 접속해야 합니다.\n"
-#~ "계속 하시겠습니까?"
+#~ "If you return to the first step,\n"
+#~ "the VPN connection is terminated and\n"
+#~ "you need to proceed with the authentication process again.\n"
+#~ "Would you like to continue anyway?"

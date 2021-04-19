@@ -7,7 +7,6 @@
     <property name="valign">start</property>
     <property name="border_width">10</property>
     <property name="modal">True</property>
-    <property name="default_width">480</property>
     <property name="type_hint">dialog</property>
     <property name="skip_taskbar_hint">True</property>
     <property name="skip_pager_hint">True</property>
@@ -34,7 +33,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkBox">
+          <object class="GtkBox" id="title_box">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="border_width">0</property>

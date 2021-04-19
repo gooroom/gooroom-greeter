@@ -63,6 +63,7 @@ void         greeter_assistant_add_page               (GreeterAssistant *assista
 void         greeter_assistant_next_page              (GreeterAssistant *assistant);
 void         greeter_assistant_prev_page              (GreeterAssistant *assistant);
 void         greeter_assistant_first_page             (GreeterAssistant *assistant);
+void         greeter_assistant_reload_page            (GreeterAssistant *assistant);
 
 const gchar *greeter_assistant_get_title              (GreeterAssistant *assistant);
 GreeterPage *greeter_assistant_get_current_page       (GreeterAssistant *assistant);

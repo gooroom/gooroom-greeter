@@ -15,20 +15,18 @@ gooroom_greeter_SOURCES = \
 	greeterconfiguration.c \
 	greeter-assistant.h \
 	greeter-assistant.c \
+	greeter-login-page.h \
+	greeter-login-page.c \
+	greeter-network-page.h \
+	greeter-network-page.c \
 	greeter-page.h \
 	greeter-page.c \
 	greeter-page-manager.h \
 	greeter-page-manager.c \
-	greeter-mode-page.h \
-	greeter-mode-page.c \
-	greeter-network-page.h \
-	greeter-network-page.c \
 	network-dialogs.h \
 	network-dialogs.c \
 	greeter-connection-editor-window.h \
 	greeter-connection-editor-window.c \
-	greeter-login-page.h \
-	greeter-login-page.c \
 	greeter-password-settings-dialog.h \
 	greeter-password-settings-dialog.c \
 	splash-window.h \

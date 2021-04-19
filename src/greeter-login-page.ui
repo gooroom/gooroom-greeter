@@ -14,22 +14,55 @@
         <property name="can_focus">False</property>
         <property name="valign">start</property>
         <property name="orientation">vertical</property>
-        <property name="spacing">10</property>
+        <property name="spacing">20</property>
         <child>
-          <object class="GtkEntry" id="id_entry">
-            <property name="width_request">256</property>
+          <object class="GtkBox">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="has_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="invisible_char">●</property>
-            <property name="primary_icon_name">entry-username-symbolic</property>
-            <property name="primary_icon_activatable">False</property>
-            <property name="secondary_icon_activatable">False</property>
-            <property name="placeholder_text" translatable="yes">Enter your username</property>
-            <style>
-              <class name="login-entry"/>
-            </style>
+            <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">10</property>
+            <child>
+              <object class="GtkEntry" id="id_entry">
+                <property name="width_request">256</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="has_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="invisible_char">●</property>
+                <property name="primary_icon_name">entry-username-symbolic</property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="secondary_icon_activatable">False</property>
+                <property name="placeholder_text" translatable="yes">Enter your username</property>
+                <style>
+                  <class name="login-entry"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkEntry" id="pw_entry">
+                <property name="width_request">256</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="visibility">False</property>
+                <property name="invisible_char">●</property>
+                <property name="primary_icon_name">entry-password-symbolic</property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="placeholder_text" translatable="yes">Enter your password</property>
+                <style>
+                  <class name="login-entry"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -38,32 +71,11 @@
           </packing>
         </child>
         <child>
-          <object class="GtkEntry" id="pw_entry">
-            <property name="width_request">256</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="visibility">False</property>
-            <property name="invisible_char">●</property>
-            <property name="primary_icon_name">entry-password-symbolic</property>
-            <property name="primary_icon_activatable">False</property>
-            <property name="placeholder_text" translatable="yes">Enter your password</property>
-            <style>
-              <class name="login-entry"/>
-            </style>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-        <child>
           <object class="GtkButton" id="login_button">
             <property name="name">login_button</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="margin_top">8</property>
             <child>
               <object class="GtkLabel">
                 <property name="visible">True</property>
@@ -79,70 +91,70 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkCheckButton" id="remember_id_checkbutton">
+            <property name="label" translatable="yes">Remember ID</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="halign">start</property>
+            <property name="draw_indicator">True</property>
+            <style>
+              <class name="id-remember-button"/>
+            </style>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
             <property name="position">2</property>
           </packing>
         </child>
         <child>
-          <object class="GtkInfoBar" id="infobar">
+          <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_top">12</property>
-            <child internal-child="action_area">
-              <object class="GtkButtonBox">
-                <property name="can_focus">False</property>
-                <property name="spacing">6</property>
-                <property name="layout_style">end</property>
-                <child>
-                  <placeholder/>
-                </child>
+            <property name="orientation">vertical</property>
+            <property name="spacing">10</property>
+            <child>
+              <object class="GtkButton" id="mode_switch_button">
+                <property name="label" translatable="yes"></property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="halign">start</property>
+                <style>
+                  <class name="link-button"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child internal-child="content_area">
-              <object class="GtkBox">
-                <property name="can_focus">False</property>
-                <property name="spacing">16</property>
-                <child>
-                  <object class="GtkLabel" id="msg_label">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" comments="This is a placeholder string and will be replaced with a message from PAM">[Messages]</property>
-                    <property name="wrap">True</property>
-                    <property name="ellipsize">end</property>
-                    <property name="width_chars">0</property>
-                    <property name="max_width_chars">0</property>
-                    <property name="lines">5</property>
-                    <property name="xalign">0</property>
-                    <style>
-                      <class name="error-label"/>
-                    </style>
-                  </object>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">True</property>
                 <property name="fill">True</property>
                 <property name="position">0</property>
               </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkButton" id="network_settings_button">
+                <property name="label" translatable="yes">Network Settings</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="halign">start</property>
+                <style>
+                  <class name="link-button"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
             </child>
-            <style>
-              <class name="greeter-infobar"/>
-            </style>
           </object>
           <packing>
-            <property name="expand">True</property>
+            <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="position">3</property>
           </packing>

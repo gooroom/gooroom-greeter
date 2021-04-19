@@ -30,7 +30,6 @@
 #define CONFIG_KEY_DEFAULT_USER_IMAGE   "default-user-image"
 #define CONFIG_KEY_KEYBOARD             "keyboard"
 #define CONFIG_KEY_READER               "reader"
-#define CONFIG_KEY_CLOCK_FORMAT         "clock-format"
 #define CONFIG_KEY_ACTIVE_MONITOR       "active-monitor"
 #define CONFIG_KEY_POSITION             "position"
 #define CONFIG_KEY_PANEL_POSITION       "panel-position"
@@ -46,7 +45,9 @@
 
 #define STATE_SECTION_GREETER           "/greeter"
 #define STATE_SECTION_A11Y              "/a11y-states"
-#define STATE_KEY_LAST_USER             "last-user"
+#define STATE_KEY_REMEMBER_USER         "remember-user"
+#define STATE_KEY_INTERNAL_LAST_USER    "internal-last-user"
+#define STATE_KEY_EXTERNAL_LAST_USER    "external-last-user"
 #define STATE_KEY_LAST_SESSION          "last-session"
 
 

@@ -10,18 +10,14 @@ backgrounds_DATA = \
 	logo-bg-005.jpg \
 	logo-bg-006.jpg \
 	logo-bg-007.jpg \
-	external-login-bg.png \
-	internal-login-bg.png
+	external-login-bg.svg \
+	internal-login-bg.svg
 
 iconsymbolicstatusdir = $(datadir)/icons/hicolor/scalable/status
 iconsymbolicstatus_DATA = \
-	mode-internal-symbolic.svg \
-	mode-external-symbolic.svg \
 	entry-password-symbolic.svg \
 	entry-username-symbolic.svg \
-	splash-spinner-symbolic.svg \
-	arrow-forward-symbolic.svg \
-	arrow-backward-symbolic.svg
+	splash-spinner-symbolic.svg
 
 gtk_update_icon_cache = gtk-update-icon-cache -f -t $(datadir)/icons/hicolor
 

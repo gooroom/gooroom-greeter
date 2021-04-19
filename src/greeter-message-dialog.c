@@ -27,6 +27,7 @@
 
 struct _GreeterMessageDialogPrivate {
 	GtkWidget *icon_image;
+	GtkWidget *title_box;
 	GtkWidget *title_label;
 	GtkWidget *message_label;
 };
@@ -34,21 +35,16 @@ struct _GreeterMessageDialogPrivate {
 G_DEFINE_TYPE_WITH_PRIVATE (GreeterMessageDialog, greeter_message_dialog, GTK_TYPE_DIALOG);
 
 
-static void
-greeter_message_dialog_close (GtkDialog *dialog)
-{
-}
+//static void
+//greeter_message_dialog_close (GtkDialog *dialog)
+//{
+//}
 
-#if 0
 static void
 greeter_message_dialog_finalize (GObject *object)
 {
-	GreeterMessageDialog *dialog = GREETER_ARS_DIALOG (object);
-	GreeterMessageDialogPrivate *priv = dialog->priv;
-
 	G_OBJECT_CLASS (greeter_message_dialog_parent_class)->finalize (object);
 }
-#endif
 
 static void
 greeter_message_dialog_init (GreeterMessageDialog *dialog)
@@ -70,22 +66,30 @@ greeter_message_dialog_init (GreeterMessageDialog *dialog)
 
 		gtk_widget_set_visual (GTK_WIDGET (dialog), visual);
 	}
+
+//	PangoAttrList *attrs;
+//	PangoAttribute *attr;
+//	attrs = pango_attr_list_new ();
+//	attr = pango_attr_rise_new (1000);
+//	pango_attr_list_insert (attrs, attr);
+//	gtk_label_set_attributes (GTK_LABEL (dialog->priv->message_label), attrs);
 }
 
 static void
 greeter_message_dialog_class_init (GreeterMessageDialogClass *klass)
 {
-//	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-	GtkDialogClass *dialog_class = GTK_DIALOG_CLASS (klass);
+	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+//	GtkDialogClass *dialog_class = GTK_DIALOG_CLASS (klass);
 
-//	gobject_class->finalize = greeter_message_dialog_finalize;
+	gobject_class->finalize = greeter_message_dialog_finalize;
 
-	dialog_class->close = greeter_message_dialog_close;
+//	dialog_class->close = greeter_message_dialog_close;
 
 	gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass),
                                                  "/kr/gooroom/greeter/greeter-message-dialog.ui");
 
 	gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GreeterMessageDialog, icon_image);
+	gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GreeterMessageDialog, title_box);
 	gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GreeterMessageDialog, title_label);
 	gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GreeterMessageDialog, message_label);
 }
@@ -114,8 +118,12 @@ void
 greeter_message_dialog_set_title (GreeterMessageDialog *dialog,
                                   const char           *title)
 {
-	if (title)
+	if (title) {
+		gtk_widget_show (dialog->priv->title_label);
 		gtk_label_set_text (GTK_LABEL (dialog->priv->title_label), title);
+	} else {
+		gtk_widget_hide (dialog->priv->title_label);
+	}
 }
 
 void

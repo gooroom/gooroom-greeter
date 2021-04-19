@@ -3,9 +3,8 @@
 	<gresource prefix="/kr/gooroom/greeter">
 		<file preprocess="xml-stripblanks">gooroom-greeter.ui</file>
 		<file preprocess="xml-stripblanks">greeter-assistant.ui</file>
-		<file preprocess="xml-stripblanks">greeter-mode-page.ui</file>
-		<file preprocess="xml-stripblanks">greeter-network-page.ui</file>
 		<file preprocess="xml-stripblanks">greeter-login-page.ui</file>
+		<file preprocess="xml-stripblanks">greeter-network-page.ui</file>
 		<file preprocess="xml-stripblanks">splash-window.ui</file>
 		<file preprocess="xml-stripblanks">greeter-message-dialog.ui</file>
 		<file preprocess="xml-stripblanks">greeter-password-settings-dialog.ui</file>
@@ -13,12 +12,18 @@
 
     <gresource prefix="/kr/gooroom/greeter">
         <file compressed="true" alias="theme.css">../data/theme/theme.css</file>
+        <file compressed="true" alias="checkbox-checked.svg">../data/images/checkbox-checked.svg</file>
+        <file compressed="true" alias="checkbox-unchecked.svg">../data/images/checkbox-unchecked.svg</file>
     </gresource>
 
 	<gresource prefix="/kr/gooroom/greeter">
         <file alias="call">../data/images/call.svg</file>
         <file alias="help">../data/images/help.svg</file>
         <file alias="logo">../data/images/logo.svg</file>
-        <file alias="brand">../data/images/brand.svg</file>
+        <file alias="brand-normal">../data/images/brand-normal.svg</file>
+        <file alias="brand-internal">../data/images/brand-internal.svg</file>
+        <file alias="brand-external">../data/images/brand-external.svg</file>
+        <file alias="mode-internal">../data/images/mode-internal.svg</file>
+        <file alias="mode-external">../data/images/mode-external.svg</file>
 	</gresource>
 </gresources>

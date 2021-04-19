@@ -30,7 +30,9 @@
 
 enum {
 	GO_NEXT,
+	GO_PREV,
 	GO_FIRST,
+	RELOAD,
 	LAST_SIGNAL
 };
 
@@ -56,21 +58,6 @@ struct _GreeterPageManagerPrivate {
 
 G_DEFINE_TYPE_WITH_PRIVATE (GreeterPageManager, greeter_page_manager, G_TYPE_OBJECT)
 
-
-//static void
-//get_monitor_geometry (GtkWidget    *widget,
-//                      GdkRectangle *geometry)
-//{
-//	GdkDisplay *d;
-//	GdkWindow  *w;
-//	GdkMonitor *m;
-//
-//	d = gdk_display_get_default ();
-//	w = gtk_widget_get_window (widget);
-//	m = gdk_display_get_monitor_at_window (d, w);
-//
-//	gdk_monitor_get_geometry (m, geometry);
-//}
 
 static void
 greeter_page_manager_finalize (GObject *object)
@@ -108,10 +95,26 @@ greeter_page_manager_class_init (GreeterPageManagerClass *klass)
                                      g_cclosure_marshal_VOID__VOID,
                                      G_TYPE_NONE, 0);
 
+	signals[GO_PREV] = g_signal_new ("go-prev",
+                                     GREETER_TYPE_PAGE_MANAGER,
+                                     G_SIGNAL_RUN_FIRST,
+                                     G_STRUCT_OFFSET (GreeterPageManagerClass, go_prev),
+                                     NULL, NULL,
+                                     g_cclosure_marshal_VOID__VOID,
+                                     G_TYPE_NONE, 0);
+
 	signals[GO_FIRST] = g_signal_new ("go-first",
                                      GREETER_TYPE_PAGE_MANAGER,
                                      G_SIGNAL_RUN_FIRST,
                                      G_STRUCT_OFFSET (GreeterPageManagerClass, go_first),
+                                     NULL, NULL,
+                                     g_cclosure_marshal_VOID__VOID,
+                                     G_TYPE_NONE, 0);
+
+	signals[RELOAD] = g_signal_new ("reload",
+                                     GREETER_TYPE_PAGE_MANAGER,
+                                     G_SIGNAL_RUN_FIRST,
+                                     G_STRUCT_OFFSET (GreeterPageManagerClass, reload),
                                      NULL, NULL,
                                      g_cclosure_marshal_VOID__VOID,
                                      G_TYPE_NONE, 0);
@@ -208,9 +211,21 @@ greeter_page_manager_go_next (GreeterPageManager *manager)
 }
 
 void
+greeter_page_manager_go_prev (GreeterPageManager *manager)
+{
+	g_signal_emit (G_OBJECT (manager), signals[GO_PREV], 0);
+}
+
+void
 greeter_page_manager_go_first (GreeterPageManager *manager)
 {
 	g_signal_emit (G_OBJECT (manager), signals[GO_FIRST], 0);
+}
+
+void
+greeter_page_manager_reload (GreeterPageManager *manager)
+{
+	g_signal_emit (G_OBJECT (manager), signals[RELOAD], 0);
 }
 
 void

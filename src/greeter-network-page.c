@@ -62,6 +62,8 @@ struct _GreeterNetworkPagePrivate {
 	GtkWidget *no_device_label;
 	GtkWidget *no_nm_label;
 	GtkWidget *network_enable_label;
+	GtkWidget *done_button;
+	GtkWidget *cancel_button;
 
 	NMClient *nm_client;
 
@@ -476,6 +478,7 @@ static gboolean
 sync_complete (GreeterNetworkPage *page)
 {
 	gboolean activated = FALSE;
+	const gchar *done_button_label;
 	GreeterNetworkPagePrivate *priv = page->priv;
 	GreeterPageManager *manager = GREETER_PAGE (page)->manager;
 
@@ -487,7 +490,12 @@ sync_complete (GreeterNetworkPage *page)
 		activated |= (nm_device_get_state (priv->nm_device_wifi) == NM_DEVICE_STATE_ACTIVATED);
 	}
 
-	greeter_page_set_complete (GREETER_PAGE (page), activated);
+	if (activated) {
+		done_button_label = _("Completing Network Setup\nConnected to network");
+	} else {
+		done_button_label = _("Completing Network Setup\nNo network connection");
+	}
+	gtk_button_set_label (GTK_BUTTON (priv->done_button), done_button_label);
 
 	greeter_page_manager_set_network_available (manager, activated);
 
@@ -692,7 +700,7 @@ update_page_ui (GreeterNetworkPage *page)
 	}
 
 	if (!nm_client_networking_get_enabled (priv->nm_client)) {
-		gtk_widget_set_sensitive (page->priv->network_enable_button, TRUE);
+		gtk_widget_set_sensitive (priv->network_enable_button, TRUE);
 		gtk_widget_show (priv->no_network_box);
 		return;
 	}
@@ -1009,6 +1017,20 @@ wired_details_button_clicked_cb (GtkButton *button,
 }
 
 static void
+done_button_clicked_cb (GtkButton *button,
+                        gpointer   user_data)
+{
+	greeter_page_manager_go_prev (GREETER_PAGE (user_data)->manager);
+}
+
+static void
+cancel_button_clicked_cb (GtkButton *button,
+                          gpointer   user_data)
+{
+	greeter_page_manager_go_prev (GREETER_PAGE (user_data)->manager);
+}
+
+static void
 start_action_for_networking_enabled (GreeterNetworkPage *page)
 {
 	const GPtrArray *devices;
@@ -1099,17 +1121,64 @@ nm_client_networking_enable_changed_cb (NMClient   *client,
 	update_page_ui (page);
 }
 
+//static gboolean
+//greeter_network_page_should_show (GreeterPage *page)
+//{
+//	return TRUE;
+//}
+
 static void
-vpn_service_reload_done_cb (GPid pid, gint status, gpointer user_data)
+greeter_network_page_dispose (GObject *object)
+{
+	GreeterNetworkPage *page = GREETER_NETWORK_PAGE (object);
+	GreeterNetworkPagePrivate *priv = page->priv;
+
+	cancel_periodic_refresh (page);
+
+	g_clear_object (&priv->nm_client);
+	g_clear_object (&priv->nm_device_eth);
+	g_clear_object (&priv->nm_device_wifi);
+
+	G_OBJECT_CLASS (greeter_network_page_parent_class)->dispose (object);
+}
+
+//static void
+//greeter_network_page_constructed (GObject *object)
+//{
+//	G_OBJECT_CLASS (greeter_network_page_parent_class)->constructed (object);
+//}
+
+static void
+greeter_network_page_init (GreeterNetworkPage *page)
 {
 	GError *error = NULL;
-	GreeterNetworkPage *page = GREETER_NETWORK_PAGE (user_data);
-	GreeterNetworkPagePrivate *priv = page->priv;
-	GreeterPageManager *manager = GREETER_PAGE (page)->manager;
+	GreeterNetworkPagePrivate *priv;
+	priv = page->priv = greeter_network_page_get_instance_private (page);
 
-    g_spawn_close_pid (pid);
+	priv->nm_device_eth = NULL;
+	priv->nm_device_wifi = NULL;
+	priv->old_network_enabled = TRUE;
 
-	greeter_page_manager_hide_splash (manager);
+	gtk_widget_init_template (GTK_WIDGET (page));
+
+	greeter_page_set_title (GREETER_PAGE (page), _("Network Settings"));
+
+	gtk_list_box_set_header_func (GTK_LIST_BOX (priv->device_list), update_header_func, NULL, NULL);
+	gtk_list_box_set_header_func (GTK_LIST_BOX (priv->wifi_list), update_header_func, NULL, NULL);
+	gtk_list_box_set_sort_func (GTK_LIST_BOX (priv->wifi_list), ap_sort, NULL, NULL);
+
+	g_signal_connect (priv->wired_switch, "state-set",
+                      G_CALLBACK (wired_switch_toggled_cb), page);
+	g_signal_connect (priv->wired_details_button, "clicked",
+                      G_CALLBACK (wired_details_button_clicked_cb), page);
+	g_signal_connect (priv->wifi_list, "row-activated",
+                      G_CALLBACK (row_activated), page);
+	g_signal_connect (priv->network_enable_button, "clicked",
+                      G_CALLBACK (network_enable_button_clicked_cb), page);
+	g_signal_connect (priv->done_button, "clicked",
+                      G_CALLBACK (done_button_clicked_cb), page);
+	g_signal_connect (priv->cancel_button, "clicked",
+                      G_CALLBACK (cancel_button_clicked_cb), page);
 
 	priv->nm_client = nm_client_new (NULL, &error);
 	if (!priv->nm_client) {
@@ -1136,89 +1205,8 @@ vpn_service_reload_done_cb (GPid pid, gint status, gpointer user_data)
 
 out:
 	update_page_ui (page);
-}
-
-static gboolean
-reload_vpn_service (gpointer user_data)
-{
-    GPid pid;
-    gchar **argv;
-    const gchar *cmd;
-	GtkWidget *toplevel;
-	const char *message;
-	GreeterNetworkPage *page = GREETER_NETWORK_PAGE (user_data);
-	GreeterPageManager *manager = GREETER_PAGE (page)->manager;
-
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (page));
-	message = _("Initializing Settings for VPN.\nPlease wait...");
-
-	greeter_page_manager_show_splash (manager, toplevel, message, NULL);
-
-	cmd = "/bin/systemctl restart gooroom-vpn-daemon.service";
-
-	g_shell_parse_argv (cmd, NULL, &argv, NULL);
-
-	if (g_spawn_async (NULL, argv, NULL, G_SPAWN_DO_NOT_REAP_CHILD, NULL, NULL, &pid, NULL))
-		g_child_watch_add (pid, (GChildWatchFunc) vpn_service_reload_done_cb, page);
-
-	g_strfreev (argv);
-
-	return FALSE;
-}
-
-static void
-greeter_network_page_dispose (GObject *object)
-{
-	GreeterNetworkPage *page = GREETER_NETWORK_PAGE (object);
-	GreeterNetworkPagePrivate *priv = page->priv;
-
-	cancel_periodic_refresh (page);
-
-	g_clear_object (&priv->nm_client);
-	g_clear_object (&priv->nm_device_eth);
-	g_clear_object (&priv->nm_device_wifi);
-
-	G_OBJECT_CLASS (greeter_network_page_parent_class)->dispose (object);
-}
-
-static void
-greeter_network_page_constructed (GObject *object)
-{
-	GreeterNetworkPage *page = GREETER_NETWORK_PAGE (object);
-
-	G_OBJECT_CLASS (greeter_network_page_parent_class)->constructed (object);
-
-	g_idle_add ((GSourceFunc)reload_vpn_service, page);
 
 	gtk_widget_show (GTK_WIDGET (page));
-}
-
-static void
-greeter_network_page_init (GreeterNetworkPage *page)
-{
-	GreeterNetworkPagePrivate *priv;
-	priv = page->priv = greeter_network_page_get_instance_private (page);
-
-	priv->nm_device_eth = NULL;
-	priv->nm_device_wifi = NULL;
-	priv->old_network_enabled = TRUE;
-
-	gtk_widget_init_template (GTK_WIDGET (page));
-
-	greeter_page_set_title (GREETER_PAGE (page), _("Network Settings"));
-
-	gtk_list_box_set_header_func (GTK_LIST_BOX (priv->device_list), update_header_func, NULL, NULL);
-	gtk_list_box_set_header_func (GTK_LIST_BOX (priv->wifi_list), update_header_func, NULL, NULL);
-	gtk_list_box_set_sort_func (GTK_LIST_BOX (priv->wifi_list), ap_sort, NULL, NULL);
-
-	g_signal_connect (priv->wired_switch, "state-set",
-                      G_CALLBACK (wired_switch_toggled_cb), page);
-	g_signal_connect (priv->wired_details_button, "clicked",
-                      G_CALLBACK (wired_details_button_clicked_cb), page);
-	g_signal_connect (priv->wifi_list, "row-activated",
-                      G_CALLBACK (row_activated), page);
-	g_signal_connect (priv->network_enable_button, "clicked",
-                      G_CALLBACK (network_enable_button_clicked_cb), page);
 }
 
 static void
@@ -1229,7 +1217,7 @@ greeter_network_page_class_init (GreeterNetworkPageClass *klass)
 	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
 	gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass),
-			"/kr/gooroom/greeter/greeter-network-page.ui");
+                                                 "/kr/gooroom/greeter/greeter-network-page.ui");
 
 	gtk_widget_class_bind_template_child_private (widget_class, GreeterNetworkPage, network_box);
 	gtk_widget_class_bind_template_child_private (widget_class, GreeterNetworkPage, device_frame);
@@ -1251,10 +1239,14 @@ greeter_network_page_class_init (GreeterNetworkPageClass *klass)
 	gtk_widget_class_bind_template_child_private (widget_class, GreeterNetworkPage, no_nm_label);
 	gtk_widget_class_bind_template_child_private (widget_class, GreeterNetworkPage, network_enable_label);
 	gtk_widget_class_bind_template_child_private (widget_class, GreeterNetworkPage, network_enable_button);
+	gtk_widget_class_bind_template_child_private (widget_class, GreeterNetworkPage, done_button);
+	gtk_widget_class_bind_template_child_private (widget_class, GreeterNetworkPage, cancel_button);
 
 	page_class->page_id = PAGE_ID;
+//	page_class->shown = greeter_network_page_shown;
+//	page_class->should_show = greeter_network_page_should_show;
 
-	object_class->constructed = greeter_network_page_constructed;
+//	object_class->constructed = greeter_network_page_constructed;
 	object_class->dispose = greeter_network_page_dispose;
 }
 

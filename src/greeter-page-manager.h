@@ -53,7 +53,9 @@ struct _GreeterPageManagerClass
 	GObjectClass __parent_class__;
 
 	void (*go_next)  (GreeterPageManager *manager);
+	void (*go_prev)  (GreeterPageManager *manager);
 	void (*go_first) (GreeterPageManager *manager);
+	void (*reload)   (GreeterPageManager *manager);
 };
 
 
@@ -74,7 +76,9 @@ void                greeter_page_manager_set_network_available (GreeterPageManag
 gboolean            greeter_page_manager_get_network_available (GreeterPageManager *manager);
 
 void                greeter_page_manager_go_next      (GreeterPageManager *manager);
+void                greeter_page_manager_go_prev      (GreeterPageManager *manager);
 void                greeter_page_manager_go_first     (GreeterPageManager *manager);
+void                greeter_page_manager_reload       (GreeterPageManager *manager);
 
 void                greeter_page_manager_show_splash  (GreeterPageManager *manager,
                                                        GtkWidget          *parent,
