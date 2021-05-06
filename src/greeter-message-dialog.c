@@ -16,7 +16,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#include <config.h>
 #endif
 
 #include <glib.h>
@@ -26,6 +26,7 @@
 #include "greeter-message-dialog.h"
 
 struct _GreeterMessageDialogPrivate {
+	GtkWidget *parent;
 	GtkWidget *icon_image;
 	GtkWidget *title_label;
 	GtkWidget *message_label;
@@ -34,26 +35,56 @@ struct _GreeterMessageDialogPrivate {
 G_DEFINE_TYPE_WITH_PRIVATE (GreeterMessageDialog, greeter_message_dialog, GTK_TYPE_DIALOG);
 
 
+
 static void
-greeter_message_dialog_close (GtkDialog *dialog)
+set_parent (GreeterMessageDialog *dialog,
+            GtkWidget            *parent)
 {
+	if (parent)
+		dialog->priv->parent = parent;
 }
 
-#if 0
+static void
+greeter_message_dialog_size_allocate (GtkWidget     *widget,
+                                      GtkAllocation *allocation)
+{
+	GreeterMessageDialog *dialog = GREETER_MESSAGE_DIALOG (widget);
+	GreeterMessageDialogPrivate *priv = dialog->priv;
+
+	if (GTK_WIDGET_CLASS (greeter_message_dialog_parent_class)->size_allocate)
+		GTK_WIDGET_CLASS (greeter_message_dialog_parent_class)->size_allocate (widget, allocation);
+
+	if (!gtk_widget_get_realized (widget))
+		return;
+
+	if (priv->parent) {
+		GtkWidget *toplevel;
+		gint x, y, p_w, p_h;
+
+		toplevel = gtk_widget_get_toplevel (priv->parent);
+
+		gtk_widget_translate_coordinates (priv->parent, toplevel, 0, 0, &x, &y);
+		gtk_widget_get_size_request (priv->parent, &p_w, &p_h);
+
+		gtk_window_move (GTK_WINDOW (dialog),
+                         x + (p_w - allocation->width) / 2,
+                         y + (p_h - allocation->height) / 2 );
+	}
+}
+
 static void
 greeter_message_dialog_finalize (GObject *object)
 {
-	GreeterMessageDialog *dialog = GREETER_ARS_DIALOG (object);
-	GreeterMessageDialogPrivate *priv = dialog->priv;
-
 	G_OBJECT_CLASS (greeter_message_dialog_parent_class)->finalize (object);
 }
-#endif
 
 static void
 greeter_message_dialog_init (GreeterMessageDialog *dialog)
 {
-	dialog->priv = greeter_message_dialog_get_instance_private (dialog);
+	PangoAttrList *attrs;
+	PangoAttribute *attr;
+	GreeterMessageDialogPrivate *priv;
+	priv = dialog->priv = greeter_message_dialog_get_instance_private (dialog);
 
 	gtk_widget_init_template (GTK_WIDGET (dialog));
 
@@ -70,17 +101,21 @@ greeter_message_dialog_init (GreeterMessageDialog *dialog)
 
 		gtk_widget_set_visual (GTK_WIDGET (dialog), visual);
 	}
+
+	attrs = pango_attr_list_new ();
+	attr = pango_attr_rise_new (8000);
+	pango_attr_list_insert (attrs, attr);
+	gtk_label_set_attributes (GTK_LABEL (priv->message_label), attrs);
 }
 
 static void
 greeter_message_dialog_class_init (GreeterMessageDialogClass *klass)
 {
-//	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-	GtkDialogClass *dialog_class = GTK_DIALOG_CLASS (klass);
+	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
-//	gobject_class->finalize = greeter_message_dialog_finalize;
-
-	dialog_class->close = greeter_message_dialog_close;
+	object_class->finalize = greeter_message_dialog_finalize;
+	widget_class->size_allocate = greeter_message_dialog_size_allocate;
 
 	gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass),
                                                  "/kr/gooroom/greeter/greeter-message-dialog.ui");
@@ -94,21 +129,22 @@ greeter_message_dialog_class_init (GreeterMessageDialogClass *klass)
 }
 
 GtkWidget *
-greeter_message_dialog_new (GtkWindow *parent,
+greeter_message_dialog_new (GtkWidget  *parent,
                             const char *icon,
                             const char *title,
                             const char *message)
 {
-	GreeterMessageDialog *dialog;
+	GObject *dialog;
 
-	dialog = GREETER_MESSAGE_DIALOG (g_object_new (GREETER_TYPE_MESSAGE_DIALOG,
-                                                   "use-header-bar", FALSE,
-                                                   "transient-for", parent,
-                                                   NULL));
+	dialog = g_object_new (GREETER_TYPE_MESSAGE_DIALOG,
+                           "use-header-bar", FALSE,
+                           "transient-for", NULL,
+                           NULL);
 
-	greeter_message_dialog_set_icon (dialog, icon);
-	greeter_message_dialog_set_title (dialog, title);
-	greeter_message_dialog_set_message (dialog, message);
+	set_parent (GREETER_MESSAGE_DIALOG (dialog), parent);
+	greeter_message_dialog_set_icon (GREETER_MESSAGE_DIALOG (dialog), icon);
+	greeter_message_dialog_set_title (GREETER_MESSAGE_DIALOG (dialog), title);
+	greeter_message_dialog_set_message (GREETER_MESSAGE_DIALOG (dialog), message);
 
 	return GTK_WIDGET (dialog);
 }
@@ -117,8 +153,12 @@ void
 greeter_message_dialog_set_title (GreeterMessageDialog *dialog,
                                   const char           *title)
 {
-	if (title)
+	if (title) {
+		gtk_widget_show (dialog->priv->title_label);
 		gtk_label_set_text (GTK_LABEL (dialog->priv->title_label), title);
+	} else {
+		gtk_widget_hide (dialog->priv->title_label);
+	}
 }
 
 void
@@ -138,5 +178,7 @@ greeter_message_dialog_set_icon (GreeterMessageDialog *dialog,
                                       icon, GTK_ICON_SIZE_DIALOG);
 
 		gtk_widget_show (dialog->priv->icon_image);
+	} else {
+		gtk_widget_hide (dialog->priv->icon_image);
 	}
 }

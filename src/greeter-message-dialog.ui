@@ -7,7 +7,6 @@
     <property name="valign">start</property>
     <property name="border_width">10</property>
     <property name="modal">True</property>
-    <property name="default_width">480</property>
     <property name="type_hint">dialog</property>
     <property name="skip_taskbar_hint">True</property>
     <property name="skip_pager_hint">True</property>
@@ -37,20 +36,19 @@
           <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="border_width">0</property>
             <property name="orientation">vertical</property>
             <child>
               <object class="GtkLabel" id="title_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label">[Title]</property>
-                <property name="justify">center</property>
                 <property name="wrap">True</property>
                 <property name="wrap_mode">char</property>
                 <property name="ellipsize">end</property>
                 <property name="width_chars">0</property>
                 <property name="max_width_chars">0</property>
                 <property name="lines">1</property>
+                <property name="xalign">0.5</property>
                 <style>
                   <class name="dialog-title-label"/>
                 </style>
@@ -75,7 +73,7 @@
           <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="spacing">16</property>
+            <property name="spacing">24</property>
             <child>
               <object class="GtkImage" id="icon_image">
                 <property name="can_focus">False</property>

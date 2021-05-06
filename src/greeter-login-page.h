@@ -49,7 +49,8 @@ struct _GreeterLoginPage
 
 GType greeter_login_page_get_type (void);
 
-GreeterPage *greeter_prepare_login_page (GreeterPageManager *greeter);
+GreeterPage *greeter_prepare_login_page (GreeterPageManager *greeter,
+                                         GtkWidget          *parent);
 
 G_END_DECLS
 

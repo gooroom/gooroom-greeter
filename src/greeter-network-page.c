@@ -75,71 +75,6 @@ static gboolean wired_switch_toggled_cb (GtkSwitch *sw, gboolean state, gpointer
 G_DEFINE_TYPE_WITH_PRIVATE (GreeterNetworkPage, greeter_network_page, GREETER_TYPE_PAGE);
 
 
-#if 0
-static void
-get_monitor_geometry (GtkWidget    *widget,
-                      GdkRectangle *geometry)
-{
-  GdkDisplay *d;
-  GdkWindow  *w;
-  GdkMonitor *m;
-
-  d = gdk_display_get_default ();
-  w = gtk_widget_get_window (widget);
-  m = gdk_display_get_monitor_at_window (d, w);
-
-  gdk_monitor_get_geometry (m, geometry);
-}
-
-static gboolean
-modal_window_button_pressed_event_cb (GtkWidget      *widget,
-                                      GdkEventButton *event,
-                                      gpointer        user_data)
-{
-  return TRUE;
-}
-
-static void
-modal_window_show (GreeterNetworkPage *page)
-{
-  GtkWidget *window;
-    GtkWidget *toplevel;
-  GdkRectangle geometry;
-
-  toplevel = gtk_widget_get_toplevel (GTK_WIDGET (page));
-
-  get_monitor_geometry (toplevel, &geometry);
-
-  window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  gtk_window_set_accept_focus (GTK_WINDOW (window), FALSE);
-//  gtk_window_set_keep_above (GTK_WINDOW (window), FALSE);
-  gtk_window_set_modal (GTK_WINDOW (window), TRUE);
-  gtk_window_set_decorated (GTK_WINDOW (window), FALSE);
-  gtk_window_set_skip_taskbar_hint (GTK_WINDOW (window), TRUE);
-  gtk_window_set_skip_pager_hint (GTK_WINDOW (window), TRUE);
-  gtk_window_set_resizable (GTK_WINDOW (window), FALSE);
-  gtk_window_set_transient_for (GTK_WINDOW (window), GTK_WINDOW (toplevel));
-  gtk_window_set_destroy_with_parent (GTK_WINDOW (window), TRUE);
-  gtk_widget_set_app_paintable (window, TRUE);
-  gtk_widget_set_size_request (window, geometry.width, geometry.height);
-  gtk_window_move (GTK_WINDOW (window), geometry.x, geometry.y);
-
-  GdkScreen *screen = gtk_window_get_screen (GTK_WINDOW (window));
-  if(gdk_screen_is_composited (screen)) {
-    GdkVisual *visual = gdk_screen_get_rgba_visual (screen);
-    if (visual == NULL)
-      visual = gdk_screen_get_system_visual (screen);
-
-    gtk_widget_set_visual (GTK_WIDGET (window), visual);
-  }
-
-  gtk_widget_show (window);
-
-  g_signal_connect (G_OBJECT (window), "button-press-event",
-                      G_CALLBACK (modal_window_button_pressed_event_cb), page);
-}
-#endif
-
 static GPtrArray *
 get_strongest_unique_aps (const GPtrArray *aps)
 {
@@ -657,8 +592,6 @@ row_activated (GtkListBox *box,
     }
   }
   g_ptr_array_unref (filtered);
-
-//  modal_window_show (page);
 
   if (connection_to_activate != NULL) {
     nm_client_activate_connection_async (priv->nm_client,
@@ -1284,9 +1217,11 @@ greeter_network_page_class_init (GreeterNetworkPageClass *klass)
 }
 
 GreeterPage *
-greeter_prepare_network_page (GreeterPageManager *manager)
+greeter_prepare_network_page (GreeterPageManager *manager,
+                              GtkWidget          *parent)
 {
   return g_object_new (GREETER_TYPE_NETWORK_PAGE,
                        "manager", manager,
+                       "parent", parent,
                        NULL);
 }

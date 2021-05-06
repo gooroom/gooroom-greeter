@@ -37,7 +37,7 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
-        <property name="spacing">16</property>
+        <property name="spacing">30</property>
         <child>
           <object class="GtkBox" id="box8">
             <property name="visible">True</property>
@@ -50,7 +50,6 @@
                 <property name="height_request">34</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="has_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="max_length">32</property>
                 <property name="invisible_char">●</property>
@@ -91,8 +90,8 @@
                   <object class="GtkButton" id="login_button">
                     <property name="name">login_button</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="receives_default">False</property>
                     <property name="halign">end</property>
                     <child>
                       <object class="GtkImage" id="login_button_icon">

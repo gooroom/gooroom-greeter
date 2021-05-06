@@ -5,6 +5,7 @@ src/greeter-network-page.c
 src/greeter-vpn-page.c
 src/greeter-login-page.c
 src/greeter-password-settings-dialog.c
+src/greeter-ars-dialog.c
 src/greeterbackground.c
 src/greeter-vpn-passwd-dialog.c
 src/pw-utils.c
@@ -13,6 +14,7 @@ src/pw-utils.c
 [type: gettext/glade]src/greeter-mode-page.ui
 [type: gettext/glade]src/greeter-network-page.ui
 [type: gettext/glade]src/greeter-vpn-page.ui
+[type: gettext/glade]src/greeter-ars-dialog.ui
 [type: gettext/glade]src/greeter-login-page.ui
 [type: gettext/glade]src/splash-window.ui
 [type: gettext/glade]src/greeter-message-dialog.ui

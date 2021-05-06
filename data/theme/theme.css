@@ -19,6 +19,8 @@ For more fine-grain control, you can also use the named widgets. Those are being
 
 .error-label {
   color: red;
+  font-weight: 500;
+  font-style: italic;
   font-size: 110%; }
 
 .title-label {
@@ -34,7 +36,7 @@ For more fine-grain control, you can also use the named widgets. Those are being
 
 .dialog-title-label {
   font-size: 140%;
-  font-weight: bold; }
+  font-weight: 600; }
 
 .dialog-message-label {
   font-size: 110%; }
@@ -46,6 +48,21 @@ For more fine-grain control, you can also use the named widgets. Those are being
 .splash-message-label {
   font-size: 120%;
   font-weight: bold; }
+
+.ars-dialog-title-label {
+  font-size: 170%;
+  font-weight: bold; }
+
+.auth-label {
+  font-size: 130%;
+  font-weight: bold; }
+
+.auth-num-label {
+  font-size: 400%; }
+
+.auth-num-timer-label {
+  font-weight: bold;
+  color: red; }
 
 spinner {
   color: #000000;
@@ -123,12 +140,41 @@ spinner {
     opacity: 0.6;
     color: #ffffff; }
 
+  button.suggested-action {
+    background-clip: border-box;
+    color: white;
+    background-color: #4DADD4;
+    border-color: #4DADD4; }
+    button.suggested-action:hover {
+      background-clip: border-box;
+      color: white;
+      background-color: #76c0de;
+      border-color: #76c0de; }
+    button.suggested-action:active, button.suggested-action:checked {
+      background-clip: border-box;
+      color: white;
+      background-color: #2e96c0;
+      border-color: #2e96c0; }
+/*
+    button.suggested-action:disabled {
+      border-color: rgba(207, 214, 230, 0.55);
+      background-color: rgba(251, 251, 252, 0.55); }
+      button.suggested-action:disabled label, button.suggested-action:disabled {
+        color: rgba(92, 97, 108, 0.55); }
+*/
+
+/*
 .frame {
   padding: 2px;
   border: none;
   border-radius: 2px;
   box-shadow: 2px 2px 4px 0 rgba(0, 0, 0, 0.20); }
 
+.auth-frame {
+  padding: 5px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px 2px rgba(0, 0, 0, 0.10); }
+*/
 
 .splash-window-box {
   border: none;
@@ -138,18 +184,18 @@ spinner {
   box-shadow: 0 2px 5px 3px rgba(0, 0, 0, 0.35); }
 
 .message-dialog {
-  -GtkDialog-action-area-border: 24; }
+  -GtkDialog-action-area-border: 20; }
   .message-dialog .dialog-inner-box {
     border-radius: 10px 10px 8px 8px;
     background-color: #ffffff;
     box-shadow: 0 2px 5px 3px rgba(0, 0, 0, 0.35); }
     .message-dialog .dialog-title-area {
-      padding: 24px;
+      padding: 20px;
       color: #000000;
       border-radius: 8px 8px 0 0;
       background-color: transparent; }
     .message-dialog .dialog-contents-area {
-      padding: 0px 24px; }
+      padding: 0px 20px; }
     .message-dialog .dialog-icon-image {
       color: #000000; }
     .message-dialog .dialog-action-area button {
@@ -170,6 +216,10 @@ spinner {
     .message-dialog .dialog-action-area button:disabled label {
       opacity: 0.6;
       color: #ffffff; }
+
+.phone-num-box label {
+  font-weight: bold;
+  font-size: 120%; }
 
 .panel-box {
   border: none;

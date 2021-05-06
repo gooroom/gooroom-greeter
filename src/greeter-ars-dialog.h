@@ -18,7 +18,9 @@
 #ifndef __GREETER_ARS_DIALOG_H__
 #define __GREETER_ARS_DIALOG_H__
 
-#include "config.h"
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include <glib.h>
 #include <gtk/gtk.h>
@@ -48,7 +50,14 @@ struct _GreeterARSDialogClass {
 
 GType	    greeter_ars_dialog_get_type	(void) G_GNUC_CONST;
 
-GtkWidget  *greeter_ars_dialog_new		(GtkWindow  *parent);
+GtkWidget  *greeter_ars_dialog_new		(GtkWidget   *parent,
+                                         const gchar *phone_num,
+                                         const gchar *auth_num);
+
+void greeter_ars_dialog_set_phone_number (GreeterARSDialog *dialog,
+                                          const char       *phone_num);
+void greeter_ars_dialog_set_authentication_number  (GreeterARSDialog *dialog,
+                                                    const char       *auth_num);
 
 G_END_DECLS
 

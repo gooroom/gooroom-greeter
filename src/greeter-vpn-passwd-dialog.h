@@ -23,7 +23,7 @@
 #ifndef __GREETER_VPN_PASSWD_DIALOG_H__
 #define __GREETER_VPN_PASSWD_DIALOG_H__
 
-#include <gdk/gdk.h>
+#include <glib.h>
 #include <gtk/gtk.h>
 
 G_BEGIN_DECLS
@@ -52,9 +52,10 @@ struct _GreeterVPNPasswdDialogClass
 	GtkDialogClass   __parent_class__;
 };
 
-GType      greeter_vpn_passwd_dialog_get_type (void);
+GType      greeter_vpn_passwd_dialog_get_type (void) G_GNUC_CONST;
 
-GreeterVPNPasswdDialog *greeter_vpn_passwd_dialog_new (const gchar *password);
+GtkWidget *greeter_vpn_passwd_dialog_new (GtkWidget   *parent,
+                                          const gchar *password);
 
 gchar     *greeter_vpn_passwd_dialog_get_new_password (GreeterVPNPasswdDialog *dialog);
 

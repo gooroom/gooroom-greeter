@@ -8,6 +8,7 @@
 		<file preprocess="xml-stripblanks">greeter-vpn-page.ui</file>
 		<file preprocess="xml-stripblanks">greeter-login-page.ui</file>
 		<file preprocess="xml-stripblanks">splash-window.ui</file>
+		<file preprocess="xml-stripblanks">greeter-ars-dialog.ui</file>
 		<file preprocess="xml-stripblanks">greeter-message-dialog.ui</file>
 		<file preprocess="xml-stripblanks">greeter-password-settings-dialog.ui</file>
 		<file preprocess="xml-stripblanks">greeter-vpn-passwd-dialog.ui</file>

@@ -49,7 +49,7 @@ struct _GreeterAssistantPrivate {
 	GreeterPageManager *manager;
 };
 
-typedef GreeterPage *(*PreparePage) (GreeterPageManager *manager);
+typedef GreeterPage *(*PreparePage) (GreeterPageManager *manager, GtkWidget *parent);
 
 typedef struct {
   const gchar *page_id;
@@ -68,6 +68,15 @@ static PageData page_table[] = {
 G_DEFINE_TYPE_WITH_PRIVATE (GreeterAssistant, greeter_assistant, GTK_TYPE_BOX)
 
 
+
+static gboolean
+grab_focus_idle (gpointer user_data)
+{
+	gtk_widget_set_can_focus (GTK_WIDGET (user_data), TRUE);
+	gtk_widget_grab_focus (GTK_WIDGET (user_data));
+
+	return FALSE;
+}
 
 static void
 switch_to (GreeterAssistant *assistant, GreeterPage *page)
@@ -133,27 +142,19 @@ find_prev_page (GreeterAssistant *assistant)
 static void
 set_suggested_action_sensitive (GtkWidget *widget, gboolean sensitive)
 {
-  gtk_widget_set_sensitive (widget, sensitive);
-  if (sensitive)
-    gtk_style_context_add_class (gtk_widget_get_style_context (widget), "suggested-action");
-  else
-    gtk_style_context_remove_class (gtk_widget_get_style_context (widget), "suggested-action");
-}
-
-static void
-set_navigation_button (GreeterAssistant *assistant, GtkWidget *widget)
-{
-	GreeterAssistantPrivate *priv = assistant->priv;
-
-	gtk_widget_set_visible (priv->forward, (widget == priv->forward));
+	gtk_widget_set_sensitive (widget, sensitive);
+	if (sensitive)
+		gtk_style_context_add_class (gtk_widget_get_style_context (widget), "suggested-action");
+	else
+		gtk_style_context_remove_class (gtk_widget_get_style_context (widget), "suggested-action");
 }
 
 //static void
-//initialize_pages (GList *pages)
+//set_navigation_button (GreeterAssistant *assistant, GtkWidget *widget)
 //{
-//	GList *l = NULL;
-//	for (l = pages; l != NULL; l = l->next)
-//		greeter_page_initialize (l->data);
+//	GreeterAssistantPrivate *priv = assistant->priv;
+//
+//	gtk_widget_set_visible (priv->forward, (widget == priv->forward));
 //}
 
 static void
@@ -190,14 +191,15 @@ update_navigation_buttons (GreeterAssistant *assistant)
 
 		is_first_page = (find_prev_page (assistant) == NULL);
 
+		gtk_widget_set_visible (priv->forward, TRUE);
 		gtk_widget_set_visible (priv->backward, !is_first_page);
 
 		if (greeter_page_get_complete (priv->current_page)) {
 			set_suggested_action_sensitive (priv->forward, TRUE);
+			g_timeout_add (100, (GSourceFunc)grab_focus_idle, priv->forward);
 		} else {
 			set_suggested_action_sensitive (priv->forward, FALSE);
 		}
-		set_navigation_button (assistant, priv->forward);
 	}
 }
 
@@ -214,12 +216,7 @@ update_current_page (GreeterAssistant *assistant,
 
 	update_titlebar (assistant);
 	update_navigation_buttons (assistant);
-	gtk_widget_grab_focus (priv->forward);
-
-//	gboolean is_first_page = FALSE;
-//	is_first_page = (find_prev_page (assistant) == NULL);
-//	if (is_first_page)
-//		initialize_pages (priv->pages);
+//	gtk_widget_grab_focus (priv->forward);
 
 	if (page)
 		greeter_page_shown (page);
@@ -246,7 +243,7 @@ update_step (GreeterAssistant *assistant)
 		}
 	}
 
-	gchar *text = g_strdup_printf ("%d%s / %d", idx, _("Step"), steps);
+	gchar *text = g_strdup_printf (_("%d Step / %d"), idx, steps);
 	gtk_label_set_text (GTK_LABEL (priv->step), text);
 	g_free (text);
 }
@@ -255,36 +252,32 @@ static void
 go_first_button_cb (GtkWidget *button,
                     gpointer   user_data)
 {
-	int res;
+	gint res;
 	const gchar *title;
 	const gchar *message;
-	GtkWidget *dialog, *toplevel;
+	GtkWidget *dialog;
 	GreeterAssistant *assistant = GREETER_ASSISTANT (user_data);
 
 	if (greeter_page_manager_get_mode (assistant->priv->manager) == MODE_ONLINE) {
-		toplevel = gtk_widget_get_toplevel (GTK_WIDGET (assistant));
-
 		title = _("VPN Connection Termination Warning");
-		message = _("If you return to the first step, the VPN connection is terminated and "
-                    "you need to proceed with the authentication process again."
+		message = _("If you return to the first step, the VPN connection is terminated and\n"
+                    "you need to proceed with the authentication process again.\n"
                     "Would you like to continue anyway?");
 
-		dialog = greeter_message_dialog_new (GTK_WINDOW (toplevel),
-				"network-vpn-symbolic",
-				title,
-				message);
+		dialog = greeter_message_dialog_new (GTK_WIDGET (assistant),
+                                             "dialog-warning-symbolic.symbolic",
+                                             title, message);
 
 		gtk_dialog_add_buttons (GTK_DIALOG (dialog),
-				_("_Ok"), GTK_RESPONSE_OK,
-				_("_Cancel"), GTK_RESPONSE_CANCEL,
-				NULL);
-
+                                _("Ok"), GTK_RESPONSE_OK,
+                                _("Cancel"), GTK_RESPONSE_CANCEL,
+                                NULL);
 		gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_CANCEL);
 
 		res = gtk_dialog_run (GTK_DIALOG (dialog));
 		gtk_widget_destroy (dialog);
 
-		if (res == GTK_RESPONSE_CANCEL)
+		if (res != GTK_RESPONSE_OK)
 			return;
 	}
 
@@ -298,6 +291,16 @@ go_forward_button_cb (GtkWidget *button,
 	GreeterAssistant *assistant = GREETER_ASSISTANT (user_data);
 
 	greeter_assistant_next_page (assistant);
+}
+
+static gboolean
+assistant_key_press_event_cb (GtkWidget   *widget,
+                              GdkEventKey *event,
+                              gpointer     user_data)
+{
+	GreeterAssistant *assistant = GREETER_ASSISTANT (user_data);
+
+	return greeter_page_key_press_event (assistant->priv->current_page, event);
 }
 
 static void
@@ -388,21 +391,6 @@ greeter_assistant_ui_setup (GreeterAssistant *assistant)
 	}
 }
 
-#if 0
-static void
-greeter_assistant_realize (GtkWidget *widget)
-{
-	gint pref_w, pref_h;
-//	GreeterAssistant *assistant = GREETER_ASSISTANT (widget);
-
-	if (GTK_WIDGET_CLASS (greeter_assistant_parent_class)->realize)
-		GTK_WIDGET_CLASS (greeter_assistant_parent_class)->realize (widget);
-
-	gtk_widget_get_preferred_width (widget, NULL, &pref_w);
-	gtk_widget_get_preferred_height (widget, NULL, &pref_h);
-}
-#endif
-
 static void
 greeter_assistant_finalize (GObject *object)
 {
@@ -423,6 +411,7 @@ static void
 greeter_assistant_init (GreeterAssistant *assistant)
 {
 	PageData *page_data;
+	GtkWidget *toplevel;
 	GreeterAssistantPrivate *priv;
 
 	priv = assistant->priv = greeter_assistant_get_instance_private (assistant);
@@ -435,7 +424,7 @@ greeter_assistant_init (GreeterAssistant *assistant)
 
 	page_data = page_table;
 	for (; page_data->page_id != NULL; ++page_data) {
-		GreeterPage *page = page_data->prepare_page_func (priv->manager);
+		GreeterPage *page = page_data->prepare_page_func (priv->manager, GTK_WIDGET (assistant));
 		if (!page)
 			continue;
 
@@ -452,6 +441,10 @@ greeter_assistant_init (GreeterAssistant *assistant)
 	g_signal_connect (priv->first, "clicked", G_CALLBACK (go_first_button_cb), assistant);
 	g_signal_connect (priv->forward, "clicked", G_CALLBACK (go_forward_button_cb), assistant);
 	g_signal_connect (priv->backward, "clicked", G_CALLBACK (go_backward_button_cb), assistant);
+
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (assistant));
+	g_signal_connect (G_OBJECT (toplevel), "key-press-event",
+                      G_CALLBACK (assistant_key_press_event_cb), assistant);
 
 	g_idle_add ((GSourceFunc) change_current_page_idle, assistant);
 }

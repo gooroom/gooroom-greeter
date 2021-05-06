@@ -43,6 +43,13 @@ ResultActive=yes
 ResultInactive=no
 ResultAny=no
 
+[Control Systemd Units]
+Identity=unix-user:lightdm
+Action=org.freedesktop.systemd1.manage-units
+ResultActive=yes
+ResultInactive=no
+ResultAny=no
+
 [Disable suspend (upower)]
 Identity=unix-user:*
 Action=org.freedesktop.upower.suspend

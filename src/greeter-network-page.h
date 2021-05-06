@@ -52,7 +52,8 @@ struct _GreeterNetworkPage
 
 GType greeter_network_page_get_type (void);
 
-GreeterPage *greeter_prepare_network_page (GreeterPageManager *manager);
+GreeterPage *greeter_prepare_network_page (GreeterPageManager *manager,
+                                           GtkWidget          *parent);
 
 G_END_DECLS
 

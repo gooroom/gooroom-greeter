@@ -37,28 +37,63 @@ G_DEFINE_TYPE_WITH_PRIVATE (GreeterModePage, greeter_mode_page, GREETER_TYPE_PAG
 static void
 set_networking_disable (void)
 {
-	g_spawn_command_line_sync ("/usr/bin/nmcli networking off", NULL, NULL, NULL, NULL);
+	gchar **argv = NULL;
+	const gchar *cmd = "/usr/bin/nmcli networking off";
 
-#if 0
-	gchar *cmd;
+	g_shell_parse_argv (cmd, NULL, &argv, NULL);
 
-	cmd = g_strdup_printf ("%s --action on", GREETER_NETWORK_CONTROL_HELPER);
-	g_spawn_command_line_sync (cmd, NULL, NULL, NULL, NULL);
-	g_free (cmd);
-#endif
+	g_spawn_async (NULL, argv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, NULL);
 
+	g_strfreev (argv);
 
-#if 0
-	gboolean ret;
-    GError *error = NULL;
-    NMClient *nm_client = NULL;
+//	gboolean ret;
+//    GError *error = NULL;
+//    NMClient *nm_client = NULL;
+//
+//    nm_client = nm_client_new (NULL, &error);
+//
+//	ret = nm_client_networking_get_enabled (nm_client);
+//
+//	g_clear_object (&nm_client);
+}
 
-    nm_client = nm_client_new (NULL, &error);
+static void
+vpn_service_reload_done_cb (GPid     pid,
+                            gint     status,
+                            gpointer user_data)
+{
+	GreeterPage *page = GREETER_PAGE (user_data);
 
-	ret = nm_client_networking_get_enabled (nm_client);
+	g_spawn_close_pid (pid);
 
-	g_clear_object (&nm_client);
-#endif
+	set_networking_disable ();
+
+	greeter_page_manager_hide_splash (page->manager);
+}
+
+static gboolean
+reload_vpn_service (gpointer user_data)
+{
+	GPid pid;
+	gchar **argv;
+	const gchar *cmd, *message;
+	GreeterModePage *page = GREETER_MODE_PAGE (user_data);
+	GreeterPageManager *manager = GREETER_PAGE (page)->manager;
+
+	message = _("Initializing Settings for VPN.\nPlease wait.");
+
+	greeter_page_manager_show_splash (manager, GREETER_PAGE (page)->parent, message);
+
+	cmd = "/bin/systemctl restart gooroom-vpn-daemon.service";
+
+	g_shell_parse_argv (cmd, NULL, &argv, NULL);
+
+	if (g_spawn_async (NULL, argv, NULL, G_SPAWN_DO_NOT_REAP_CHILD, NULL, NULL, &pid, NULL))
+		g_child_watch_add (pid, (GChildWatchFunc) vpn_service_reload_done_cb, page);
+
+	g_strfreev (argv);
+
+	return FALSE;
 }
 
 static void
@@ -84,16 +119,6 @@ greeter_mode_page_finalize (GObject *object)
 	G_OBJECT_CLASS (greeter_mode_page_parent_class)->finalize (object);
 }
 
-//static void
-//greeter_mode_page_out (GreeterPage *page,
-//                       gboolean     next)
-//{
-//	if (!next)
-//		return;
-//
-//	set_networking_enable (greeter_page_manager_get_mode (page->manager) == MODE_ONLINE);
-//}
-
 static void
 greeter_mode_page_shown (GreeterPage *page)
 {
@@ -103,7 +128,7 @@ greeter_mode_page_shown (GreeterPage *page)
 
 	greeter_page_manager_set_mode (page->manager, MODE_ONLINE);
 
-	set_networking_disable ();
+	g_idle_add ((GSourceFunc)reload_vpn_service, page);
 }
 
 static gboolean
@@ -112,39 +137,32 @@ greeter_mode_page_should_show (GreeterPage *page)
 	return TRUE;
 }
 
-//static gboolean
-//greeter_mode_page_key_press_event (GtkWidget   *widget,
-//                                   GdkEventKey *event)
-//{
-//	GreeterModePage *page = GREETER_MODE_PAGE (widget);
-//	GreeterModePagePrivate *priv = page->priv;
-//
-//	if (event->keyval == GDK_KEY_Return &&
-//		greeter_page_get_complete (GREETER_PAGE (page))) {
-//		greeter_page_manager_go_next (GREETER_PAGE (page)->manager);
-//		return TRUE;
-//	}
-//
-//	if ((event->keyval == GDK_KEY_Up || event->keyval == GDK_KEY_Down)) {
-//		GtkWidget *active_button = NULL;
-//		if (event->keyval == GDK_KEY_Up &&
-//            !gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->on_button))) {
-//			active_button = priv->on_button;
-//		}
-//
-//		if (event->keyval == GDK_KEY_Down &&
-//            !gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->off_button))) {
-//			active_button = priv->off_button;
-//		}
-//
-//		if (active_button)
-//			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (active_button), TRUE);
-//
-//		return TRUE;
-//	}
-//
-//	return GTK_WIDGET_CLASS (greeter_mode_page_parent_class)->key_press_event (widget, event);
-//}
+static gboolean
+greeter_mode_page_key_press_event (GreeterPage *page,
+                                   GdkEventKey *event)
+{
+	GreeterModePagePrivate *priv = GREETER_MODE_PAGE (page)->priv;
+
+	if ((event->keyval == GDK_KEY_Up || event->keyval == GDK_KEY_Down)) {
+		GtkWidget *active_button = NULL;
+		if (event->keyval == GDK_KEY_Up &&
+            !gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->on_button))) {
+			active_button = priv->on_button;
+		}
+
+		if (event->keyval == GDK_KEY_Down &&
+            !gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->off_button))) {
+			active_button = priv->off_button;
+		}
+
+		if (active_button)
+			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (active_button), TRUE);
+
+		return TRUE;
+	}
+
+	return FALSE;
+}
 
 static void
 greeter_mode_page_init (GreeterModePage *page)
@@ -163,8 +181,6 @@ greeter_mode_page_init (GreeterModePage *page)
 	g_signal_connect (G_OBJECT (priv->off_button), "toggled",
                       G_CALLBACK (mode_button_toggled_cb), page);
 
-	set_networking_disable ();
-
 	greeter_page_set_complete (GREETER_PAGE (page), TRUE);
 
 	gtk_widget_show (GTK_WIDGET (page));
@@ -174,9 +190,7 @@ static void
 greeter_mode_page_class_init (GreeterModePageClass *klass)
 {
 	GreeterPageClass *page_class = GREETER_PAGE_CLASS (klass);
-//	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-
 
 	gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass),
                                                  "/kr/gooroom/greeter/greeter-mode-page.ui");
@@ -185,19 +199,19 @@ greeter_mode_page_class_init (GreeterModePageClass *klass)
 	gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GreeterModePage, off_button);
 
 	page_class->page_id = PAGE_ID;
-//	page_class->out = greeter_mode_page_out;
 	page_class->shown = greeter_mode_page_shown;
 	page_class->should_show = greeter_mode_page_should_show;
-
-//	widget_class->key_press_event = greeter_mode_page_key_press_event;
+	page_class->key_press_event = greeter_mode_page_key_press_event;
 
 	object_class->finalize = greeter_mode_page_finalize;
 }
 
 GreeterPage *
-greeter_prepare_mode_page (GreeterPageManager *manager)
+greeter_prepare_mode_page (GreeterPageManager *manager,
+                           GtkWidget          *parent)
 {
 	return g_object_new (GREETER_TYPE_MODE_PAGE,
                          "manager", manager,
+                         "parent", parent,
                          NULL);
 }

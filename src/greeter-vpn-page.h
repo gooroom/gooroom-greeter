@@ -49,7 +49,8 @@ struct _GreeterVPNPage
 
 GType greeter_vpn_page_get_type (void);
 
-GreeterPage *greeter_prepare_vpn_page (GreeterPageManager *manager);
+GreeterPage *greeter_prepare_vpn_page (GreeterPageManager *manager,
+                                       GtkWidget          *parent);
 
 G_END_DECLS
 

@@ -26,6 +26,7 @@
 #include <gtk/gtk.h>
 
 struct _GreeterPasswordSettingsDialogPrivate {
+	GtkWidget *parent;
 	GtkWidget *title_label;
 	GtkWidget *prompt_label;
 	GtkWidget *prompt_entry;
@@ -37,6 +38,13 @@ struct _GreeterPasswordSettingsDialogPrivate {
 G_DEFINE_TYPE_WITH_PRIVATE (GreeterPasswordSettingsDialog, greeter_password_settings_dialog, GTK_TYPE_DIALOG);
 
 
+static void
+set_parent (GreeterPasswordSettingsDialog *dialog,
+            GtkWidget                     *parent)
+{
+	if (parent)
+		dialog->priv->parent = parent;
+}
 
 static void
 block_response (GreeterPasswordSettingsDialog *dialog,
@@ -93,23 +101,32 @@ cancel_button_clicked_cb (GtkButton *widget,
 	gtk_dialog_response (GTK_DIALOG (user_data), GTK_RESPONSE_CANCEL);
 }
 
-#if 0
 static void
-greeter_password_settings_dialog_dispose (GObject *object)
+greeter_password_settings_dialog_size_allocate (GtkWidget     *widget,
+                                                GtkAllocation *allocation)
 {
-//	GreeterPasswordSettingsDialog *dialog;
-//	GreeterPasswordSettingsDialogPrivate *priv;
+	GreeterPasswordSettingsDialog *dialog = GREETER_PASSWORD_SETTINGS_DIALOG (widget);
+	GreeterPasswordSettingsDialogPrivate *priv = dialog->priv;
 
-//	dialog = GREETER_PASSWORD_SETTINGS_DIALOG (object);
-//	priv = dialog->priv;
+	if (GTK_WIDGET_CLASS (greeter_password_settings_dialog_parent_class)->size_allocate)
+		GTK_WIDGET_CLASS (greeter_password_settings_dialog_parent_class)->size_allocate (widget, allocation);
 
-	G_OBJECT_CLASS (greeter_password_settings_dialog_parent_class)->dispose (object);
-}
-#endif
+	if (!gtk_widget_get_realized (widget))
+		return;
 
-static void
-greeter_password_settings_dialog_close (GtkDialog *dialog)
-{
+	if (priv->parent) {
+		GtkWidget *toplevel;
+		gint x, y, p_w, p_h;
+
+		toplevel = gtk_widget_get_toplevel (priv->parent);
+
+		gtk_widget_translate_coordinates (priv->parent, toplevel, 0, 0, &x, &y);
+		gtk_widget_get_size_request (priv->parent, &p_w, &p_h);
+
+		gtk_window_move (GTK_WINDOW (dialog),
+                         x + (p_w - allocation->width) / 2,
+                         y + (p_h - allocation->height) / 2 );
+	}
 }
 
 static void
@@ -150,12 +167,9 @@ greeter_password_settings_dialog_init (GreeterPasswordSettingsDialog *dialog)
 static void
 greeter_password_settings_dialog_class_init (GreeterPasswordSettingsDialogClass *klass)
 {
-//	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-	GtkDialogClass *dialog_class = GTK_DIALOG_CLASS (klass);
+	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
-//	gobject_class->dispose = greeter_password_settings_dialog_dispose;
-
-	dialog_class->close = greeter_password_settings_dialog_close;
+	widget_class->size_allocate = greeter_password_settings_dialog_size_allocate;
 
 	gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass),
                                                  "/kr/gooroom/greeter/greeter-password-settings-dialog.ui");
@@ -175,14 +189,16 @@ greeter_password_settings_dialog_class_init (GreeterPasswordSettingsDialogClass 
 }
 
 GtkWidget *
-greeter_password_settings_dialog_new (GtkWindow *parent)
+greeter_password_settings_dialog_new (GtkWidget *parent)
 {
 	GObject *dialog;
 
 	dialog = g_object_new (GREETER_TYPE_PASSWORD_SETTINGS_DIALOG,
                            "use-header-bar", FALSE,
-                           "transient-for”", parent,
+                           "transient-for”", NULL,
                            NULL);
+
+	set_parent (GREETER_PASSWORD_SETTINGS_DIALOG (dialog), parent);
 
 	return GTK_WIDGET (dialog);
 }
@@ -199,10 +215,8 @@ void
 greeter_password_settings_dialog_set_prompt_label (GreeterPasswordSettingsDialog *dialog,
                                                    const gchar                   *label)
 {
-	if (label) {
+	if (label)
 		gtk_label_set_text (GTK_LABEL (dialog->priv->prompt_label), label);
-//		gtk_entry_set_placeholder_text (GTK_ENTRY (dialog->priv->prompt_entry), label);
-	}
 }
 
 void
@@ -240,4 +254,3 @@ greeter_password_settings_dialog_get_entry_text (GreeterPasswordSettingsDialog *
 
 	return NULL;
 }
-

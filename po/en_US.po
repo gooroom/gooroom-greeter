@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gooroom-greeter\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-06 18:15+0900\n"
+"POT-Creation-Date: 2021-05-28 19:39+0900\n"
 "PO-Revision-Date: 2019-09-04 17:37-0400\n"
 "Last-Translator: Gooroom <gooroom@gooroom.kr>\n"
 "Language-Team: Gooroom <gooroom@gooroom.kr>\n"
@@ -17,116 +17,127 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/gooroom-greeter.c:365
+#: ../src/gooroom-greeter.c:134
+msgid "%B %-d %Y  %l:%M %p"
+msgstr "%B %-d %Y  %l:%M %p"
+
+#: ../src/gooroom-greeter.c:391
 #, c-format
 msgid "Warning: There is still %d user logged in."
 msgid_plural "Warning: There are still %d users logged in."
 msgstr[0] "Warning: There is still %d user logged in."
 msgstr[1] "Warning: There are still %d users logged in."
 
-#: ../src/gooroom-greeter.c:383 ../src/greeter-assistant.c:278
-#: ../src/greeter-vpn-page.c:220 ../src/greeter-login-page.c:242
-#: ../src/greeter-login-page.c:358 ../src/greeter-login-page.c:539
-#: ../src/greeter-login-page.c:559 ../src/greeter-login-page.c:579
-#: ../src/greeter-login-page.c:610 ../src/greeter-login-page.c:706
-#: ../src/greeter-login-page.c:996
-msgid "_Ok"
-msgstr "_Ok"
+#: ../src/gooroom-greeter.c:404 ../src/greeter-assistant.c:272
+#: ../src/greeter-vpn-page.c:215 ../src/greeter-login-page.c:156
+#: ../src/greeter-login-page.c:228
+msgid "Ok"
+msgstr "Ok"
 
-#: ../src/gooroom-greeter.c:384 ../src/greeter-assistant.c:279
-#: ../src/greeter-login-page.c:359
-msgid "_Cancel"
-msgstr "_Cancel"
+#: ../src/gooroom-greeter.c:405 ../src/greeter-assistant.c:273
+#: ../src/greeter-login-page.c:229 ../src/greeter-login-page.c:453
+#: ../src/greeter-login-page.c:462
+msgid "Cancel"
+msgstr "Cancel"
 
-#: ../src/gooroom-greeter.c:429
+#: ../src/gooroom-greeter.c:450
 msgid "System Shutdown"
 msgstr "System Shutdown"
 
-#: ../src/gooroom-greeter.c:430
+#: ../src/gooroom-greeter.c:451
 msgid "Are you sure you want to close all programs and shut down the computer?"
 msgstr ""
 "Are you sure you want to close all programs and shut down the computer?"
 
-#: ../src/gooroom-greeter.c:435
+#: ../src/gooroom-greeter.c:456
 msgid "System Restart"
 msgstr "System Restart"
 
-#: ../src/gooroom-greeter.c:436
+#: ../src/gooroom-greeter.c:457
 msgid "Are you sure you want to close all programs and restart the computer?"
 msgstr "Are you sure you want to close all programs and restart the computer?"
 
-#: ../src/gooroom-greeter.c:441
+#: ../src/gooroom-greeter.c:462
 msgid "System Suspend"
 msgstr "System Suspend"
 
-#: ../src/gooroom-greeter.c:442
+#: ../src/gooroom-greeter.c:463
 msgid "Are you sure you want to suspend the computer?"
 msgstr "Are you sure you want to suspend the computer?"
 
-#: ../src/gooroom-greeter.c:447
+#: ../src/gooroom-greeter.c:468
 msgid "System Hibernate"
 msgstr "System Hibernate"
 
-#: ../src/gooroom-greeter.c:448
+#: ../src/gooroom-greeter.c:469
 msgid "Are you sure you want to hibernate the computer?"
 msgstr "Are you sure you want to hibernate the computer?"
 
-#: ../src/greeter-assistant.c:249
-msgid "Step"
-msgstr "Step"
+#: ../src/greeter-assistant.c:246
+#, c-format
+msgid "%d Step / %d"
+msgstr "Step %d / %d"
 
-#: ../src/greeter-assistant.c:267
+#: ../src/greeter-assistant.c:262
 msgid "VPN Connection Termination Warning"
 msgstr "VPN Connection Termination Warning"
 
-#: ../src/greeter-assistant.c:268
+#: ../src/greeter-assistant.c:263
 msgid ""
-"If you return to the first step, the VPN connection is terminated and you "
-"need to proceed with the authentication process again.Would you like to "
-"continue anyway?"
+"If you return to the first step, the VPN connection is terminated and\n"
+"you need to proceed with the authentication process again.\n"
+"Would you like to continue anyway?"
 msgstr ""
-"If you return to the first step, the VPN connection is terminated and you "
-"need to proceed with the authentication process again.Would you like to "
-"continue anyway?"
+"If you return to the first step, the VPN connection is terminated and you\n"
+"need to proceed with the authentication process again.\n"
+"Would you like to continue anyway?"
 
-#: ../src/greeter-mode-page.c:158
+#: ../src/greeter-mode-page.c:83 ../src/greeter-vpn-page.c:636
+msgid ""
+"Initializing Settings for VPN.\n"
+"Please wait."
+msgstr ""
+"Initializing Settings for VPN.\n"
+"Please wait."
+
+#: ../src/greeter-mode-page.c:176
 msgid "System operation mode setting"
 msgstr "System operation mode setting"
 
-#: ../src/greeter-network-page.c:393
+#: ../src/greeter-network-page.c:328
 msgctxt "Wireless access point"
 msgid "Other…"
 msgstr "Other…"
 
-#: ../src/greeter-network-page.c:506 ../src/greeter-network-page.c:767
+#: ../src/greeter-network-page.c:441 ../src/greeter-network-page.c:700
 msgid "Wireless - No Use"
 msgstr "Wireless - No Use"
 
-#: ../src/greeter-network-page.c:512 ../src/greeter-network-page.c:767
+#: ../src/greeter-network-page.c:447 ../src/greeter-network-page.c:700
 msgid "Wireless - Use"
 msgstr "Wireless - Use"
 
-#: ../src/greeter-network-page.c:713 ../src/greeter-network-page.c:759
+#: ../src/greeter-network-page.c:646 ../src/greeter-network-page.c:692
 msgid "Wired - Connected"
 msgstr "Wired - Connected"
 
-#: ../src/greeter-network-page.c:713 ../src/greeter-network-page.c:759
+#: ../src/greeter-network-page.c:646 ../src/greeter-network-page.c:692
 msgid "Wired - Not Connected"
 msgstr "Wired - Not Connected"
 
-#: ../src/greeter-network-page.c:761
+#: ../src/greeter-network-page.c:694
 msgid "Wired - No Device"
 msgstr "Wired - No Device"
 
-#: ../src/greeter-network-page.c:769
+#: ../src/greeter-network-page.c:702
 msgid "Wireless - No Device"
 msgstr "Wireless - No Device"
 
-#: ../src/greeter-network-page.c:1231
+#: ../src/greeter-network-page.c:1164
 msgid "Network Settings"
 msgstr "Network Settings"
 
-#: ../src/greeter-vpn-page.c:240
+#: ../src/greeter-vpn-page.c:234
 msgid ""
 "User authentication failed.\n"
 "If authentication fails more than 5 times, you can no longer log in."
@@ -134,7 +145,7 @@ msgstr ""
 "User authentication failed.\n"
 "If authentication fails more than 5 times, you can no longer log in."
 
-#: ../src/greeter-vpn-page.c:246 ../src/greeter-login-page.c:657
+#: ../src/greeter-vpn-page.c:240 ../src/greeter-login-page.c:656
 msgid ""
 "You are already logged in.\n"
 "Log out of the other device and try again.\n"
@@ -144,7 +155,7 @@ msgstr ""
 "Log out of the other device and try again.\n"
 "If the problem persists, please contact your administrator."
 
-#: ../src/greeter-vpn-page.c:252
+#: ../src/greeter-vpn-page.c:246
 msgid ""
 "It is not the VPN connection time.\n"
 "Please contact the administrator to check the access time and try again."
@@ -152,7 +163,7 @@ msgstr ""
 "It is not the VPN connection time.\n"
 "Please contact the administrator to check the access time and try again."
 
-#: ../src/greeter-vpn-page.c:257
+#: ../src/greeter-vpn-page.c:251
 msgid ""
 "It is not the day of the week for VPN access.\n"
 "Please contact the administrator to check the access time and try again."
@@ -160,39 +171,41 @@ msgstr ""
 "It is not the day of the week for VPN access.\n"
 "Please contact the administrator to check the access time and try again."
 
-#: ../src/greeter-vpn-page.c:262
+#: ../src/greeter-vpn-page.c:256
 msgid ""
 "The VPN connection cannot proceed because the login period has been "
 "exceeded. Please try again later or contact the administrator."
 msgstr ""
 "The VPN connection cannot proceed because the login period has been "
-"exceeded. Please try again later or contact the administrator."
+"exceeded.\n"
+"Please try again later or contact the administrator."
+
+#: ../src/greeter-vpn-page.c:261
+msgid ""
+"Login is not possible because user authentication has failed more than 5 "
+"times. Please contact the administrator."
+msgstr ""
+"Login is not possible because user authentication has failed more than 5 "
+"times.\n"
+"Please contact the administrator."
 
 #: ../src/greeter-vpn-page.c:267
 msgid ""
-"Login is not possible because user authentication has failed more than 5 "
-"times. Please contact the administrator."
-msgstr ""
-"Login is not possible because user authentication has failed more than 5 "
-"times. Please contact the administrator."
-
-#: ../src/greeter-vpn-page.c:273
-msgid ""
 "The VPN connection cannot be proceeded due to the ID usage period exceeded. "
 "Please try again later or contact the administrator."
 msgstr ""
-"The VPN connection cannot be proceeded due to the ID usage period exceeded. "
+"The VPN connection cannot be proceeded due to the ID usage period exceeded.\n"
 "Please try again later or contact the administrator."
 
-#: ../src/greeter-vpn-page.c:278
+#: ../src/greeter-vpn-page.c:272
 msgid ""
 "VPN connection cannot be proceeded because the password has expired. Please "
 "try again later or contact the administrator."
 msgstr ""
-"VPN connection cannot be proceeded because the password has expired. Please "
+"VPN connection cannot be proceeded because the password has expired. Please\n"
 "try again later or contact the administrator."
 
-#: ../src/greeter-vpn-page.c:283
+#: ../src/greeter-vpn-page.c:277
 msgid ""
 "The server cannot be reached due to network problems.\n"
 "Please check the network status and try again."
@@ -200,15 +213,15 @@ msgstr ""
 "The server cannot be reached due to network problems.\n"
 "Please check the network status and try again."
 
-#: ../src/greeter-vpn-page.c:288
+#: ../src/greeter-vpn-page.c:282
 msgid ""
 "VPN connection cannot proceed due to a VPN server response error. Please try "
 "again later or contact the administrator."
 msgstr ""
-"VPN connection cannot proceed due to a VPN server response error. Please try "
-"again later or contact the administrator."
+"VPN connection cannot proceed due to a VPN server response error.\n"
+"Please try again later or contact the administrator."
 
-#: ../src/greeter-vpn-page.c:293
+#: ../src/greeter-vpn-page.c:287
 msgid ""
 "The connection to the server has been lost.\n"
 "Check the network status and connect again."
@@ -216,23 +229,23 @@ msgstr ""
 "The connection to the server has been lost.\n"
 "Check the network status and connect again."
 
-#: ../src/greeter-vpn-page.c:298
+#: ../src/greeter-vpn-page.c:292
 msgid ""
 "VPN connection cannot proceed due to VPN execution failure. Please try again "
 "later or contact the administrator."
 msgstr ""
-"VPN connection cannot proceed due to VPN execution failure. Please try again "
-"later or contact the administrator."
+"VPN connection cannot proceed due to VPN execution failure.\n"
+"Please try again later or contact the administrator."
 
-#: ../src/greeter-vpn-page.c:303
+#: ../src/greeter-vpn-page.c:297
 msgid ""
 "VPN connection cannot proceed due to a VPN setting error. Please try again "
 "later or contact the administrator."
 msgstr ""
-"VPN connection cannot proceed due to a VPN setting error. Please try again "
-"later or contact the administrator."
+"VPN connection cannot proceed due to a VPN setting error.\n"
+"Please try again later or contact the administrator."
 
-#: ../src/greeter-vpn-page.c:308
+#: ../src/greeter-vpn-page.c:302
 msgid ""
 "An error has occurred in the system's VPN service.\n"
 "Reboot your system and try again."
@@ -240,7 +253,7 @@ msgstr ""
 "An error has occurred in the system's VPN service.\n"
 "Reboot your system and try again."
 
-#: ../src/greeter-vpn-page.c:313
+#: ../src/greeter-vpn-page.c:307
 msgid ""
 "VPN login request failed.\n"
 "There is no reponse from server."
@@ -248,7 +261,7 @@ msgstr ""
 "VPN login request failed.\n"
 "There is no reponse from server."
 
-#: ../src/greeter-vpn-page.c:317 ../src/greeter-vpn-page.c:871
+#: ../src/greeter-vpn-page.c:311 ../src/greeter-vpn-page.c:885
 msgid ""
 "VPN connection information is incorrect.\n"
 "Check the configuration file and try again."
@@ -256,7 +269,7 @@ msgstr ""
 "VPN connection information is incorrect.\n"
 "Check the configuration file and try again."
 
-#: ../src/greeter-vpn-page.c:322
+#: ../src/greeter-vpn-page.c:316
 msgid ""
 "VPN login request failed.\n"
 "Reboot your system and try again."
@@ -264,15 +277,23 @@ msgstr ""
 "VPN login request failed.\n"
 "Reboot your system and try again."
 
-#: ../src/greeter-vpn-page.c:333
+#: ../src/greeter-vpn-page.c:320 ../src/greeter-vpn-page.c:783
+msgid ""
+"Failed to get user information from the VPN server.\n"
+"Please try again."
+msgstr ""
+"Failed to get user information from the VPN server.\n"
+"Please try again."
+
+#: ../src/greeter-vpn-page.c:328
 msgid "Authentication Failure"
 msgstr "Authentication Failure"
 
-#: ../src/greeter-vpn-page.c:334
+#: ../src/greeter-vpn-page.c:329
 msgid "Error Code"
 msgstr "Error Code"
 
-#: ../src/greeter-vpn-page.c:336
+#: ../src/greeter-vpn-page.c:331
 msgid "Please try again later or contact the administrator."
 msgstr "Please try again later or contact the administrator."
 
@@ -300,11 +321,11 @@ msgstr ""
 "You have completed the password change.\n"
 "Please login again after clicking the 'OK' button."
 
-#: ../src/greeter-vpn-page.c:433
+#: ../src/greeter-vpn-page.c:432
 msgid "Failure Of Changing VPN Password"
 msgstr "Failure Of Changing VPN Password"
 
-#: ../src/greeter-vpn-page.c:434
+#: ../src/greeter-vpn-page.c:433
 msgid ""
 "Password change failed.\n"
 "You must change your password the first time you connect to the VPN."
@@ -312,27 +333,19 @@ msgstr ""
 "Password change failed.\n"
 "You must change your password the first time you connect to the VPN."
 
-#: ../src/greeter-vpn-page.c:471
+#: ../src/greeter-vpn-page.c:470 ../src/splash-window.ui.h:1
 msgid ""
 "Authentication is in progress.\n"
-"Please wait..."
+"Please wait."
 msgstr ""
 "Authentication is in progress.\n"
-"Please wait..."
+"Please wait."
 
-#: ../src/greeter-vpn-page.c:572
-msgid ""
-"Initializing Settings for VPN.\n"
-"Please wait..."
-msgstr ""
-"Initializing Settings for VPN.\n"
-"Please wait..."
-
-#: ../src/greeter-vpn-page.c:734
+#: ../src/greeter-vpn-page.c:733
 msgid "Cancelling VPN Password Change"
 msgstr "Cancelling VPN Password Change"
 
-#: ../src/greeter-vpn-page.c:735
+#: ../src/greeter-vpn-page.c:734
 msgid ""
 "The password change has been cancelled.\n"
 "Please be sure to change your password for VPN access."
@@ -340,45 +353,53 @@ msgstr ""
 "The password change has been cancelled.\n"
 "Please be sure to change your password for VPN access."
 
-#: ../src/greeter-vpn-page.c:803 ../src/greeter-vpn-page.c:861
-#: ../src/greeter-vpn-page.c:870
+#: ../src/greeter-vpn-page.c:813 ../src/greeter-vpn-page.c:875
+#: ../src/greeter-vpn-page.c:884
 msgid "VPN Service Error"
 msgstr "VPN Service Error"
 
-#: ../src/greeter-vpn-page.c:804 ../src/greeter-vpn-page.c:862
-msgid "VPN service is down. Please enable VPN service and try again."
-msgstr "VPN service is down. Please enable VPN service and try again."
+#: ../src/greeter-vpn-page.c:814 ../src/greeter-vpn-page.c:876
+msgid ""
+"VPN service is down.\n"
+"Please enable VPN service and try again."
+msgstr ""
+"VPN service is down.\n"
+"Please enable VPN service and try again."
 
-#: ../src/greeter-vpn-page.c:1059
+#: ../src/greeter-vpn-page.c:1081
 msgid "Connecting VPN"
 msgstr "Connecting VPN"
 
-#: ../src/greeter-login-page.c:153
+#: ../src/greeter-login-page.c:315
 msgid ""
 "In offline mode, only system (local) users can log in. Please try again."
 msgstr ""
 "In offline mode, only system (local) users can log in. Please try again."
 
-#: ../src/greeter-login-page.c:158
+#: ../src/greeter-login-page.c:320
 msgid "In online mode, only online users can log in. Please try again."
 msgstr "In online mode, only online users can log in. Please try again."
 
-#: ../src/greeter-login-page.c:455
+#: ../src/greeter-login-page.c:420
 msgid ""
 "You are required to change your password immediately (administrator enforced)"
 msgstr ""
 "You are required to change your password immediately (administrator enforced)"
 
-#: ../src/greeter-login-page.c:456
+#: ../src/greeter-login-page.c:421
 msgid "You are required to change your password immediately (password expired)"
 msgstr ""
 "You are required to change your password immediately (password expired)"
 
-#: ../src/greeter-login-page.c:479
-msgid "Password Expiration"
-msgstr "Password Expiration"
+#: ../src/greeter-login-page.c:427
+msgid "your password will expire in"
+msgstr "your password will expire in"
 
-#: ../src/greeter-login-page.c:480
+#: ../src/greeter-login-page.c:449
+msgid "Passowrd Expiration Warning"
+msgstr "Password Expiration Warning"
+
+#: ../src/greeter-login-page.c:450
 msgid ""
 "Your password has expired.\n"
 "Please change your password immediately."
@@ -386,19 +407,15 @@ msgstr ""
 "Your password has expired.\n"
 "Please change your password immediately."
 
-#: ../src/greeter-login-page.c:482 ../src/greeter-login-page.c:491
+#: ../src/greeter-login-page.c:452 ../src/greeter-login-page.c:461
 msgid "Changing Password"
 msgstr "Changing Password"
 
-#: ../src/greeter-login-page.c:483 ../src/greeter-login-page.c:492
-msgid "Cancel"
-msgstr "Cancel"
-
-#: ../src/greeter-login-page.c:488
+#: ../src/greeter-login-page.c:458
 msgid "Temporary Password Warning"
 msgstr "Temporary Password Warning"
 
-#: ../src/greeter-login-page.c:489
+#: ../src/greeter-login-page.c:459
 msgid ""
 "Your password has been issued temporarily.\n"
 "For security reasons, please change your password immediately."
@@ -406,162 +423,158 @@ msgstr ""
 "Your password has been issued temporarily.\n"
 "For security reasons, please change your password immediately."
 
-#: ../src/greeter-login-page.c:500
+#: ../src/greeter-login-page.c:470
 #, c-format
 msgid ""
 "Please change your password for security.\n"
-"If you do not change your password within %s day, your password expires.You "
-"can no longer log in.\n"
+"If you do not change your password within %s day, your password expires.\n"
+"You can no longer log in.\n"
 "Do you want to change password now?"
 msgstr ""
 "Please change your password for security.\n"
-"If you do not change your password within %s day, your password expires.You "
-"can no longer log in.\n"
+"If you do not change your password within %s day, your password expires.\n"
+"You can no longer log in.\n"
 "Do you want to change password now?"
+
+#: ../src/greeter-login-page.c:476
+#, c-format
+msgid ""
+"Please change your password for security.\n"
+"If you do not change your password within %s days, your password expires.\n"
+"You can no longer log in.\n"
+"Do you want to change password now?"
+msgstr ""
+"Please change your password for security.\n"
+"If you do not change your password within %s days, your password expires.\n"
+"You can no longer log in.\n"
+"Do you want to change password now?"
+
+#: ../src/greeter-login-page.c:483
+msgid ""
+"Please change your password for security.\n"
+"If you do not change your password within a few days, your password "
+"expires.\n"
+"You can no longer log in.\n"
+"Do you want to change password now?"
+msgstr ""
+"Please change your password for security.\n"
+"If you do not change your password within a few days, your password "
+"expires.\n"
+"You can no longer log in.\n"
+"Do you want to change password now?"
+
+#: ../src/greeter-login-page.c:491 ../src/greeter-login-page.c:552
+msgid "Password Maxday Warning"
+msgstr "Password Maxday Warning"
+
+#: ../src/greeter-login-page.c:492
+msgid "Change now"
+msgstr "Change now"
+
+#: ../src/greeter-login-page.c:492
+msgid "Later"
+msgstr "Later"
+
+#: ../src/greeter-login-page.c:501
+#, c-format
+msgid ""
+"Your account will not be available after %s.\n"
+"Your account will expire in %s day."
+msgstr ""
+"Your account will not be available after %s.\n"
+"Your account will expire in %s day."
 
 #: ../src/greeter-login-page.c:505
 #, c-format
 msgid ""
-"Please change your password for security.\n"
-"If you do not change your password within %s days, your password expires.You "
-"can no longer log in.\n"
-"Do you want to change password now?"
-msgstr ""
-"Please change your password for security.\n"
-"If you do not change your password within %s days, your password expires.You "
-"can no longer log in.\n"
-"Do you want to change password now?"
-
-#: ../src/greeter-login-page.c:511
-msgid ""
-"Please change your password for security.\n"
-"If you do not change your password within a few days, your password expires."
-"You can no longer log in.\n"
-"Do you want to change password now?"
-msgstr ""
-"Please change your password for security.\n"
-"If you do not change your password within a few days, your password expires."
-"You can no longer log in.\n"
-"Do you want to change password now?"
-
-#: ../src/greeter-login-page.c:518
-msgid "Password Maxday Warning"
-msgstr "Password Maxday Warning"
-
-#: ../src/greeter-login-page.c:519
-msgid "Change now"
-msgstr "Change now"
-
-#: ../src/greeter-login-page.c:519
-msgid "Later"
-msgstr "Later"
-
-#: ../src/greeter-login-page.c:528
-#, c-format
-msgid ""
 "Your account will not be available after %s.\n"
-"Your account will expire in %s day"
+"Your account will expire in %s days."
 msgstr ""
 "Your account will not be available after %s.\n"
-"Your account will expire in %s day"
+"Your account will expire in %s days."
 
-#: ../src/greeter-login-page.c:532
-#, c-format
-msgid ""
-"Your account will not be available after %s.\n"
-"Your account will expire in %s days"
-msgstr ""
-"Your account will not be available after %s.\n"
-"Your account will expire in %s days"
-
-#: ../src/greeter-login-page.c:539
+#: ../src/greeter-login-page.c:512
 msgid "Account Expiration Warning"
 msgstr "Account Expiration Warning"
 
-#: ../src/greeter-login-page.c:548
+#: ../src/greeter-login-page.c:521
 #, c-format
 msgid ""
 "Your organization will not be available after %s.\n"
-"Your organization will expire in %s day"
+"Your organization will expire in %s day."
 msgstr ""
 "Your organization will not be available after %s.\n"
-"Your organization will expire in %s day"
+"Your organization will expire in %s day."
 
-#: ../src/greeter-login-page.c:552
+#: ../src/greeter-login-page.c:525
 #, c-format
 msgid ""
 "Your organization will not be available after %s.\n"
-"Your organization will expire in %s days"
+"Your organization will expire in %s days."
 msgstr ""
 "Your organization will not be available after %s.\n"
-"Your organization will expire in %s days"
+"Your organization will expire in %s days."
 
-#: ../src/greeter-login-page.c:559
+#: ../src/greeter-login-page.c:532
 msgid "Division Expiration Warning"
 msgstr "Division Expiration Warning"
 
-#: ../src/greeter-login-page.c:568
+#: ../src/greeter-login-page.c:541
 #, c-format
 msgid ""
 "Your password will not be available after %s.\n"
-"Your password will expire in %s day"
+"Your password will expire in %s day."
 msgstr ""
 "Your password will not be available after %s.\n"
-"Your password will expire in %s day"
+"Your password will expire in %s day."
 
-#: ../src/greeter-login-page.c:572
+#: ../src/greeter-login-page.c:545
 #, c-format
 msgid ""
 "Your password will not be available after %s.\n"
-"Your password will expire in %s days"
+"Your password will expire in %s days."
 msgstr ""
 "Your password will not be available after %s.\n"
-"Your password will expire in %s days"
+"Your password will expire in %s days."
 
-#: ../src/greeter-login-page.c:579
-msgid "Passowrd Expiration Warning"
-msgstr "Password Expiration Warning"
-
-#: ../src/greeter-login-page.c:584
+#: ../src/greeter-login-page.c:561
 msgid "Duplicate logins detected with the same ID."
 msgstr "Duplicate logins detected with the same ID."
 
-#: ../src/greeter-login-page.c:587
+#: ../src/greeter-login-page.c:564
 msgid "Client ID"
 msgstr "Client ID"
 
-#: ../src/greeter-login-page.c:592
+#: ../src/greeter-login-page.c:569
 msgid "Client Name"
 msgstr "Client Name"
 
-#: ../src/greeter-login-page.c:597
+#: ../src/greeter-login-page.c:574
 msgid "IP"
 msgstr "IP"
 
-#: ../src/greeter-login-page.c:602
+#: ../src/greeter-login-page.c:579
 msgid "Local IP"
 msgstr "Local IP"
 
-#: ../src/greeter-login-page.c:608
+#: ../src/greeter-login-page.c:584
 msgid "Duplicate Login Notification"
 msgstr "Duplicate Login Notification"
 
-#: ../src/greeter-login-page.c:619
+#: ../src/greeter-login-page.c:592
 #, c-format
 msgid ""
 "Authentication Failure\n"
-"\n"
 "You have %s login attempts remaining.\n"
 "You can no longer log in when the maximum number of login attempts is "
 "exceeded."
 msgstr ""
 "Authentication Failure\n"
-"\n"
 "You have %s login attempts remaining.\n"
 "You can no longer log in when the maximum number of login attempts is "
 "exceeded."
 
-#: ../src/greeter-login-page.c:624
+#: ../src/greeter-login-page.c:597
 msgid ""
 "The user could not be authenticated due to an unknown error.\n"
 "Please contact the administrator."
@@ -569,7 +582,7 @@ msgstr ""
 "The user could not be authenticated due to an unknown error.\n"
 "Please contact the administrator."
 
-#: ../src/greeter-login-page.c:632
+#: ../src/greeter-login-page.c:605
 msgid ""
 "This account has deleted and is no longer available.\n"
 "Please contact the administrator."
@@ -577,7 +590,41 @@ msgstr ""
 "This account has deleted and is no longer available.\n"
 "Please contact the administrator."
 
-#: ../src/greeter-login-page.c:638
+#: ../src/greeter-login-page.c:611
+msgid ""
+"You attempted to log in from an unregistered device.\n"
+"Please contact the administrator."
+msgstr ""
+"You attempted to log in from an unregistered device.\n"
+"Please contact the administrator."
+
+#: ../src/greeter-login-page.c:617 ../src/greeter-login-page.c:949
+msgid ""
+"Authentication Failure\n"
+"Please check the username and password and try again."
+msgstr ""
+"Authentication Failure\n"
+"Please check the username and password and try again."
+
+#: ../src/greeter-login-page.c:623
+msgid ""
+"Login was denied because it violated the policy set by the GPMS.\n"
+"Please contact the administrator."
+msgstr ""
+"Login was denied because it violated the policy set by the GPMS.\n"
+"Please contact the administrator."
+
+#: ../src/greeter-login-page.c:630
+msgid ""
+"Login was denied because it violated the policy(Allowed IP) set by the "
+"GPMS.\n"
+"Please contact the administrator."
+msgstr ""
+"Login was denied because it violated the policy(Allowed IP) set by the "
+"GPMS.\n"
+"Please contact the administrator."
+
+#: ../src/greeter-login-page.c:637
 msgid ""
 "Your account has been locked because you have exceeded the number of login "
 "attempts.\n"
@@ -587,7 +634,7 @@ msgstr ""
 "attempts.\n"
 "Please try again in a moment."
 
-#: ../src/greeter-login-page.c:645
+#: ../src/greeter-login-page.c:644
 msgid ""
 "This account has expired and is no longer available.\n"
 "Please contact the administrator."
@@ -595,7 +642,7 @@ msgstr ""
 "This account has expired and is no longer available.\n"
 "Please contact the administrator."
 
-#: ../src/greeter-login-page.c:651
+#: ../src/greeter-login-page.c:650
 msgid ""
 "The password for your account has expired.\n"
 "Please contact the administrator."
@@ -603,7 +650,7 @@ msgstr ""
 "The password for your account has expired.\n"
 "Please contact the administrator."
 
-#: ../src/greeter-login-page.c:664
+#: ../src/greeter-login-page.c:663
 msgid ""
 "Due to the expiration of your organization, this account is no longer "
 "available.\n"
@@ -613,7 +660,7 @@ msgstr ""
 "available.\n"
 "Please contact the administrator."
 
-#: ../src/greeter-login-page.c:671
+#: ../src/greeter-login-page.c:670
 msgid ""
 "Login attempts exceeded the number of times, so you cannot login for a "
 "certain period of time.\n"
@@ -623,15 +670,15 @@ msgstr ""
 "certain period of time.\n"
 "Please try again in a moment."
 
-#: ../src/greeter-login-page.c:678
+#: ../src/greeter-login-page.c:677
 msgid "Trial period has expired."
 msgstr "Trial period has expired."
 
-#: ../src/greeter-login-page.c:683
+#: ../src/greeter-login-page.c:682
 msgid "Time error occurred."
 msgstr "Time error occurred."
 
-#: ../src/greeter-login-page.c:692
+#: ../src/greeter-login-page.c:691
 #, c-format
 msgid ""
 "The trial period is up to %s days.\n"
@@ -640,7 +687,7 @@ msgstr ""
 "The trial period is up to %s days.\n"
 "The trial period expires today."
 
-#: ../src/greeter-login-page.c:695
+#: ../src/greeter-login-page.c:694
 #, c-format
 msgid ""
 "The trial period is up to %s days.\n"
@@ -649,7 +696,7 @@ msgstr ""
 "The trial period is up to %s days.\n"
 "%s day left to expire."
 
-#: ../src/greeter-login-page.c:698
+#: ../src/greeter-login-page.c:697
 #, c-format
 msgid ""
 "The trial period is up to %s days.\n"
@@ -658,73 +705,59 @@ msgstr ""
 "The trial period is up to %s days.\n"
 "%s days left to expire."
 
-#: ../src/greeter-login-page.c:702
+#: ../src/greeter-login-page.c:701
 msgid "The trial period is unknown."
 msgstr "The trial period is unknown"
 
-#: ../src/greeter-login-page.c:706
+#: ../src/greeter-login-page.c:705
 msgid "Trial Period Notification"
 msgstr "Trial Period Notification"
 
-#: ../src/greeter-login-page.c:732
+#: ../src/greeter-login-page.c:730
 msgid "Current password: "
 msgstr "Current password: "
 
-#: ../src/greeter-login-page.c:733
+#: ../src/greeter-login-page.c:731
 msgid "Changing Password - [Step 1]"
 msgstr "Changing Password - [Step 1]"
 
-#: ../src/greeter-login-page.c:734
+#: ../src/greeter-login-page.c:732
 msgid "Enter current password :"
 msgstr "Enter current password :"
 
-#: ../src/greeter-login-page.c:736
+#: ../src/greeter-login-page.c:734
 msgid "New password: "
 msgstr "New password: "
 
-#: ../src/greeter-login-page.c:737
+#: ../src/greeter-login-page.c:735
 msgid "Changing Password - [Step 2]"
 msgstr "Changing Password - [Step 2]"
 
-#: ../src/greeter-login-page.c:738
+#: ../src/greeter-login-page.c:736
 msgid "Enter new password :"
 msgstr "Enter new password :"
 
-#: ../src/greeter-login-page.c:740
+#: ../src/greeter-login-page.c:738
 msgid "Retype new password: "
 msgstr "Retype new password: "
 
-#: ../src/greeter-login-page.c:741
+#: ../src/greeter-login-page.c:739
 msgid "Changing Password - [Step 3]"
 msgstr "Changing Password - [Step 3]"
 
-#: ../src/greeter-login-page.c:742
+#: ../src/greeter-login-page.c:740
 msgid "Retype new password :"
 msgstr "Retype new password :"
 
-#: ../src/greeter-login-page.c:882
+#: ../src/greeter-login-page.c:856
 msgid "Failed to start session"
 msgstr "Failed to start session"
 
-#: ../src/greeter-login-page.c:975
-msgid ""
-"Authentication Failure\n"
-"\n"
-"Please check the username and password and try again."
-msgstr ""
-"Authentication Failure\n"
-"\n"
-"Please check the username and password and try again."
-
-#: ../src/greeter-login-page.c:984
-msgid "Failed to authenticate"
-msgstr "Failed to authenticate"
-
-#: ../src/greeter-login-page.c:994
+#: ../src/greeter-login-page.c:933
 msgid "Failure Of Changing Password"
 msgstr "Failure Of Changing Password"
 
-#: ../src/greeter-login-page.c:995
+#: ../src/greeter-login-page.c:934
 msgid ""
 "Failed to change password.\n"
 "Please try again."
@@ -732,15 +765,32 @@ msgstr ""
 "Failed to change password.\n"
 "Please try again."
 
-#: ../src/greeter-login-page.c:1305
+#: ../src/greeter-login-page.c:956
+msgid "Failed to authenticate"
+msgstr "Failed to authenticate"
+
+#: ../src/greeter-login-page.c:1252
 msgid "Login System"
 msgstr "Login System"
 
-#: ../src/greeter-vpn-passwd-dialog.c:132
+#: ../src/greeter-ars-dialog.c:62
+msgid "Input Timeout"
+msgstr "Input Timeout"
+
+#: ../src/greeter-ars-dialog.c:68 ../src/greeter-ars-dialog.c:87
+#, c-format
+msgid "%02d:%02d"
+msgstr "%02d:%02d"
+
+#: ../src/greeter-ars-dialog.c:238 ../src/greeter-ars-dialog.c:247
+msgid "Unknown"
+msgstr "Unknown"
+
+#: ../src/greeter-vpn-passwd-dialog.c:140
 msgid "The old passwords do not match."
 msgstr "The old passwords do not match."
 
-#: ../src/greeter-vpn-passwd-dialog.c:161
+#: ../src/greeter-vpn-passwd-dialog.c:169
 msgid "The passwords do not match."
 msgstr "The passwords do not match."
 
@@ -871,7 +921,7 @@ msgstr ""
 
 #: ../src/gooroom-greeter.ui.h:1
 msgid "Shutdown system"
-msgstr "Shutdown system"
+msgstr "Shut down the system."
 
 #: ../src/gooroom-greeter.ui.h:2
 msgid "Shutdown"
@@ -879,15 +929,15 @@ msgstr "Shutdown"
 
 #: ../src/gooroom-greeter.ui.h:3
 msgid "Hibernate system"
-msgstr "Hibernate system"
+msgstr "Put the system into hibernation mode."
 
 #: ../src/gooroom-greeter.ui.h:4
 msgid "Hibernate"
-msgstr "Hibernate"
+msgstr "Hibernation"
 
 #: ../src/gooroom-greeter.ui.h:5
 msgid "Suspend system"
-msgstr "Suspend system"
+msgstr "Put the system into suspend mode."
 
 #: ../src/gooroom-greeter.ui.h:6
 msgid "Suspend"
@@ -895,7 +945,7 @@ msgstr "Suspend"
 
 #: ../src/gooroom-greeter.ui.h:7
 msgid "Restart system"
-msgstr "Restart system"
+msgstr "Restart the system"
 
 #: ../src/gooroom-greeter.ui.h:8
 msgid "Restart"
@@ -1005,13 +1055,13 @@ msgstr "Enable Networking"
 msgid ""
 "Access the security network for a secure network connection. First, after ID "
 "and password authentication, ARS authentication proceeds. Follow the "
-"instructions and enter the two-digit authentication number on the phone "
+"instructions and enter the six-digit authentication number on the phone "
 "keypad. Please note that login is restricted if authentication fails more "
 "than 5 times."
 msgstr ""
 "Access the security network for a secure network connection. First, after ID "
 "and password authentication, ARS authentication proceeds. Follow the "
-"instructions and enter the two-digit authentication number on the phone "
+"instructions and enter the six-digit authentication number on the phone "
 "keypad. Please note that login is restricted if authentication fails more "
 "than 5 times."
 
@@ -1023,6 +1073,53 @@ msgstr "Enter your username"
 msgid "Enter your password"
 msgstr "Enter your password"
 
+#: ../src/greeter-ars-dialog.ui.h:1
+msgid "ARS Authentication"
+msgstr "ARS Authentication"
+
+#: ../src/greeter-ars-dialog.ui.h:2
+msgid ""
+"ARS authentication is performed with the registered phone number for safe "
+"login. Follow the instructions and <b>enter the 6-digit verification number</"
+"b> displayed on the screen."
+msgstr ""
+
+#: ../src/greeter-ars-dialog.ui.h:3
+msgid "Phone Number"
+msgstr "Phone Number"
+
+#: ../src/greeter-ars-dialog.ui.h:4
+msgid "Authentication Number"
+msgstr "Authentication Number"
+
+#: ../src/greeter-ars-dialog.ui.h:5
+msgid "None"
+msgstr "Unknown"
+
+#: ../src/greeter-ars-dialog.ui.h:6
+msgid "Left Time"
+msgstr "Left Time"
+
+#: ../src/greeter-ars-dialog.ui.h:7
+msgid ""
+"Please remember that you will need the corresponding authentication number "
+"when connecting to the ARS phone."
+msgstr ""
+"Please remember that you will need the corresponding authentication number "
+"when connecting to the ARS phone."
+
+#: ../src/greeter-ars-dialog.ui.h:8
+msgid ""
+"Please note that ARS authentication is not possible with forwarded phone "
+"numbers."
+msgstr ""
+
+#: ../src/greeter-ars-dialog.ui.h:9
+msgid ""
+"If you enter the authentication number incorrectly 3 times, ARS "
+"authentication will automatically end."
+msgstr ""
+
 #: ../src/greeter-login-page.ui.h:1
 msgid ""
 "Proceed with system login. When operating in online mode, use an online "
@@ -1030,14 +1127,6 @@ msgid ""
 msgstr ""
 "Proceed with system login. When operating in online mode, use an online "
 "account, and when operating in offline mode, use a local account."
-
-#: ../src/splash-window.ui.h:1
-msgid ""
-"Authentication is is progress\n"
-"please wait..."
-msgstr ""
-"Authentication is is progress\n"
-"please wait..."
 
 #: ../src/greeter-vpn-passwd-dialog.ui.h:1
 msgid "Changing password for VPN"

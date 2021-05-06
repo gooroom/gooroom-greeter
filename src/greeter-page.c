@@ -24,15 +24,12 @@
 #include <glib-object.h>
 
 #include "greeter-page.h"
-#include "greeter-page-manager.h"
 
 struct _GreeterPagePrivate
 {
 	char *title;
 
 	guint complete : 1;
-
-	GreeterPageManager *manager;
 };
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (GreeterPage, greeter_page, GTK_TYPE_BIN);
@@ -40,6 +37,7 @@ G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (GreeterPage, greeter_page, GTK_TYPE_BIN);
 enum
 {
 	PROP_0,
+	PROP_PARENT,
 	PROP_MANAGER,
 	PROP_TITLE,
 	PROP_COMPLETE,
@@ -58,6 +56,9 @@ greeter_page_get_property (GObject    *object,
 	GreeterPagePrivate *priv = greeter_page_get_instance_private (page);
 	switch (prop_id)
 	{
+		case PROP_PARENT:
+			g_value_set_pointer (value, (gpointer) page->parent);
+		break;
 		case PROP_MANAGER:
 			g_value_set_pointer (value, (gpointer) page->manager);
 		break;
@@ -92,6 +93,9 @@ greeter_page_set_property (GObject      *object,
 	GreeterPagePrivate *priv = greeter_page_get_instance_private (page);
 	switch (prop_id)
 	{
+		case PROP_PARENT:
+			page->parent = g_value_get_pointer (value);
+		break;
 		case PROP_MANAGER:
 			page->manager = g_value_get_pointer (value);
 		break;
@@ -167,6 +171,9 @@ greeter_page_class_init (GreeterPageClass *klass)
 
 //	klass->apply = greeter_page_real_apply;
 
+	obj_props[PROP_PARENT] =
+		g_param_spec_pointer ("parent", "", "",
+				G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
 	obj_props[PROP_MANAGER] =
 		g_param_spec_pointer ("manager", "", "",
 				G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
@@ -358,4 +365,14 @@ greeter_page_should_show (GreeterPage *page)
 		return GREETER_PAGE_GET_CLASS (page)->should_show (page);
 
 	return TRUE;
+}
+
+gboolean
+greeter_page_key_press_event (GreeterPage *page,
+                              GdkEventKey *event)
+{
+	if (GREETER_PAGE_GET_CLASS (page)->key_press_event)
+		return GREETER_PAGE_GET_CLASS (page)->key_press_event (page, event);
+
+	return FALSE;
 }

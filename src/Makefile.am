@@ -37,6 +37,10 @@ gooroom_greeter_SOURCES = \
 	pw-utils.c \
 	splash-window.h \
 	splash-window.c \
+	greeter-ars-dialog.h \
+	greeter-ars-dialog.c \
+	readable-phone-number.h \
+	readable-phone-number.c \
 	greeter-message-dialog.h \
 	greeter-message-dialog.c
 
@@ -52,6 +56,8 @@ AM_CPPFLAGS = \
 	-DVPN_SERVICE_CONFIG_DIR=\"$(datadir)/gooroom-vpn-service/services\" \
 	-DGOOROOM_VPN_SERVICE_CONFIG_FILE=\"$(sysconfdir)/gooroom-vpn-service/vpn.conf\" \
 	-DGREETER_NETWORK_CONTROL_HELPER=\"$(pkglibexecdir)/greeter-network-control-helper\" \
+	-DPHONE_NUMBER_XML=\"$(pkglibexecdir)/PhoneNumberMetadata.xml\" \
+	-DMOFA_CONFIG_FILE=\"$(pkgdatadir)/mofa.conf\" \
 	$(WARN_CFLAGS)
 
 gooroom_greeter_CFLAGS = \

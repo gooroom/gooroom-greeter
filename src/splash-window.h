@@ -46,14 +46,16 @@ struct _SplashWindowClass {
 	GtkWindowClass __parent_class__;
 };
 
-GType          splash_window_get_type          (void); G_GNUC_CONST
+GType      splash_window_get_type          (void); G_GNUC_CONST
 
-SplashWindow  *splash_window_new               (GtkWindow *parent);
+GtkWidget *splash_window_new               (GtkWidget *parent);
 
-void           splash_window_show              (SplashWindow *window);
-void           splash_window_destroy           (SplashWindow *window);
-void           splash_window_set_message_label (SplashWindow *window,
-                                                const char   *message);
+void       splash_window_show              (SplashWindow *window);
+void       splash_window_destroy           (SplashWindow *window);
+void       splash_window_set_message_label (SplashWindow *window,
+                                            const char   *message);
+void       splash_window_set_parent        (SplashWindow *window,
+                                            GtkWidget    *parent);
 
 G_END_DECLS
 

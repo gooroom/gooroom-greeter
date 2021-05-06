@@ -3,10 +3,11 @@
 <interface>
   <requires lib="gtk+" version="3.20"/>
   <template class="GreeterVPNPasswdDialog" parent="GtkDialog">
+    <property name="width_request">512</property>
     <property name="can_focus">False</property>
     <property name="border_width">10</property>
     <property name="modal">True</property>
-    <property name="default_width">512</property>
+    <property name="window_position">center</property>
     <property name="type_hint">dialog</property>
     <property name="skip_taskbar_hint">True</property>
     <property name="skip_pager_hint">True</property>
@@ -67,6 +68,13 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Changing password for VPN</property>
+                <property name="wrap">True</property>
+                <property name="wrap_mode">char</property>
+                <property name="ellipsize">end</property>
+                <property name="width_chars">0</property>
+                <property name="max_width_chars">0</property>
+                <property name="lines">1</property>
+                <property name="xalign">0</property>
                 <style>
                   <class name="dialog-title-label"/>
                 </style>

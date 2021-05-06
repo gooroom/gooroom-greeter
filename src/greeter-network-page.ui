@@ -78,7 +78,7 @@
                         <child>
                           <object class="GtkSwitch" id="wired_switch">
                             <property name="visible">True</property>
-                            <property name="can_focus">True</property>
+                            <property name="can_focus">False</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -122,7 +122,7 @@
                         <child>
                           <object class="GtkSwitch" id="wifi_switch">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
+                            <property name="can_focus">True</property>
                             <property name="halign">end</property>
                             <property name="valign">center</property>
                           </object>
@@ -226,8 +226,8 @@ Please contact the administrator.</property>
               <object class="GtkButton" id="exit_button1">
                 <property name="label" translatable="yes">Exit</property>
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
+                <property name="can_focus">False</property>
+                <property name="receives_default">False</property>
                 <property name="halign">center</property>
                 <style>
                   <class name="suggested-action"/>
@@ -276,8 +276,8 @@ Please contact the administrator.</property>
               <object class="GtkButton" id="exit_button2">
                 <property name="label" translatable="yes">Exit</property>
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
+                <property name="can_focus">False</property>
+                <property name="receives_default">False</property>
                 <property name="halign">center</property>
                 <style>
                   <class name="suggested-action"/>
@@ -326,8 +326,8 @@ Please click the button below to enable networking.</property>
               <object class="GtkButton" id="network_enable_button">
                 <property name="label" translatable="yes">Enable Networking</property>
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
+                <property name="can_focus">False</property>
+                <property name="receives_default">False</property>
                 <property name="halign">center</property>
                 <style>
                   <class name="suggested-action"/>

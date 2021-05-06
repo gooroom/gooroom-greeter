@@ -39,9 +39,9 @@ static guint signals[LAST_SIGNAL];
 
 
 struct _GreeterPageManagerPrivate {
-	SplashWindow *splash;
+	GtkWidget *splash;
 
-	int           mode;
+	int        mode;
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (GreeterPageManager, greeter_page_manager, G_TYPE_OBJECT)
@@ -173,10 +173,9 @@ greeter_page_manager_show_splash (GreeterPageManager *manager,
 
 	greeter_page_manager_hide_splash (manager);
 
-	priv->splash = splash_window_new (GTK_WINDOW (parent));
+	priv->splash = splash_window_new (parent);
 	splash_window_set_message_label (SPLASH_WINDOW (priv->splash), message);
-
-	splash_window_show (priv->splash);
+	splash_window_show (SPLASH_WINDOW (priv->splash));
 }
 
 void
@@ -185,7 +184,7 @@ greeter_page_manager_hide_splash (GreeterPageManager *manager)
 	GreeterPageManagerPrivate *priv = manager->priv;
 
 	if (priv->splash) {
-		splash_window_destroy (priv->splash);
+		splash_window_destroy (SPLASH_WINDOW (priv->splash));
 		priv->splash = NULL;
 	}
 }

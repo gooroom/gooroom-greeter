@@ -27,8 +27,9 @@
 
 struct _SplashWindowPrivate
 {
-	GtkWidget *message_label;
+	GtkWidget *parent;
 	GtkWidget *spinner;
+	GtkWidget *message_label;
 };
 
 
@@ -37,16 +38,52 @@ G_DEFINE_TYPE_WITH_PRIVATE (SplashWindow, splash_window, GTK_TYPE_WINDOW);
 
 
 static void
+set_parent (SplashWindow *window,
+            GtkWidget    *parent)
+{
+	if (parent)
+		window->priv->parent = parent;
+}
+
+static void
 splash_window_finalize (GObject *object)
 {
 	G_OBJECT_CLASS (splash_window_parent_class)->finalize (object);
 }
 
 static void
+splash_window_size_allocate (GtkWidget     *widget,
+                             GtkAllocation *allocation)
+{
+	SplashWindow *window = SPLASH_WINDOW (widget);
+	SplashWindowPrivate *priv = window->priv;
+
+	if (!gtk_widget_get_realized (widget))
+		return;
+
+	if (priv->parent) {
+		GtkWidget *toplevel;
+		gint x, y, p_w, p_h;
+
+		toplevel = gtk_widget_get_toplevel (priv->parent);
+
+		gtk_widget_translate_coordinates (priv->parent, toplevel, 0, 0, &x, &y);
+		gtk_widget_get_size_request (priv->parent, &p_w, &p_h);
+
+		gtk_window_move (GTK_WINDOW (window),
+                         x + (p_w - allocation->width) / 2,
+                         y + (p_h - allocation->height) / 2 );
+	}
+
+	if (GTK_WIDGET_CLASS (splash_window_parent_class)->size_allocate)
+		GTK_WIDGET_CLASS (splash_window_parent_class)->size_allocate (widget, allocation);
+}
+
+static void
 splash_window_init (SplashWindow *window)
 {
-//	SplashWindowPrivate *priv;
-
+	PangoAttrList *attrs;
+	PangoAttribute *attr;
 	window->priv = splash_window_get_instance_private (window);
 
 	gtk_widget_init_template (GTK_WIDGET (window));
@@ -67,25 +104,24 @@ splash_window_init (SplashWindow *window)
 		gtk_widget_set_visual (GTK_WIDGET(window), visual);
 	}
 
-//	PangoAttrList *attrs;
-//	PangoAttribute *attr;
-//
-//	attrs = pango_attr_list_new ();
-//	attr = pango_attr_rise_new (20000);
-//	pango_attr_list_insert (attrs, attr);
-//
-//	gtk_label_set_attributes (GTK_LABEL (priv->message_label), attrs);
+	attrs = pango_attr_list_new ();
+	attr = pango_attr_rise_new (8000);
+	pango_attr_list_insert (attrs, attr);
+
+	gtk_label_set_attributes (GTK_LABEL (window->priv->message_label), attrs);
 }
 
 static void
 splash_window_class_init (SplashWindowClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
+
+	object_class->finalize = splash_window_finalize;
+	widget_class->size_allocate = splash_window_size_allocate;
 
 	gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass),
                                                  "/kr/gooroom/greeter/splash-window.ui");
-
-	object_class->finalize = splash_window_finalize;
 
 	gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass),
                                                   SplashWindow, message_label);
@@ -93,18 +129,18 @@ splash_window_class_init (SplashWindowClass *klass)
                                                   SplashWindow, spinner);
 }
 
-
-SplashWindow *
-splash_window_new (GtkWindow *parent)
+GtkWidget *
+splash_window_new (GtkWidget *parent)
 {
-	GObject *result;
+	GObject *object;
 
-	result = g_object_new (SPLASH_TYPE_WINDOW,
-                           "transient-for", parent,
-//                           "type", GTK_WINDOW_POPUP,
+	object = g_object_new (SPLASH_TYPE_WINDOW,
+                           "transient-for", NULL,
                            NULL);
 
-	return SPLASH_WINDOW (result);
+	set_parent (SPLASH_WINDOW (object), parent);
+
+	return GTK_WIDGET (object);
 }
 
 void
@@ -131,6 +167,8 @@ void
 splash_window_set_message_label (SplashWindow *window,
                                  const char   *message)
 {
+	g_return_if_fail (SPLASH_IS_WINDOW (window));
+
 	SplashWindowPrivate *priv = window->priv;
 
 	if (message) {

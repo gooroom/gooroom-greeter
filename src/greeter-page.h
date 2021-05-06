@@ -48,6 +48,8 @@ struct _GreeterPage
 {
 	GtkBin __parent__;
 
+	GtkWidget *parent;
+
 	GreeterPageManager *manager;
 
 	GreeterPagePrivate *priv;
@@ -59,9 +61,10 @@ struct _GreeterPageClass
 
 	char *page_id;
 
-	void      (*out)          (GreeterPage *page, gboolean next);
-	void      (*shown)        (GreeterPage *page);
-	gboolean  (*should_show)  (GreeterPage *page);
+	void      (*out)             (GreeterPage *page, gboolean next);
+	void      (*shown)           (GreeterPage *page);
+	gboolean  (*should_show)     (GreeterPage *page);
+	gboolean  (*key_press_event) (GreeterPage *page, GdkEventKey *event);
 };
 
 GType greeter_page_get_type (void);
@@ -78,6 +81,9 @@ void         greeter_page_out              (GreeterPage *page,
                                             gboolean     next);
 void         greeter_page_shown            (GreeterPage *page);
 gboolean     greeter_page_should_show      (GreeterPage *page);
+
+gboolean     greeter_page_key_press_event  (GreeterPage *page,
+                                            GdkEventKey *event);
 
 G_END_DECLS
 

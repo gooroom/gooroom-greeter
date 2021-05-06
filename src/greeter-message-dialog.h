@@ -18,7 +18,9 @@
 #ifndef __GREETER_MESSAGE_DIALOG_H__
 #define __GREETER_MESSAGE_DIALOG_H__
 
-#include "config.h"
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include <glib.h>
 #include <gtk/gtk.h>
@@ -48,7 +50,7 @@ struct _GreeterMessageDialogClass {
 
 GType	    greeter_message_dialog_get_type	(void) G_GNUC_CONST;
 
-GtkWidget  *greeter_message_dialog_new		(GtkWindow  *parent,
+GtkWidget  *greeter_message_dialog_new		(GtkWidget  *parent,
                                              const char *icon,
                                              const char *title,
                                              const char *message); 

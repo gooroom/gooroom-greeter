@@ -32,6 +32,7 @@
 #define VALIDATION_TIMEOUT 100
 
 struct _GreeterVPNPasswdDialogPrivate {
+	GtkWidget *parent;
 	GtkWidget *old_pw_entry;
 	GtkWidget *new_pw_entry;
 	GtkWidget *new_verify_pw_entry;
@@ -58,6 +59,13 @@ G_DEFINE_TYPE_WITH_PRIVATE (GreeterVPNPasswdDialog, greeter_vpn_passwd_dialog, G
 
 
 
+static void
+set_parent (GreeterVPNPasswdDialog *dialog,
+            GtkWidget              *parent)
+{
+	if (parent)
+		dialog->priv->parent = parent;
+}
 
 static void
 set_entry_validation_checkmark (GtkEntry *entry)
@@ -176,6 +184,8 @@ old_pw_entry_changed_cb (GreeterVPNPasswdDialog *dialog)
 
 	gtk_label_set_text (GTK_LABEL (priv->error_label), "");
 
+	clear_entry_validation_error (GTK_ENTRY (priv->old_pw_entry));
+
 	g_clear_handle_id (&priv->validation_timeout_id, g_source_remove);
 	priv->validation_timeout_id = g_timeout_add (VALIDATION_TIMEOUT, (GSourceFunc)validate_cb, dialog);
 }
@@ -219,6 +229,34 @@ pw_entry_activated_cb (GreeterVPNPasswdDialog *dialog)
 
 	if (valid)
 		gtk_dialog_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
+}
+
+static void
+greeter_vpn_passwd_dialog_size_allocate (GtkWidget     *widget,
+                                         GtkAllocation *allocation)
+{
+	GreeterVPNPasswdDialog *dialog = GREETER_VPN_PASSWD_DIALOG (widget);
+	GreeterVPNPasswdDialogPrivate *priv = dialog->priv;
+
+	if (GTK_WIDGET_CLASS (greeter_vpn_passwd_dialog_parent_class)->size_allocate)
+		GTK_WIDGET_CLASS (greeter_vpn_passwd_dialog_parent_class)->size_allocate (widget, allocation);
+
+	if (!gtk_widget_get_realized (widget))
+		return;
+
+	if (priv->parent) {
+		GtkWidget *toplevel;
+		gint x, y, p_w, p_h;
+
+		toplevel = gtk_widget_get_toplevel (priv->parent);
+
+		gtk_widget_translate_coordinates (priv->parent, toplevel, 0, 0, &x, &y);
+		gtk_widget_get_size_request (priv->parent, &p_w, &p_h);
+
+		gtk_window_move (GTK_WINDOW (dialog),
+                         x + (p_w - allocation->width) / 2,
+                         y + (p_h - allocation->height) / 2 );
+	}
 }
 
 static void
@@ -325,11 +363,14 @@ static void
 greeter_vpn_passwd_dialog_class_init (GreeterVPNPasswdDialogClass *klass)
 {
 	GObjectClass   *object_class = G_OBJECT_CLASS (klass);
+	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
 	object_class->constructed = greeter_vpn_passwd_dialog_constructed;
 	object_class->get_property = greeter_vpn_passwd_dialog_get_property;
 	object_class->set_property = greeter_vpn_passwd_dialog_set_property;
 	object_class->finalize     = greeter_vpn_passwd_dialog_finalize;
+
+	widget_class->size_allocate = greeter_vpn_passwd_dialog_size_allocate;
 
 	g_object_class_install_property
 		(object_class, PROP_PASSWORD,
@@ -352,16 +393,21 @@ greeter_vpn_passwd_dialog_class_init (GreeterVPNPasswdDialogClass *klass)
                                                   GreeterVPNPasswdDialog, ok_button);
 }
 
-GreeterVPNPasswdDialog *
-greeter_vpn_passwd_dialog_new (const gchar *password)
+GtkWidget *
+greeter_vpn_passwd_dialog_new (GtkWidget   *parent,
+                               const gchar *password)
 {
-	GObject   *result;
+	GObject *object;
 
-	result = g_object_new (GREETER_TYPE_VPN_PASSWD_DIALOG,
+	object = g_object_new (GREETER_TYPE_VPN_PASSWD_DIALOG,
                            "password", password,
+                           "use-header-bar", FALSE,
+                           "transient-for", NULL,
                            NULL);
 
-	return GREETER_VPN_PASSWD_DIALOG (result);
+	set_parent (GREETER_VPN_PASSWD_DIALOG (object), parent);
+
+	return GTK_WIDGET (object);
 }
 
 gchar *

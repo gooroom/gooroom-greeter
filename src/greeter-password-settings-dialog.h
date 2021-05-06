@@ -48,7 +48,7 @@ struct _GreeterPasswordSettingsDialogClass {
 
 GType	    greeter_password_settings_dialog_get_type	(void) G_GNUC_CONST;
 
-GtkWidget  *greeter_password_settings_dialog_new		(GtkWindow  *parent);
+GtkWidget  *greeter_password_settings_dialog_new		(GtkWidget *parent);
 
 
 const char *greeter_password_settings_dialog_get_entry_text (GreeterPasswordSettingsDialog *dialog);

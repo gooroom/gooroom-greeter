@@ -58,17 +58,12 @@
 #include "greeter-message-dialog.h"
 
 
-/* Screen window */
-static GtkWidget *main_box;
-/* Assistant */
-static GtkWidget *assistant;
 /* Panel */
 static GtkWidget *panel_box;
 static GtkWidget *btn_shutdown, *btn_restart, *btn_suspend, *btn_hibernate;
 static GtkWidget *indicator_box;
 
 /* Clock */
-static gchar *clock_format;
 
 /* Handling monitors backgrounds */
 static GreeterBackground *greeter_background;
@@ -95,26 +90,57 @@ struct SavedFocusData
 gpointer greeter_save_focus                    (GtkWidget* widget);
 void     greeter_restore_focus                 (const gpointer saved_data);
 
+
+/*
+ * Translate @str according to the locale defined by LC_TIME; unlike
+ * dcgettext(), the translation is still taken from the LC_MESSAGES
+ * catalogue and not the LC_TIME one.
+ */
+static const gchar *
+translate_time_format_string (const char *str)
+{
+	const char *locale = g_getenv ("LC_TIME");
+	const char *res;
+	char *sep;
+	locale_t old_loc;
+	locale_t loc = (locale_t)0;
+
+	if (locale)
+		loc = newlocale (LC_MESSAGES_MASK, locale, (locale_t)0);
+
+	old_loc = uselocale (loc);
+
+	sep = strchr (str, '\004');
+	res = g_dpgettext (GETTEXT_PACKAGE, str, sep ? sep - str + 1 : 0);
+
+	uselocale (old_loc);
+
+	if (loc != (locale_t)0)
+		freelocale (loc);
+
+	return res;
+}
+
 /* Clock */
 static gboolean
 clock_timeout_thread (gpointer data)
 {
-    GtkLabel *clock_label = GTK_LABEL (data);
+	GtkLabel *clock_label = GTK_LABEL (data);
 
-    GDateTime *dt = NULL;
+	GDateTime *dt = NULL;
 
-    dt = g_date_time_new_now_local ();
-    if (dt) {
-        gchar *fm = g_date_time_format (dt, clock_format);
-        gchar *markup = g_markup_printf_escaped ("<b><span foreground=\"white\">%s</span></b>", fm);
-        gtk_label_set_markup (GTK_LABEL (clock_label), markup);
-        g_free (fm);
-        g_free (markup);
+	dt = g_date_time_new_now_local ();
+	if (dt) {
+		gchar *fm = g_date_time_format (dt, translate_time_format_string (N_("%B %-d %Y  %l:%M %p")));
+		gchar *markup = g_markup_printf_escaped ("<b><span foreground=\"white\">%s</span></b>", fm);
+		gtk_label_set_markup (GTK_LABEL (clock_label), markup);
+		g_free (fm);
+		g_free (markup);
 
-        g_date_time_unref (dt);
-    }
+		g_date_time_unref (dt);
+	}
 
-    return TRUE;
+	return TRUE;
 }
 
 static void
@@ -351,7 +377,7 @@ show_command_dialog (const gchar* icon, const gchar* title, const gchar* message
 	GList *items, *l = NULL;
 	gint res, logged_in_users = 0;
 	gchar *new_message = NULL;
-	GtkWidget *dialog, *toplevel;
+	GtkWidget *dialog;
 
 	items = lightdm_user_list_get_users (lightdm_user_list_get_instance ());
 	for (l = items; l; l = l->next) {
@@ -372,16 +398,11 @@ show_command_dialog (const gchar* icon, const gchar* title, const gchar* message
 		new_message = g_strdup (message);
 	}
 
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (main_box));
-
-	dialog = greeter_message_dialog_new (GTK_WINDOW (toplevel),
-                                         icon,
-                                         title,
-                                         new_message);
+	dialog = greeter_message_dialog_new (NULL, icon, title, new_message);
 
 	gtk_dialog_add_buttons (GTK_DIALOG (dialog),
-                            _("_Ok"), GTK_RESPONSE_OK,
-                            _("_Cancel"), GTK_RESPONSE_CANCEL,
+                            _("Ok"), GTK_RESPONSE_OK,
+                            _("Cancel"), GTK_RESPONSE_CANCEL,
                             NULL);
 	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_CANCEL);
 
@@ -808,9 +829,6 @@ assistant_realize_cb (GtkWidget *widget,
 	pref_h = (pref_h > max_height) ? max_height : pref_h;
 
 	gtk_widget_set_size_request (GTK_WIDGET (assistant), pref_w, pref_h);
-
-	g_debug ("preferred width = %d", pref_w);
-	g_debug ("preferred height = %d", pref_h);
 }
 
 static void
@@ -851,7 +869,7 @@ apply_gtk_config (void)
 			g_free (value);
 		}
 
-		value = config_get_string (NULL, CONFIG_KEY_FONT, "Sans 10");
+		value = config_get_string (NULL, CONFIG_KEY_FONT, "Noto Sans 10");
 		if (value)
 		{
 			g_key_file_set_string (keyfile, "Settings", "gtk-font-name", value);
@@ -898,6 +916,7 @@ main (int argc, char **argv)
 {
 	GtkBuilder *builder;
 	int ret = EXIT_SUCCESS;
+	GtkWidget *main_box, *assistant;
 
 	/* LP: #1024482 */
 	g_setenv ("GDK_CORE_DEVICE_EVENTS", "1", TRUE);
@@ -958,8 +977,6 @@ main (int argc, char **argv)
 	gtk_box_pack_start (GTK_BOX (main_box), assistant, TRUE, TRUE, 0);
 
 	g_signal_connect (G_OBJECT (assistant), "realize", G_CALLBACK (assistant_realize_cb), NULL);
-
-	clock_format = config_get_string (NULL, CONFIG_KEY_CLOCK_FORMAT, "%F      %p %I:%M");
 
 	GtkCssProvider *provider = gtk_css_provider_new ();
 	gtk_css_provider_load_from_resource (provider, "/kr/gooroom/greeter/theme.css");
