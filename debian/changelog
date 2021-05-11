@@ -1,3 +1,10 @@
+gooroom-greeter (0.2.6+grm2u1+kepco03) unstable; urgency=medium
+
+  [ cjheo ]
+  * [2ac6e6dc] UI/UX 변경
+
+ -- Gooroom Autobuilder <jenkins@gooroom.kr>  Tue, 11 May 2021 12:44:55 +0900
+
 gooroom-greeter (0.2.6+grm2u1+kepco02) unstable; urgency=medium
 
   [ cjheo ]
