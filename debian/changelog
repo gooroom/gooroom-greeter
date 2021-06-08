@@ -1,3 +1,10 @@
+gooroom-greeter (0.2.6+grm2u1+kepco04) unstable; urgency=medium
+
+  [ cjheo ]
+  * [348164ac] 최초 시작시 아이디 및 패스워드 입력에 포커스가 안가는 이슈 처리
+
+ -- Gooroom Autobuilder <jenkins@gooroom.kr>  Tue, 08 Jun 2021 19:06:48 +0900
+
 gooroom-greeter (0.2.6+grm2u1+kepco03) unstable; urgency=medium
 
   [ cjheo ]
