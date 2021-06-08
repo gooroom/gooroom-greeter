@@ -145,6 +145,14 @@ G_DEFINE_TYPE_WITH_PRIVATE (GreeterLoginPage, greeter_login_page, GREETER_TYPE_P
 
 
 
+static gboolean
+grab_focus_idle (gpointer user_data)
+{
+	gtk_widget_grab_focus (GTK_WIDGET (user_data));
+
+	return FALSE;
+}
+
 static void
 add_style_class (GreeterLoginPage *page, const gchar *classname)
 {
@@ -1960,11 +1968,12 @@ greeter_login_page_shown (GreeterPage *page)
 	gtk_entry_set_text (GTK_ENTRY (priv->pw_entry), "");
 	gtk_button_set_label (GTK_BUTTON (priv->mode_switch_button), label);
 	gtk_widget_set_sensitive (priv->login_button, FALSE);
-	gtk_widget_grab_focus (GTK_WIDGET (priv->id_entry));
 
 	if (last_user && strlen (last_user) > 0) {
 		gtk_entry_set_text (GTK_ENTRY (priv->id_entry), last_user);
-		gtk_widget_grab_focus (GTK_WIDGET (priv->pw_entry));
+		g_idle_add ((GSourceFunc)grab_focus_idle, priv->pw_entry);
+	} else {
+		g_idle_add ((GSourceFunc)grab_focus_idle, priv->id_entry);
 	}
 
 	if (greeter_page_manager_get_mode (manager) == MODE_EXTERNAL && !priv->vpn_service_enabled) {

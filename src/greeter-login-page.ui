@@ -26,8 +26,10 @@
                 <property name="width_request">256</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+<!--
                 <property name="has_focus">True</property>
                 <property name="receives_default">True</property>
+-->
                 <property name="invisible_char">●</property>
                 <property name="primary_icon_name">entry-username-symbolic</property>
                 <property name="primary_icon_activatable">False</property>
@@ -47,8 +49,11 @@
               <object class="GtkEntry" id="pw_entry">
                 <property name="width_request">256</property>
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
                 <property name="visibility">False</property>
+                <property name="can_focus">True</property>
+<!--
+                <property name="receives_default">True</property>
+-->
                 <property name="invisible_char">●</property>
                 <property name="primary_icon_name">entry-password-symbolic</property>
                 <property name="primary_icon_activatable">False</property>
@@ -74,8 +79,8 @@
           <object class="GtkButton" id="login_button">
             <property name="name">login_button</property>
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
+            <property name="can_focus">False</property>
+            <property name="receives_default">False</property>
             <child>
               <object class="GtkLabel">
                 <property name="visible">True</property>
@@ -98,7 +103,7 @@
           <object class="GtkCheckButton" id="remember_id_checkbutton">
             <property name="label" translatable="yes">Remember ID</property>
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
+            <property name="can_focus">False</property>
             <property name="receives_default">False</property>
             <property name="halign">start</property>
             <property name="draw_indicator">True</property>
@@ -122,8 +127,8 @@
               <object class="GtkButton" id="mode_switch_button">
                 <property name="label" translatable="yes"></property>
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
+                <property name="can_focus">False</property>
+                <property name="receives_default">False</property>
                 <property name="halign">start</property>
                 <style>
                   <class name="link-button"/>
@@ -139,8 +144,8 @@
               <object class="GtkButton" id="network_settings_button">
                 <property name="label" translatable="yes">Network Settings</property>
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
+                <property name="can_focus">False</property>
+                <property name="receives_default">False</property>
                 <property name="halign">start</property>
                 <style>
                   <class name="link-button"/>
