@@ -1,3 +1,10 @@
+gooroom-greeter (0.2.6+grm2u1+mofa04) unstable; urgency=medium
+
+  [ cjheo ]
+  * [d5a46cb3] UI/UX 변경, 전화번호 노축, 인증번호 노출
+
+ -- Gooroom Autobuilder <jenkins@gooroom.kr>  Mon, 14 Jun 2021 15:28:21 +0900
+
 gooroom-greeter (0.2.6+grm2u1+mofa03) unstable; urgency=medium
 
   [ cjheo ]
