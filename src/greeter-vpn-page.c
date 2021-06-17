@@ -145,7 +145,7 @@ get_vpn_dbus_proxy (void)
 	}
 
 	// 60 secs
-	g_dbus_proxy_set_default_timeout (G_DBUS_PROXY (proxy), 60 * 1000);
+	g_dbus_proxy_set_default_timeout (G_DBUS_PROXY (proxy), VPN_LOGIN_TIMEOUT_SECS * 1000);
 
 	return proxy;
 }

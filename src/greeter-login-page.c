@@ -74,6 +74,14 @@ static void start_authentication (GreeterLoginPage *page, const gchar *username)
 G_DEFINE_TYPE_WITH_PRIVATE (GreeterLoginPage, greeter_login_page, GREETER_TYPE_PAGE);
 
 
+static gboolean
+grab_focus_idle (gpointer user_data)
+{
+	gtk_widget_grab_focus (GTK_WIDGET (user_data));
+
+	return FALSE;
+}
+
 static void
 set_message_label (GreeterLoginPage *page, LightDMMessageType type, const gchar *text)
 {
@@ -1211,9 +1219,10 @@ greeter_login_page_shown (GreeterPage *page)
 	gtk_entry_set_text (GTK_ENTRY (priv->id_entry), "");
 	gtk_entry_set_text (GTK_ENTRY (priv->pw_entry), "");
 	gtk_widget_set_sensitive (priv->login_button, FALSE);
-	gtk_widget_grab_focus (GTK_WIDGET (priv->id_entry));
 
 	set_message_label (self, LIGHTDM_MESSAGE_TYPE_INFO, NULL);
+
+	g_timeout_add (100, (GSourceFunc)grab_focus_idle, priv->id_entry);
 }
 
 static void
