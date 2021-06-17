@@ -1,3 +1,10 @@
+gooroom-greeter (0.2.6+grm2u1+mofa05) unstable; urgency=medium
+
+  [ cjheo ]
+  * [dec5271a] VPN 인증요청시 DBUS Timeout 변경 및 VPN 인증 후 포커스 잃는 현상 해결
+
+ -- Gooroom Autobuilder <jenkins@gooroom.kr>  Thu, 17 Jun 2021 19:15:06 +0900
+
 gooroom-greeter (0.2.6+grm2u1+mofa04) unstable; urgency=medium
 
   [ cjheo ]
