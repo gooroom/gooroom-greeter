@@ -94,6 +94,10 @@ struct _GreeterWindowPrivate
 	gboolean have_pam_error;
 	gboolean changing_password;
 
+	/* clean mode */
+	GtkSwitch *cleanmode_switch;
+	gboolean cleanmode_flag;
+
 	gchar *id;
 	gchar *pw;
 	gchar *current_session;
@@ -112,7 +116,7 @@ G_DEFINE_TYPE_WITH_PRIVATE (GreeterWindow, greeter_window, GTK_TYPE_BOX);
 
 static void process_prompts (GreeterWindow *window);
 static void login_button_clicked_cb (GtkButton *widget, gpointer user_data);
-
+static gboolean cleanmode_flag_state_set_cb (GtkSwitch *sw_clean, gboolean state, gpointer user_data);
 
 static gboolean
 grab_focus_idle (gpointer user_data)
@@ -1176,6 +1180,25 @@ login_button_clicked_cb (GtkButton *widget,
 	try_to_login_system (window);
 }
 
+static gboolean
+cleanmode_flag_state_set_cb (GtkSwitch *sw_clean, gboolean state, gpointer user_data)
+{
+	GreeterWindow *window = GREETER_WINDOW (user_data);
+	GreeterWindowPrivate *priv = window->priv;
+	char *cleanmode_flag = NULL;
+	cleanmode_flag = g_strdup_printf ("/tmp/.cleanmode");
+
+	if (state)
+	{
+		priv->cleanmode_switch = TRUE;
+		g_mkdir_with_parents (cleanmode_flag, 0700);
+	} else {
+		priv->cleanmode_switch = FALSE;
+		g_spawn_command_line_sync ("/bin/rm -rf /tmp/.cleanmode", NULL, NULL, NULL, NULL);
+	}
+	return FALSE;
+}
+
 static void
 pw_entry_activate_cb (GtkWidget *widget,
                       gpointer   user_data)
@@ -1781,6 +1804,42 @@ load_indicators (GreeterWindow *window)
 }
 
 static void
+clean_mode_sw_set_sensitive (GtkWidget *sw_clean)
+{
+	const gchar *path;
+	gchar *contents = NULL;
+	gboolean cm_enable = TRUE;
+	int i;
+
+	path = "/etc/gooroom/agent/Agent.conf";
+	g_file_get_contents (path, &contents, NULL, NULL);
+	
+	if (contents) {
+		gchar **lines = g_strsplit (contents, "\n" , -1);
+		for (i = 0; lines[i] != NULL; i++) {
+			if (g_str_has_prefix (lines[i], "CLEAN_MODE")) {
+				gchar **tokens = g_strsplit (lines[i], "=", -1);
+				if (tokens[1]) {
+					g_strstrip (tokens[1]);
+					if (g_strcmp0 (tokens[1], "disable") == 0) {
+						cm_enable = FALSE;
+					}
+				}
+				g_strfreev (tokens);
+				break;
+			}
+		}
+		g_strfreev (lines);
+	}
+	
+	if (!cm_enable) {
+		gtk_widget_set_sensitive (GTK_WIDGET (sw_clean), FALSE);
+	}
+
+	g_free (contents);
+}
+
+static void
 show_command_dialog (GtkWidget *parent,
                      const gchar* icon,
                      const gchar* title,
@@ -1997,10 +2056,13 @@ greeter_window_init (GreeterWindow *window)
 
 	gtk_widget_set_sensitive (priv->login_button, FALSE);
 
+	clean_mode_sw_set_sensitive (priv->cleanmode_switch);
+
 	g_signal_connect (priv->id_entry, "changed", G_CALLBACK (id_entry_changed_cb), window);
 	g_signal_connect (priv->id_entry, "key-press-event", G_CALLBACK (id_entry_key_press_cb), window);
 	g_signal_connect (priv->pw_entry, "activate", G_CALLBACK (pw_entry_activate_cb), window);
 	g_signal_connect (priv->login_button, "clicked", G_CALLBACK (login_button_clicked_cb), window);
+	g_signal_connect (priv->cleanmode_switch, "state-set", G_CALLBACK (cleanmode_flag_state_set_cb), window);
 
 	g_idle_add ((GSourceFunc)grab_focus_idle, priv->id_entry);
 }
@@ -2036,6 +2098,7 @@ greeter_window_class_init (GreeterWindowClass *klass)
 	gtk_widget_class_bind_template_child_private (widget_class, GreeterWindow, btn_restart);
 	gtk_widget_class_bind_template_child_private (widget_class, GreeterWindow, btn_suspend);
 	gtk_widget_class_bind_template_child_private (widget_class, GreeterWindow, btn_hibernate);
+	gtk_widget_class_bind_template_child_private (widget_class, GreeterWindow, cleanmode_switch);
 }
 
 GtkWidget *

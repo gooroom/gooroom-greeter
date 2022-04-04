@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gooroom-greeter\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-29 16:27+0900\n"
+"POT-Creation-Date: 2022-04-25 09:24+0900\n"
 "PO-Revision-Date: 2019-09-04 17:37-0400\n"
 "Last-Translator: Gooroom <gooroom@gooroom.kr>\n"
 "Language-Team: Gooroom <gooroom@gooroom.kr>\n"
@@ -17,32 +17,32 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/greeter-window.c:312 ../src/greeter-window.c:338
-#: ../src/greeter-window.c:415 ../src/greeter-window.c:1822
+#: ../src/greeter-window.c:316 ../src/greeter-window.c:342
+#: ../src/greeter-window.c:419 ../src/greeter-window.c:1844
 msgid "Ok"
 msgstr "Ok"
 
-#: ../src/greeter-window.c:416 ../src/greeter-window.c:620
-#: ../src/greeter-window.c:630 ../src/greeter-window.c:1823
+#: ../src/greeter-window.c:420 ../src/greeter-window.c:624
+#: ../src/greeter-window.c:634 ../src/greeter-window.c:1845
 msgid "Cancel"
 msgstr "Cancel"
 
-#: ../src/greeter-window.c:586
+#: ../src/greeter-window.c:590
 msgid ""
 "You are required to change your password immediately (administrator enforced)"
 msgstr ""
 "You are required to change your password immediately (administrator enforced)"
 
-#: ../src/greeter-window.c:587
+#: ../src/greeter-window.c:591
 msgid "You are required to change your password immediately (password expired)"
 msgstr ""
 "You are required to change your password immediately (password expired)"
 
-#: ../src/greeter-window.c:593
+#: ../src/greeter-window.c:597
 msgid "your password will expire in"
 msgstr "your password will expire in"
 
-#: ../src/greeter-window.c:617
+#: ../src/greeter-window.c:621
 msgid ""
 "Your password has expired.\n"
 "Please change your password immediately."
@@ -50,11 +50,11 @@ msgstr ""
 "Your password has expired.\n"
 "Please change your password immediately."
 
-#: ../src/greeter-window.c:619 ../src/greeter-window.c:629
+#: ../src/greeter-window.c:623 ../src/greeter-window.c:633
 msgid "Changing Password"
 msgstr "Changing Password"
 
-#: ../src/greeter-window.c:627
+#: ../src/greeter-window.c:631
 msgid ""
 "Your password has been issued temporarily.\n"
 "For security reasons, please change your password immediately."
@@ -62,7 +62,7 @@ msgstr ""
 "Your password has been issued temporarily.\n"
 "For security reasons, please change your password immediately."
 
-#: ../src/greeter-window.c:640
+#: ../src/greeter-window.c:644
 #, c-format
 msgid ""
 "Please change your password for security.\n"
@@ -75,7 +75,7 @@ msgstr ""
 "can no longer log in.\n"
 "Do you want to change password now?"
 
-#: ../src/greeter-window.c:646
+#: ../src/greeter-window.c:650
 #, c-format
 msgid ""
 "Please change your password for security.\n"
@@ -88,7 +88,7 @@ msgstr ""
 "can no longer log in.\n"
 "Do you want to change password now?"
 
-#: ../src/greeter-window.c:653
+#: ../src/greeter-window.c:657
 msgid ""
 "Please change your password for security.\n"
 "If you do not change your password within a few days, your password "
@@ -101,15 +101,15 @@ msgstr ""
 "You can no longer log in.\n"
 "Do you want to change password now?"
 
-#: ../src/greeter-window.c:661
+#: ../src/greeter-window.c:665
 msgid "Change now"
 msgstr "Change now"
 
-#: ../src/greeter-window.c:661
+#: ../src/greeter-window.c:665
 msgid "Later"
 msgstr "Later"
 
-#: ../src/greeter-window.c:672
+#: ../src/greeter-window.c:676
 #, c-format
 msgid ""
 "Your account will not be available after %s.\n"
@@ -118,7 +118,7 @@ msgstr ""
 "Your account will not be available after %s.\n"
 "Your account will expire in %s day"
 
-#: ../src/greeter-window.c:676
+#: ../src/greeter-window.c:680
 #, c-format
 msgid ""
 "Your account will not be available after %s.\n"
@@ -127,7 +127,7 @@ msgstr ""
 "Your account will not be available after %s.\n"
 "Your account will expire in %s days"
 
-#: ../src/greeter-window.c:694
+#: ../src/greeter-window.c:698
 #, c-format
 msgid ""
 "Your organization will not be available after %s.\n"
@@ -136,7 +136,7 @@ msgstr ""
 "Your organization will not be available after %s.\n"
 "Your organization will expire in %s day"
 
-#: ../src/greeter-window.c:698
+#: ../src/greeter-window.c:702
 #, c-format
 msgid ""
 "Your organization will not be available after %s.\n"
@@ -145,7 +145,7 @@ msgstr ""
 "Your organization will not be available after %s.\n"
 "Your organization will expire in %s days"
 
-#: ../src/greeter-window.c:716
+#: ../src/greeter-window.c:720
 #, c-format
 msgid ""
 "Your password will not be available after %s.\n"
@@ -154,7 +154,7 @@ msgstr ""
 "Your password will not be available after %s.\n"
 "Your password will expire in %s day"
 
-#: ../src/greeter-window.c:720
+#: ../src/greeter-window.c:724
 #, c-format
 msgid ""
 "Your password will not be available after %s.\n"
@@ -163,27 +163,27 @@ msgstr ""
 "Your password will not be available after %s.\n"
 "Your password will expire in %s days"
 
-#: ../src/greeter-window.c:738
+#: ../src/greeter-window.c:742
 msgid "Duplicate logins detected with the same ID."
 msgstr "Duplicate logins detected with the same ID."
 
-#: ../src/greeter-window.c:741
+#: ../src/greeter-window.c:745
 msgid "Client ID"
 msgstr "Client ID"
 
-#: ../src/greeter-window.c:746
+#: ../src/greeter-window.c:750
 msgid "Client Name"
 msgstr "Client Name"
 
-#: ../src/greeter-window.c:751
+#: ../src/greeter-window.c:755
 msgid "IP"
 msgstr "IP"
 
-#: ../src/greeter-window.c:756
+#: ../src/greeter-window.c:760
 msgid "Local IP"
 msgstr "Local IP"
 
-#: ../src/greeter-window.c:771
+#: ../src/greeter-window.c:775
 #, c-format
 msgid ""
 "Authentication Failure\n"
@@ -197,7 +197,7 @@ msgstr ""
 "You can no longer log in when the maximum number of login attempts is "
 "exceeded."
 
-#: ../src/greeter-window.c:776
+#: ../src/greeter-window.c:780
 msgid ""
 "The user could not be authenticated due to an unknown error.\n"
 "Please contact the administrator."
@@ -205,7 +205,7 @@ msgstr ""
 "The user could not be authenticated due to an unknown error.\n"
 "Please contact the administrator."
 
-#: ../src/greeter-window.c:784
+#: ../src/greeter-window.c:788
 msgid ""
 "This account has deleted and is no longer available.\n"
 "Please contact the administrator."
@@ -213,7 +213,7 @@ msgstr ""
 "This account has deleted and is no longer available.\n"
 "Please contact the administrator."
 
-#: ../src/greeter-window.c:790
+#: ../src/greeter-window.c:794
 msgid ""
 "You attempted to log in from an unregistered device.\n"
 "Please contact the administrator."
@@ -221,7 +221,7 @@ msgstr ""
 "This account has deleted and is no longer available.\n"
 "Please contact the administrator."
 
-#: ../src/greeter-window.c:796 ../src/greeter-window.c:1085
+#: ../src/greeter-window.c:800 ../src/greeter-window.c:1089
 msgid ""
 "Authentication Failure\n"
 "Please check the username and password and try again."
@@ -229,7 +229,7 @@ msgstr ""
 "Authentication Failure\n"
 "Please check the username and password and try again."
 
-#: ../src/greeter-window.c:802
+#: ../src/greeter-window.c:806
 msgid ""
 "Login was denied because it violated the policy set by the GPMS.\n"
 "Please contact the administrator."
@@ -237,7 +237,7 @@ msgstr ""
 "Login was denied because it violated the policy set by the GPMS.\n"
 "Please contact the administrator."
 
-#: ../src/greeter-window.c:809
+#: ../src/greeter-window.c:813
 msgid ""
 "Login was denied because it violated the policy(Allowed IP) set by the "
 "GPMS.\n"
@@ -247,7 +247,7 @@ msgstr ""
 "GPMS.\n"
 "Please contact the administrator."
 
-#: ../src/greeter-window.c:818
+#: ../src/greeter-window.c:822
 msgid ""
 "Your account has been locked because\n"
 "you have exceeded the number of login attempts.\n"
@@ -257,7 +257,7 @@ msgstr ""
 "you have exceeded the number of login attempts.\n"
 "Please try again in a moment."
 
-#: ../src/greeter-window.c:827
+#: ../src/greeter-window.c:831
 msgid ""
 "This account has expired and is no longer available.\n"
 "Please contact the administrator."
@@ -265,7 +265,7 @@ msgstr ""
 "This account has expired and is no longer available.\n"
 "Please contact the administrator."
 
-#: ../src/greeter-window.c:835
+#: ../src/greeter-window.c:839
 msgid ""
 "The password for your account has expired.\n"
 "Please contact the administrator."
@@ -273,7 +273,7 @@ msgstr ""
 "The password for your account has expired.\n"
 "Please contact the administrator."
 
-#: ../src/greeter-window.c:843
+#: ../src/greeter-window.c:847
 msgid ""
 "You are already logged in.\n"
 "Log out of the other device and try again.\n"
@@ -283,7 +283,7 @@ msgstr ""
 "Log out of the other device and try again.\n"
 "If the problem persists, please contact your administrator."
 
-#: ../src/greeter-window.c:852
+#: ../src/greeter-window.c:856
 msgid ""
 "Due to the expiration of your organization, this account is no longer "
 "available.\n"
@@ -293,7 +293,7 @@ msgstr ""
 "available.\n"
 "Please contact the administrator."
 
-#: ../src/greeter-window.c:861
+#: ../src/greeter-window.c:865
 msgid ""
 "Login attempts exceeded the number of times,\n"
 "so you cannot login for a certain period of time.\n"
@@ -303,17 +303,17 @@ msgstr ""
 "certain period of time.\n"
 "Please try again in a moment."
 
-#: ../src/greeter-window.c:870
+#: ../src/greeter-window.c:874
 msgid "Trial period has expired."
 msgstr "Trial period has expired."
 
-#: ../src/greeter-window.c:877
+#: ../src/greeter-window.c:881
 msgid "Time error occurred."
 msgstr ""
 "Couldn't get the time from the internet.\n"
 "Please check the network connection and try again."
 
-#: ../src/greeter-window.c:888
+#: ../src/greeter-window.c:892
 #, c-format
 msgid ""
 "The trial period is up to %s days.\n"
@@ -322,7 +322,7 @@ msgstr ""
 "The trial period is up to %s days.\n"
 "The trial period expires today."
 
-#: ../src/greeter-window.c:891
+#: ../src/greeter-window.c:895
 #, c-format
 msgid ""
 "The trial period is up to %s days.\n"
@@ -330,82 +330,82 @@ msgid ""
 msgstr ""
 "The trial period is up to %s days.\n"
 "%s day left to expire."
-
-#: ../src/greeter-window.c:894
-#, c-format
-msgid ""
-"The trial period is up to %s days.\n"
-"%s days left to expire."
-msgstr ""
-"The trial period is up to %s days.\n"
-"%s days left to expire."
 
 #: ../src/greeter-window.c:898
+#, c-format
+msgid ""
+"The trial period is up to %s days.\n"
+"%s days left to expire."
+msgstr ""
+"The trial period is up to %s days.\n"
+"%s days left to expire."
+
+#: ../src/greeter-window.c:902
 msgid "The trial period is unknown."
 msgstr "The trial period is unknown"
 
-#: ../src/greeter-window.c:931
+#: ../src/greeter-window.c:935
 msgid "Current password: "
 msgstr "Current password: "
 
-#: ../src/greeter-window.c:933
+#: ../src/greeter-window.c:937
 msgid "Changing Password - [Step 1]"
 msgstr "Changing Password - [Step 1]"
 
-#: ../src/greeter-window.c:934
+#: ../src/greeter-window.c:938
 msgid "Enter current password :"
 msgstr "Enter current password :"
 
-#: ../src/greeter-window.c:936
+#: ../src/greeter-window.c:940
 msgid "New password: "
 msgstr "New password: "
 
-#: ../src/greeter-window.c:938
+#: ../src/greeter-window.c:942
 msgid "Changing Password - [Step 2]"
 msgstr "Changing Password - [Step 2]"
 
-#: ../src/greeter-window.c:939
+#: ../src/greeter-window.c:943
 msgid "Enter new password :"
 msgstr "Enter new password :"
 
-#: ../src/greeter-window.c:941
+#: ../src/greeter-window.c:945
 msgid "Retype new password: "
 msgstr "Retype new password: "
 
-#: ../src/greeter-window.c:943
+#: ../src/greeter-window.c:947
 msgid "Changing Password - [Step 3]"
 msgstr "Changing Password - [Step 3]"
 
-#: ../src/greeter-window.c:944
+#: ../src/greeter-window.c:948
 msgid "Retype new password :"
 msgstr "Retype new password :"
 
-#: ../src/greeter-window.c:981
+#: ../src/greeter-window.c:985
 msgid "Failed to start session"
 msgstr "Failed to start session"
 
-#: ../src/greeter-window.c:1063
-msgid ""
-"Changing password is terminated because\n"
-"the current password does not match.\n"
-"Please try again later."
-msgstr ""
-"Changing password is terminated because\n"
-"the current password does not match.\n"
-"Please try again later."
-
 #: ../src/greeter-window.c:1067
 msgid ""
-"New password violates the security conformity,\n"
-"so the change of the password is terminated.\n"
+"Changing password is terminated because\n"
+"the current password does not match.\n"
 "Please try again later."
 msgstr ""
-"New password violates the security conformity,\n"
-"so the change of the password is terminated.\n"
+"Changing password is terminated because\n"
+"the current password does not match.\n"
 "Please try again later."
 
 #: ../src/greeter-window.c:1071
 msgid ""
+"New password violates the security conformity,\n"
+"so the change of the password is terminated.\n"
+"Please try again later."
+msgstr ""
+"New password violates the security conformity,\n"
+"so the change of the password is terminated.\n"
+"Please try again later."
+
+#: ../src/greeter-window.c:1075
+msgid ""
 "In Confirm New Password, the password did not match,\n"
 "so the change of password is terminated.\n"
 "Please try again later."
@@ -414,79 +414,79 @@ msgstr ""
 "so the change of password is terminated.\n"
 "Please try again later."
 
-#: ../src/greeter-window.c:1692
+#: ../src/greeter-window.c:1714
 msgid "%B %-d %Y  %l:%M %p"
 msgstr "%B %-d %Y  %l:%M %p"
 
-#: ../src/greeter-window.c:1804
+#: ../src/greeter-window.c:1826
 #, c-format
 msgid "Warning: There is still %d user logged in."
 msgid_plural "Warning: There are still %d users logged in."
 msgstr[0] "Warning: There is still %d user logged in."
 msgstr[1] "Warning: There are still %d users logged in."
 
-#: ../src/greeter-window.c:1866
+#: ../src/greeter-window.c:1888
 msgid "System Shutdown"
 msgstr "System Shutdown"
 
-#: ../src/greeter-window.c:1867
+#: ../src/greeter-window.c:1889
 msgid "Are you sure you want to close all programs and shut down the computer?"
 msgstr ""
 "Are you sure you want to close all programs and shut down the computer?"
 
-#: ../src/greeter-window.c:1879
+#: ../src/greeter-window.c:1901
 msgid "System Restart"
 msgstr "System Restart"
 
-#: ../src/greeter-window.c:1880
+#: ../src/greeter-window.c:1902
 msgid "Are you sure you want to close all programs and restart the computer?"
 msgstr "Are you sure you want to close all programs and restart the computer?"
 
-#: ../src/greeter-window.c:1892
+#: ../src/greeter-window.c:1914
 msgid "System Suspend"
 msgstr "System Suspend"
 
-#: ../src/greeter-window.c:1893
+#: ../src/greeter-window.c:1915
 msgid "Are you sure you want to suspend the computer?"
 msgstr "Are you sure you want to suspend the computer?"
 
-#: ../src/greeter-window.c:1905
+#: ../src/greeter-window.c:1927
 msgid "System Hibernate"
 msgstr "System Hibernate"
 
-#: ../src/greeter-window.c:1906
+#: ../src/greeter-window.c:1928
 msgid "Are you sure you want to hibernate the computer?"
 msgstr "Are you sure you want to hibernate the computer?"
 
-#: ../src/gooroom-greeter.ui.h:1 ../src/greeter-window.ui.h:4
+#: ../src/gooroom-greeter.ui.h:1 ../src/greeter-window.ui.h:5
 msgid "Shutdown system"
 msgstr "Shutdown system"
 
-#: ../src/gooroom-greeter.ui.h:2 ../src/greeter-window.ui.h:5
+#: ../src/gooroom-greeter.ui.h:2 ../src/greeter-window.ui.h:6
 msgid "Shutdown"
 msgstr "System Shutdown"
 
-#: ../src/gooroom-greeter.ui.h:3 ../src/greeter-window.ui.h:6
+#: ../src/gooroom-greeter.ui.h:3 ../src/greeter-window.ui.h:7
 msgid "Hibernate system"
 msgstr "Hibernate system"
 
-#: ../src/gooroom-greeter.ui.h:4 ../src/greeter-window.ui.h:7
+#: ../src/gooroom-greeter.ui.h:4 ../src/greeter-window.ui.h:8
 msgid "Hibernate"
 msgstr "System Hibernate"
 
-#: ../src/gooroom-greeter.ui.h:5 ../src/greeter-window.ui.h:8
+#: ../src/gooroom-greeter.ui.h:5 ../src/greeter-window.ui.h:9
 msgid "Suspend system"
 msgstr "Suspend system"
 
-#: ../src/gooroom-greeter.ui.h:6 ../src/greeter-window.ui.h:9
+#: ../src/gooroom-greeter.ui.h:6 ../src/greeter-window.ui.h:10
 msgid "Suspend"
 msgstr "System Suspend"
 
-#: ../src/gooroom-greeter.ui.h:7 ../src/greeter-window.ui.h:10
+#: ../src/gooroom-greeter.ui.h:7 ../src/greeter-window.ui.h:11
 msgid "Restart system"
 msgstr "Restart system"
 
-#: ../src/gooroom-greeter.ui.h:8 ../src/greeter-window.ui.h:11
+#: ../src/gooroom-greeter.ui.h:8 ../src/greeter-window.ui.h:12
 msgid "Restart"
 msgstr "System Restart"
 
@@ -501,3 +501,15 @@ msgstr "Enter your username"
 #: ../src/greeter-window.ui.h:3
 msgid "Enter your password"
 msgstr "Enter your password"
+
+#: ../src/greeter-window.ui.h:4
+msgid "Cleanmode Enable"
+msgstr ""
+
+#: ../src/greeter-password-settings-dialog.ui.h:1
+msgid "Change Password"
+msgstr "Change Password"
+
+#: ../src/greeter-password-settings-dialog.ui.h:2
+msgid "New Password"
+msgstr "New Password"
