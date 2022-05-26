@@ -1,3 +1,13 @@
+gooroom-greeter (0.3.3+grm3u1) unstable; urgency=medium
+
+  [ donghun lee ]
+  * [4c4d4645] [Bug: 5035] Modify ko.po due to text error in password settings dialog
+
+  [ boyeon.choi ]
+  * [4177c34e] Revert Version 0.3.1+grm3u1 released
+
+ -- Gooroom Autobuilder <jenkins@gooroom.kr>  Thu, 26 May 2022 18:34:02 +0900
+
 gooroom-greeter (0.3.2+grm3u1) unstable; urgency=medium
 
   [ subin.kim ]
