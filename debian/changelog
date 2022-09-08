@@ -1,3 +1,10 @@
+gooroom-greeter (0.4.1+grm3u1) unstable; urgency=medium
+
+  [ boyeon.choi ]
+  * [6503c132] Cleanmode Initialization
+
+ -- Gooroom Autobuilder <jenkins@gooroom.kr>  Thu, 08 Sep 2022 15:47:13 +0900
+
 gooroom-greeter (0.3.3+grm3u1) unstable; urgency=medium
 
   [ donghun lee ]
