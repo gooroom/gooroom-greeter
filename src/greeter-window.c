@@ -466,6 +466,7 @@ run_password_changing_dialog (GreeterWindow *window,
 			lightdm_greeter_respond (priv->lightdm, "chpasswd_no");
 #endif
 		}
+		return;
 	}
 
 out:
