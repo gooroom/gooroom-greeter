@@ -1,3 +1,10 @@
+gooroom-greeter (0.4.2+grm3u1) unstable; urgency=medium
+
+  [ boyeon.choi ]
+  * [a4ff3ff5] [Bug: 5035] Modify ko.po due to text error in password settings dialog
+
+ -- Gooroom Autobuilder <jenkins@gooroom.kr>  Sun, 21 May 2023 12:47:02 +0900
+
 gooroom-greeter (0.4.1+grm3u1) unstable; urgency=medium
 
   [ boyeon.choi ]
