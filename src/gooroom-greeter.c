@@ -27,7 +27,6 @@
 #include <glib-unix.h>
 #include <signal.h>
 
-
 #include "greeter-window.h"
 #include "greeterbackground.h"
 #include "greeterconfiguration.h"
@@ -109,22 +108,27 @@ dbus_update_activation_environment (void)
 static void
 notify_service_start (void)
 {
-	GSettings *settings;
+	GSettingsSchema *schema;
 	gchar **argv = NULL, **envp = NULL;
 
-	settings = g_settings_new ("apps.gooroom-notifyd");
-	g_settings_set_uint (settings, "notify-location", 2);
-	g_settings_set_boolean (settings, "do-not-disturb", TRUE);
-
-	g_shell_parse_argv (GOOROOM_NOTIFYD, NULL, &argv, NULL);
+	schema = g_settings_schema_source_lookup (g_settings_schema_source_get_default (),
+                                              "apps.gooroom-notifyd", TRUE);
+	if (schema) {
+		GSettings *settings = g_settings_new ("apps.gooroom-notifyd");
+		g_settings_set_uint (settings, "notify-location", 2);
+		g_settings_set_boolean (settings, "do-not-disturb", TRUE);
+		g_object_unref (settings);
+		g_settings_schema_unref (schema);
+	} else {
+		g_debug ("Schema [apps.gooroom-notifyd] is not exists");
+	}
 
 	envp = g_get_environ ();
-
+	g_shell_parse_argv (GOOROOM_NOTIFYD, NULL, &argv, NULL);
 	g_spawn_async (NULL, argv, envp, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, NULL);
 
 	g_strfreev (argv);
 	g_strfreev (envp);
-	g_object_unref (settings);
 }
 
 static void
@@ -165,28 +169,20 @@ wm_start (void)
 static void
 gf_start (void)
 {
-	gchar **argv = NULL, **envp = NULL;
+	guint i;
+	GSettings *settings;
+	GSettingsSchema *schema;
 	const gchar *cmd = "/usr/bin/gnome-flashback";
+	gchar **argv = NULL, **envp = NULL, **keys = NULL;
 
-	GSettings *settings = g_settings_new ("org.gnome.gnome-flashback");
-	g_settings_set_boolean (settings, "a11y-keyboard", FALSE);
-	g_settings_set_boolean (settings, "audio-device-selection", FALSE);
-	g_settings_set_boolean (settings, "automount-manager", FALSE);
-	g_settings_set_boolean (settings, "clipboard", FALSE);
-	g_settings_set_boolean (settings, "desktop", FALSE);
-	g_settings_set_boolean (settings, "end-session-dialog", FALSE);
-	g_settings_set_boolean (settings, "idle-monitor", FALSE);
-	g_settings_set_boolean (settings, "input-settings", FALSE);
-	g_settings_set_boolean (settings, "input-sources", FALSE);
-	g_settings_set_boolean (settings, "notifications", FALSE);
-	g_settings_set_boolean (settings, "polkit", FALSE);
-	g_settings_set_boolean (settings, "root-background", FALSE);
-	g_settings_set_boolean (settings, "screencast", FALSE);
-	g_settings_set_boolean (settings, "screensaver", FALSE);
-	g_settings_set_boolean (settings, "screenshot", FALSE);
-	g_settings_set_boolean (settings, "shell", FALSE);
-	g_settings_set_boolean (settings, "status-notifier-watcher", FALSE);
-	g_object_unref (settings);
+	settings = g_settings_new ("org.gnome.gnome-flashback");
+	schema = g_settings_schema_source_lookup (g_settings_schema_source_get_default (),
+                                              "org.gnome.gnome-flashback", TRUE);
+
+	keys = g_settings_schema_list_keys (schema);
+	for (i = 0; i < g_strv_length (keys); i++) {
+		g_settings_set_boolean (settings, keys[i], FALSE);
+	}
 
 	g_shell_parse_argv (cmd, NULL, &argv, NULL);
 
@@ -194,8 +190,12 @@ gf_start (void)
 
 	g_spawn_async (NULL, argv, envp, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, NULL);
 
+	g_strfreev (keys);
 	g_strfreev (argv);
 	g_strfreev (envp);
+
+	g_object_unref (settings);
+	g_settings_schema_unref (schema);
 }
 
 static void
@@ -236,6 +236,13 @@ apply_gtk_config (void)
 			g_free (value);
 		}
 
+		value = config_get_string (NULL, CONFIG_KEY_CURSOR_THEME_SIZE, NULL);
+		if (value)
+		{
+			g_key_file_set_string (keyfile, "Settings", "gtk-cursor-theme-size", value);
+			g_free (value);
+		}
+
 		value = config_get_string (NULL, CONFIG_KEY_FONT, "Sans 10");
 		if (value)
 		{
@@ -252,7 +259,7 @@ apply_gtk_config (void)
 		if (config_has_key (NULL, CONFIG_KEY_ANTIALIAS))
 		{
 			gboolean antialias = config_get_bool (NULL, CONFIG_KEY_ANTIALIAS, FALSE);
-			g_key_file_set_boolean (keyfile, "Settings", "gtk-xft-antialias", antialias);
+			g_key_file_set_integer (keyfile, "Settings", "gtk-xft-antialias", (antialias ? 1 : 0));
 		}
 
 		value = config_get_string (NULL, CONFIG_KEY_HINT_STYLE, NULL);
@@ -363,7 +370,6 @@ main (int argc, char **argv)
 	int ret = EXIT_SUCCESS;
 	GdkScreen *screen = NULL;
 	gchar *background = NULL;
-//	gulong monitors_changed_id = 0;
 	GtkCssProvider *provider = NULL;
 
 	/* LP: #1024482 */

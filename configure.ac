@@ -1,5 +1,5 @@
 AC_INIT(gooroom-greeter, 0.2.1)
-AC_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADERS(config.h)
 AC_CONFIG_MACRO_DIR(m4)
 AM_INIT_AUTOMAKE([no-dist-gzip dist-xz foreign])
 LT_INIT
@@ -8,8 +8,6 @@ AM_MAINTAINER_MODE
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES(yes)])
 
 GOBJECT_INTROSPECTION_CHECK(0.9.5)
-
-GNOME_COMPILE_WARNINGS(maximum)
 
 dnl ###########################################################################
 dnl Dependencies
@@ -37,8 +35,8 @@ AC_SUBST(INDICATORDIR)
 
 dnl ###########################################################################
 AC_ARG_ENABLE([kill-on-sigterm],
-    AC_HELP_STRING([--enable-kill-on-sigterm], [Kill greeter instance on SIGTERM, see LP1445461])
-    AC_HELP_STRING([--disable-kill-on-sigterm], [Don't kill greeter on SIGTERM, see LP1445461']),
+    AS_HELP_STRING([--enable-kill-on-sigterm], [Kill greeter instance on SIGTERM, see LP1445461])
+    AS_HELP_STRING([--disable-kill-on-sigterm], [Don't kill greeter on SIGTERM, see LP1445461']),
             [], [enable_kill_on_sigterm=no])
 
 AS_IF([test "x$enable_kill_on_sigterm" = "xyes"],

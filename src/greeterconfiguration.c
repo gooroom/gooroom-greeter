@@ -29,54 +29,54 @@ static gboolean get_bool            (GKeyFile* config, const gchar* group, const
 
 /* Implementation */
 
-static GList*
-append_directory_content(GList* files, const gchar* path)
-{
-    GError* error = NULL;
-    gchar* full_path = g_build_filename(path, "lightdm", "lightdm-gtk-greeter.conf.d", NULL);
-    GDir* dir = g_dir_open(full_path, 0, &error);
-    if(error && !g_error_matches(error, G_FILE_ERROR, G_FILE_ERROR_NOENT))
-        g_warning("[Configuration] Failed to read configuration directory '%s': %s", full_path, error->message);
-    g_clear_error(&error);
-
-    GList* content = NULL;
-    if(dir)
-    {
-        const gchar *name;
-        while((name = g_dir_read_name(dir)))
-        {
-            if(!g_str_has_suffix(name, ".conf"))
-                continue;
-            content = g_list_prepend(content, g_build_filename(full_path, name, NULL));
-        }
-        g_dir_close(dir);
-
-        if(content)
-            content = g_list_sort(content, (GCompareFunc)g_strcmp0);
-    }
-
-    content = g_list_append(content, g_build_filename(path, "lightdm", "gooroom-greeter.conf", NULL));
-
-    GList* list_iter;
-    for(list_iter = content; list_iter; list_iter = g_list_next(list_iter))
-    {
-        if(g_file_test(list_iter->data, G_FILE_TEST_IS_REGULAR))
-            files = g_list_prepend(files, list_iter->data);
-        else
-            g_free(list_iter->data);
-    }
-
-    g_list_free(content);
-    g_free(full_path);
-    return files;
-}
+//static GList*
+//append_directory_content(GList* files, const gchar* path)
+//{
+//    GError* error = NULL;
+//    gchar* full_path = g_build_filename(path, "lightdm", "lightdm-gtk-greeter.conf.d", NULL);
+//    GDir* dir = g_dir_open(full_path, 0, &error);
+//    if(error && !g_error_matches(error, G_FILE_ERROR, G_FILE_ERROR_NOENT))
+//        g_warning("[Configuration] Failed to read configuration directory '%s': %s", full_path, error->message);
+//    g_clear_error(&error);
+//
+//    GList* content = NULL;
+//    if(dir)
+//    {
+//        const gchar *name;
+//        while((name = g_dir_read_name(dir)))
+//        {
+//            if(!g_str_has_suffix(name, ".conf"))
+//                continue;
+//            content = g_list_prepend(content, g_build_filename(full_path, name, NULL));
+//        }
+//        g_dir_close(dir);
+//
+//        if(content)
+//            content = g_list_sort(content, (GCompareFunc)g_strcmp0);
+//    }
+//
+//    content = g_list_append(content, g_build_filename(path, "lightdm", "gooroom-greeter.conf", NULL));
+//
+//    GList* list_iter;
+//    for(list_iter = content; list_iter; list_iter = g_list_next(list_iter))
+//    {
+//        if(g_file_test(list_iter->data, G_FILE_TEST_IS_REGULAR))
+//            files = g_list_prepend(files, list_iter->data);
+//        else
+//            g_free(list_iter->data);
+//    }
+//
+//    g_list_free(content);
+//    g_free(full_path);
+//    return files;
+//}
 
 void
 config_init(void)
 {
     GError* error = NULL;
 
-    gchar* state_config_dir = g_build_filename(g_get_user_cache_dir(), "lightdm-gtk-greeter", NULL);
+    gchar* state_config_dir = g_build_filename(g_get_user_cache_dir(), "gooroom-greeter", NULL);
     state_filename = g_build_filename(state_config_dir, "state", NULL);
     g_mkdir_with_parents(state_config_dir, 0775);
     g_free(state_config_dir);
@@ -86,83 +86,115 @@ config_init(void)
     if (error && !g_error_matches(error, G_FILE_ERROR, G_FILE_ERROR_NOENT))
         g_warning("[Configuration] Failed to load state from %s: %s", state_filename, error->message);
     g_clear_error(&error);
-
-    GList* files = NULL;
-
-    gchar *config_path_tmp = g_path_get_dirname(CONFIG_FILE);
-    gchar *config_path = g_path_get_dirname(config_path_tmp);
-    files = append_directory_content(files, config_path);
-    g_free(config_path_tmp);
-    g_free(config_path);
-
-    files = g_list_reverse(files);
-
-    GKeyFile* tmp_config = NULL;
-    GList* file_iter = NULL;
-    for(file_iter = files; file_iter; file_iter = g_list_next(file_iter))
-    {
-        const gchar* path = file_iter->data;
-
-        if(!tmp_config)
-            tmp_config = g_key_file_new();
-
-        if(!g_key_file_load_from_file(tmp_config, path, G_KEY_FILE_NONE, &error))
-        {
-            if(error)
-            {
-                g_warning("[Configuration] Failed to read file '%s': %s", path, error->message);
-                g_clear_error(&error);
-            }
-            else
-                g_warning("[Configuration] Failed to read file '%s'", path);
-            continue;
-        }
-        g_message("[Configuration] Reading file: %s", path);
-
-        if(!greeter_config)
-        {
-            greeter_config = tmp_config;
-            tmp_config = NULL;
-            continue;
-        }
-
-        gchar** group_iter = NULL;
-        gchar** groups = g_key_file_get_groups(tmp_config, NULL);
-        for(group_iter = groups; *group_iter; ++group_iter)
-        {
-            if(**group_iter == '-')
-            {
-                g_key_file_remove_group(greeter_config, *group_iter + 1, NULL);
-                continue;
-            }
-
-            gchar** key_iter = NULL;
-            gchar** keys = g_key_file_get_keys(tmp_config, *group_iter, NULL, NULL);
-            for(key_iter = keys; *key_iter; ++key_iter)
-            {
-                if(**key_iter == '-')
-                {
-                    g_key_file_remove_key(greeter_config, *group_iter, *key_iter + 1, NULL);
-                    continue;
-                }
-
-                gchar* value = g_key_file_get_value(tmp_config, *group_iter, *key_iter, NULL);
-                if(value)
-                {
-                    g_key_file_set_value(greeter_config, *group_iter, *key_iter, value);
-                    g_free(value);
-                }
-            }
-            g_strfreev(keys);
-        }
-        g_strfreev(groups);
-    }
-    if (tmp_config)
-        g_key_file_unref(tmp_config);
-    g_list_free_full(files, g_free);
+    error = NULL;
 
     if(!greeter_config)
         greeter_config = g_key_file_new();
+
+    if(!g_key_file_load_from_file(greeter_config, CONFIG_FILE, G_KEY_FILE_NONE, &error))
+    {
+        if(error)
+        {
+            g_warning("[Configuration] Failed to read file '%s': %s", CONFIG_FILE, error->message);
+            g_clear_error(&error);
+        }
+        else
+        {
+            g_warning("[Configuration] Failed to read file '%s'", CONFIG_FILE);
+        }
+        return;
+    }
+    g_message("[Configuration] Reading file: %s", CONFIG_FILE);
+
+//    GError* error = NULL;
+//
+//    gchar* state_config_dir = g_build_filename(g_get_user_cache_dir(), "lightdm-gtk-greeter", NULL);
+//    state_filename = g_build_filename(state_config_dir, "state", NULL);
+//    g_mkdir_with_parents(state_config_dir, 0775);
+//    g_free(state_config_dir);
+//
+//    state_config = g_key_file_new();
+//    g_key_file_load_from_file(state_config, state_filename, G_KEY_FILE_NONE, &error);
+//    if (error && !g_error_matches(error, G_FILE_ERROR, G_FILE_ERROR_NOENT))
+//        g_warning("[Configuration] Failed to load state from %s: %s", state_filename, error->message);
+//    g_clear_error(&error);
+//
+//    GList* files = NULL;
+//
+//    gchar *config_path_tmp = g_path_get_dirname(CONFIG_FILE);
+//    gchar *config_path = g_path_get_dirname(config_path_tmp);
+//    files = append_directory_content(files, config_path);
+//    g_free(config_path_tmp);
+//    g_free(config_path);
+//
+//    files = g_list_reverse(files);
+//
+//    GKeyFile* tmp_config = NULL;
+//    GList* file_iter = NULL;
+//    for(file_iter = files; file_iter; file_iter = g_list_next(file_iter))
+//    {
+//        const gchar* path = file_iter->data;
+//
+//        if(!tmp_config)
+//            tmp_config = g_key_file_new();
+//
+//        if(!g_key_file_load_from_file(tmp_config, path, G_KEY_FILE_NONE, &error))
+//        {
+//            if(error)
+//            {
+//                g_warning("[Configuration] Failed to read file '%s': %s", path, error->message);
+//                g_clear_error(&error);
+//            }
+//            else
+//                g_warning("[Configuration] Failed to read file '%s'", path);
+//            continue;
+//        }
+//        g_message("[Configuration] Reading file: %s", path);
+//
+//        if(!greeter_config)
+//        {
+//            greeter_config = tmp_config;
+//            tmp_config = NULL;
+//            continue;
+//        }
+//
+//        gchar** group_iter = NULL;
+//        gchar** groups = g_key_file_get_groups(tmp_config, NULL);
+//        for(group_iter = groups; *group_iter; ++group_iter)
+//        {
+//            if(**group_iter == '-')
+//            {
+//                g_key_file_remove_group(greeter_config, *group_iter + 1, NULL);
+//                continue;
+//            }
+//
+//            gchar** key_iter = NULL;
+//            gchar** keys = g_key_file_get_keys(tmp_config, *group_iter, NULL, NULL);
+//            for(key_iter = keys; *key_iter; ++key_iter)
+//            {
+//                if(**key_iter == '-')
+//                {
+//                    g_key_file_remove_key(greeter_config, *group_iter, *key_iter + 1, NULL);
+//                    continue;
+//                }
+//
+//                gchar* value = g_key_file_get_value(tmp_config, *group_iter, *key_iter, NULL);
+//                if(value)
+//                {
+//                    g_key_file_set_value(greeter_config, *group_iter, *key_iter, value);
+//                    g_free(value);
+//                }
+//            }
+//            g_strfreev(keys);
+//        }
+//        g_strfreev(groups);
+//    }
+//    if (tmp_config)
+//        g_key_file_unref(tmp_config);
+//    g_list_free_full(files, g_free);
+//
+//    if(!greeter_config)
+//        greeter_config = g_key_file_new();
 }
 
 static GKeyFile*

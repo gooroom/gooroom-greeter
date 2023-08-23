@@ -1,9 +1,20 @@
 desktop_basedir = $(datadir)/images/desktop-base
-desktop_base_DATA = gooroom-greeter-bg.jpg
+desktop_base_DATA = gooroom-greeter-bg.png
 
 iconsymbolicstatusdir = $(datadir)/icons/hicolor/scalable/status
 iconsymbolicstatus_DATA = \
-	greeter-spinner-symbolic.svg
+	greeter-spinner-symbolic.svg \
+	greeter-checkbox-checked.svg \
+	greeter-checkbox-unchecked.svg \
+	greeter-checkbox-unchecked-disabled.svg \
+	greeter-arrow-symbolic.svg
+
+iconsymbolicactionsdir = $(datadir)/icons/hicolor/scalable/actions
+iconsymbolicactions_DATA = \
+	greeter-system-reboot-symbolic.svg \
+	greeter-system-suspend-symbolic.svg \
+	greeter-system-shutdown-symbolic.svg \
+	greeter-system-hibernate-symbolic.svg
 
 gtk_update_icon_cache = gtk-update-icon-cache -f -t $(datadir)/icons/hicolor
 
@@ -18,4 +29,4 @@ update-icon-cache:
 		echo "***   $(gtk_update_icon_cache)"; \
 	fi
 
-EXTRA_DIST = $(desktop_base_DATA)
+#EXTRA_DIST = $(desktop_base_DATA)

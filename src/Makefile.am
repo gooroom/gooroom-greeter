@@ -27,7 +27,7 @@ AM_CPPFLAGS = \
 	-DHAVE_CONFIG_H \
 	-DLOCALEDIR=\"$(localedir)\" \
 	-DPKGDATA_DIR=\"$(pkgdatadir)\" \
-	-DCONFIG_FILE=\"$(sysconfdir)/lightdm/gooroom-greeter.conf\" \
+	-DCONFIG_FILE=\"$(pkgdatadir)/gooroom-greeter.conf\" \
 	-DINDICATOR_DIR=\"$(INDICATORDIR)\" \
 	-DGOOROOM_SPLASH=\"$(libdir)/gooroom-splash/gooroom-splash\" \
 	-DGOOROOM_NOTIFYD=\"$(libdir)/gooroom-notifyd/gooroom-notifyd\" \

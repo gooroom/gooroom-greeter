@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.38.2 -->
+<!-- Generated with glade 3.40.0 -->
 <interface>
-  <requires lib="gtk+" version="3.20"/>
+  <requires lib="gtk+" version="3.24"/>
   <template class="GreeterWindow" parent="GtkBox">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
@@ -43,19 +43,21 @@
         </child>
         <child>
           <object class="GtkBox">
+            <property name="width-request">240</property>
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="margin-top">10</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
             <property name="orientation">vertical</property>
             <property name="spacing">10</property>
             <child>
               <object class="GtkEntry" id="id_entry">
-                <property name="height-request">38</property>
+                <property name="height-request">36</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
-                <property name="max-length">256</property>
+                <property name="has-frame">False</property>
                 <property name="invisible-char">●</property>
-                <property name="width-chars">32</property>
+                <property name="width-chars">0</property>
                 <property name="primary-icon-activatable">False</property>
                 <property name="secondary-icon-activatable">False</property>
                 <property name="placeholder-text" translatable="yes">Enter your username</property>
@@ -70,18 +72,18 @@
               </packing>
             </child>
             <child>
-              <object class="GtkOverlay">
+              <object class="GtkOverlay" id="pw_overlay">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <child>
                   <object class="GtkEntry" id="pw_entry">
-                    <property name="height-request">38</property>
+                    <property name="height-request">36</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
-                    <property name="max-length">256</property>
                     <property name="visibility">False</property>
+                    <property name="has-frame">False</property>
                     <property name="invisible-char">●</property>
-                    <property name="width-chars">32</property>
+                    <property name="width-chars">0</property>
                     <property name="primary-icon-activatable">False</property>
                     <property name="placeholder-text" translatable="yes">Enter your password</property>
                     <style>
@@ -92,86 +94,11 @@
                     <property name="index">-1</property>
                   </packing>
                 </child>
-                <child type="overlay">
-                  <object class="GtkAlignment">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="top-padding">2</property>
-                    <property name="bottom-padding">2</property>
-                    <property name="left-padding">2</property>
-                    <property name="right-padding">2</property>
-                    <child>
-                      <object class="GtkButton" id="login_button">
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="receives-default">True</property>
-                        <property name="halign">end</property>
-                        <property name="valign">center</property>
-                        <child>
-                          <object class="GtkImage">
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
-                            <property name="resource">/kr/gooroom/greeter/arrow.svg</property>
-                          </object>
-                        </child>
-                        <style>
-                          <class name="login-button"/>
-                        </style>
-                      </object>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="pass-through">True</property>
-                  </packing>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox" id="cm_box">
-                <property name="can-focus">False</property>
-                <property name="halign">end</property>
-                <property name="valign">start</property>
-                <property name="margin-top">15</property>
-                <property name="spacing">37</property>
-                <property name="baseline-position">top</property>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="label" translatable="yes">Cleanmode Enable</property>
-                    <attributes>
-                      <attribute name="foreground" value="#ffffffffffff"/>
-                    </attributes>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkSwitch" id="cleanmode_switch">
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="halign">end</property>
-                    <signal name="activate" handler="cleanmode_flag_state_set_cb" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
               </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">2</property>
+                <property name="position">1</property>
               </packing>
             </child>
           </object>
@@ -179,6 +106,65 @@
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox" id="opt_box">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="halign">center</property>
+            <property name="margin-start">8</property>
+            <property name="margin-end">8</property>
+            <property name="margin-top">8</property>
+            <property name="margin-bottom">8</property>
+            <property name="spacing">20</property>
+            <child>
+              <object class="GtkCheckButton" id="chk_clean_mode">
+                <property name="label" translatable="yes">Clean Mode</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">False</property>
+                <property name="margin-start">8</property>
+                <property name="margin-end">8</property>
+                <property name="margin-top">8</property>
+                <property name="margin-bottom">8</property>
+                <property name="draw-indicator">True</property>
+                <style>
+                  <class name="check-button"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkCheckButton" id="chk_tablet_mode">
+                <property name="label" translatable="yes">Tablet Mode</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">False</property>
+                <property name="margin-start">8</property>
+                <property name="margin-end">8</property>
+                <property name="margin-top">8</property>
+                <property name="margin-bottom">8</property>
+                <property name="draw-indicator">True</property>
+                <style>
+                  <class name="check-button"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="pack-type">end</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
           </packing>
         </child>
       </object>
@@ -209,7 +195,7 @@
                   <object class="GtkImage">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="icon-name">system-shutdown-symbolic</property>
+                    <property name="icon-name">greeter-system-shutdown-symbolic</property>
                     <property name="icon_size">3</property>
                   </object>
                   <packing>
@@ -259,7 +245,7 @@
                   <object class="GtkImage">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="icon-name">system-hibernate-symbolic</property>
+                    <property name="icon-name">greeter-system-hibernate-symbolic</property>
                     <property name="icon_size">3</property>
                   </object>
                   <packing>
@@ -309,7 +295,7 @@
                   <object class="GtkImage">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="icon-name">system-suspend-symbolic</property>
+                    <property name="icon-name">greeter-system-suspend-symbolic</property>
                     <property name="icon_size">3</property>
                   </object>
                   <packing>
@@ -358,7 +344,7 @@
                   <object class="GtkImage">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="icon-name">system-restart-symbolic</property>
+                    <property name="icon-name">greeter-system-reboot-symbolic</property>
                     <property name="icon_size">3</property>
                   </object>
                   <packing>
@@ -438,4 +424,21 @@
       <class name="greeter-window"/>
     </style>
   </template>
+  <object class="GtkButton" id="login_button">
+    <property name="visible">True</property>
+    <property name="can-focus">True</property>
+    <property name="receives-default">True</property>
+    <child>
+      <object class="GtkImage">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="pixel-size">24</property>
+        <property name="icon-name">greeter-arrow-symbolic</property>
+      </object>
+    </child>
+    <style>
+      <class name="login-button"/>
+      <class name="inactive"/>
+    </style>
+  </object>
 </interface>

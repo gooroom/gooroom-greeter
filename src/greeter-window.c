@@ -22,10 +22,11 @@
 
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
-#include <ctype.h>
+#include <gio/gio.h>
 
-#include <lightdm.h>
+#include <ctype.h>
 #include <upower.h>
+#include <lightdm.h>
 
 #include <libayatana-ido/libayatana-ido.h>
 #include <libayatana-indicator/indicator-ng.h>
@@ -38,9 +39,13 @@
 #include "greeter-message-dialog.h"
 #include "greeter-password-settings-dialog.h"
 
-#define LOGIN_TIMEOUT 60
-#define	PAM_CLEAN_AUTH	"/lib/x86_64-linux-gnu/security/pam_clean_auth.so"
-#define	AGENT_CONF	"/etc/gooroom/agent/Agent.conf"
+#define LOGIN_TIMEOUT        60
+#define TABLET_MODE_FILE     ".tablet-mode"
+#define CLEAN_MODE_HOME_DIR  "/tmp/.cleanmode"
+#define TABLET_MODE_SESSION  "i3-gnome-flashback"
+#define	PAM_CLEAN_AUTH       "/lib/x86_64-linux-gnu/security/pam_clean_auth.so"
+#define	AGENT_CONF	         "/etc/gooroom/agent/Agent.conf"
+#define	GPMS_CONF	         "/etc/gooroom/gooroom-client-server-register/gcsr.conf"
 
 enum {
 	SYSTEM_SHUTDOWN,
@@ -73,6 +78,7 @@ struct _GreeterWindowPrivate
 {
 	GtkWidget *id_entry;
 	GtkWidget *pw_entry;
+	GtkWidget *pw_overlay;
 	GtkWidget *login_button;
 	GtkWidget *panel_box;
 	GtkWidget *indicator_box;
@@ -83,6 +89,9 @@ struct _GreeterWindowPrivate
 	GtkWidget *pw_dialog;
 	GtkWidget *spinner;
 	GtkWidget *switch_indicator;
+	/* clean mode */
+	GtkWidget *chk_clean_mode;
+	GtkWidget *chk_tablet_mode;
 
 	SplashWindow *splash;
 
@@ -95,11 +104,6 @@ struct _GreeterWindowPrivate
 	gboolean prompt_active;
 	gboolean have_pam_error;
 	gboolean changing_password;
-
-	/* clean mode */
-	GtkWidget *cm_box;
-	GtkSwitch *cleanmode_switch;
-	gboolean cleanmode_flag;
 
 	gchar *id;
 	gchar *pw;
@@ -119,7 +123,6 @@ G_DEFINE_TYPE_WITH_PRIVATE (GreeterWindow, greeter_window, GTK_TYPE_BOX);
 
 static void process_prompts (GreeterWindow *window);
 static void login_button_clicked_cb (GtkButton *widget, gpointer user_data);
-static gboolean cleanmode_flag_state_set_cb (GtkSwitch *sw_clean, gboolean state, gpointer user_data);
 
 static gboolean
 grab_focus_idle (gpointer user_data)
@@ -137,23 +140,6 @@ pam_message_finalize (PAMConversationMessage *message)
 	g_free (message);
 }
 
-static gchar *
-get_id (GtkWidget *id_entry)
-{
-	int i = 0;
-	const gchar *text;
-
-	text = gtk_entry_get_text (GTK_ENTRY (id_entry));
-	if (strlen (text) == 0)
-		return g_strdup ("");
-
-	for (i = 0; text[i] != '\0'; i++)
-		if (!isdigit (text[i]))
-			return g_strdup (text);
-
-	return g_strdup_printf ("kepco-%s", text); 
-}
-
 static gboolean
 is_valid_session (GList       *items,
                   const gchar *session)
@@ -163,6 +149,27 @@ is_valid_session (GList       *items,
 			return TRUE;
 
 	return FALSE;
+}
+
+static gboolean
+is_tablet_mode (GreeterWindow *window)
+{
+	gchar *file = NULL;
+	gboolean ret = FALSE;
+
+	file = g_build_filename (g_get_home_dir (), TABLET_MODE_FILE, NULL);
+	ret = g_file_test (file, G_FILE_TEST_EXISTS);
+	g_clear_pointer (&file, g_free);
+
+//	if (g_file_test (file, G_FILE_TEST_EXISTS)) {
+//		g_file_get_contents (file, &contents, NULL, NULL);
+//		if (contents)
+//			ret = g_str_equal (contents, TABLET_MODE_SESSION);
+//	}
+//	g_clear_pointer (&file, g_free);
+//	g_clear_pointer (&contents, g_free);
+
+	return ret;
 }
 
 static void
@@ -248,6 +255,10 @@ start_authentication (GreeterWindow *window, const gchar *username)
 			set_session (window, NULL);
 			set_language (window, NULL);
 		}
+
+		if (is_tablet_mode (window))
+			set_session (window, TABLET_MODE_SESSION);
+
 #ifdef HAVE_LIBLIGHTDMGOBJECT_1_19_2
 		lightdm_greeter_authenticate (greeter, username, NULL);
 #else
@@ -1130,28 +1141,20 @@ authentication_complete_cb (LightDMGreeter *greeter,
 static void
 try_to_login_system (GreeterWindow *window)
 {
-	gchar *id = NULL, *pw = NULL;
 	GreeterWindowPrivate *priv = window->priv;
 
-	id = get_id (priv->id_entry);
-	pw = g_strdup (gtk_entry_get_text (GTK_ENTRY (priv->pw_entry)));
-
-	if (strlen (id) == 0)
-		goto out;
-
-	start_authentication (window, id);
+	start_authentication (window, priv->id);
 
 	while (!priv->prompted)
 		gtk_main_iteration ();
 
 	priv->prompt_active = FALSE;
 
-
 	if (lightdm_greeter_get_in_authentication (priv->lightdm)) {
 #ifdef HAVE_LIBLIGHTDMGOBJECT_1_19_2
-		lightdm_greeter_respond (priv->lightdm, pw, NULL);
+		lightdm_greeter_respond (priv->lightdm, priv->pw, NULL);
 #else
-		lightdm_greeter_respond (priv->lightdm, pw);
+		lightdm_greeter_respond (priv->lightdm, priv->pw);
 #endif
         /* If we have questions pending, then we continue processing
          * those, until we are done. (Otherwise, authentication will
@@ -1160,10 +1163,6 @@ try_to_login_system (GreeterWindow *window)
 			process_prompts (window);
 		}
 	}
-
-out:
-	g_free (id);
-	g_free (pw);
 }
 
 static void
@@ -1185,22 +1184,33 @@ login_button_clicked_cb (GtkButton *widget,
 }
 
 static gboolean
-cleanmode_flag_state_set_cb (GtkSwitch *sw_clean, gboolean state, gpointer user_data)
+pw_entry_focus_in_cb (GtkWidget     *widget,
+                      GdkEventFocus *event,
+                      gpointer       user_data)
 {
+	GtkStyleContext *context = NULL;
 	GreeterWindow *window = GREETER_WINDOW (user_data);
-	GreeterWindowPrivate *priv = window->priv;
-	char *cleanmode_flag = NULL;
-	cleanmode_flag = g_strdup_printf ("/tmp/.cleanmode");
 
-	if (state)
-	{
-		priv->cleanmode_switch = TRUE;
-		g_mkdir_with_parents (cleanmode_flag, 0700);
-	} else {
-		priv->cleanmode_switch = FALSE;
-		g_spawn_command_line_sync ("/bin/rm -rf /tmp/.cleanmode", NULL, NULL, NULL, NULL);
-	}
-	return FALSE;
+	context = gtk_widget_get_style_context (window->priv->login_button);
+
+	gtk_style_context_add_class (context, "active");
+	gtk_style_context_remove_class (context, "inactive");
+	gtk_widget_queue_draw (GTK_WIDGET (window));
+}
+
+static gboolean
+pw_entry_focus_out_cb (GtkWidget     *widget,
+                       GdkEventFocus *event,
+                       gpointer       user_data)
+{
+	GtkStyleContext *context = NULL;
+	GreeterWindow *window = GREETER_WINDOW (user_data);
+
+	context = gtk_widget_get_style_context (window->priv->login_button);
+
+	gtk_style_context_add_class (context, "inactive");
+	gtk_style_context_remove_class (context, "active");
+	gtk_widget_queue_draw (GTK_WIDGET (window));
 }
 
 static void
@@ -1808,43 +1818,156 @@ load_indicators (GreeterWindow *window)
 }
 
 static void
-clean_mode_sw_set_sensitive (GreeterWindow *window)
+clean_mode_toggled_cb (GtkToggleButton *button, gpointer user_data)
 {
-	GreeterWindowPrivate *priv = window->priv;
-	gchar *contents = NULL;
-	gboolean cm_enable = TRUE;
-	int i;
+	if (gtk_toggle_button_get_active (button)) {
+		g_mkdir_with_parents (CLEAN_MODE_HOME_DIR, 0700);
+	} else {
+		gchar *cmd = g_strdup_printf ("/bin/rm -rf %s", CLEAN_MODE_HOME_DIR);
+		g_spawn_command_line_sync (cmd, NULL, NULL, NULL, NULL);
+		g_clear_pointer (&cmd, g_free);
+	}
+}
 
-	if (!g_file_test (PAM_CLEAN_AUTH, G_FILE_TEST_EXISTS)){
-		gtk_widget_hide (GTK_WIDGET (priv->cm_box));
+static void
+tablet_mode_toggled_cb (GtkToggleButton *button, gpointer user_data)
+{
+	gchar *file = NULL;
+	GError *error = NULL;
+
+	file = g_build_filename (g_get_home_dir (), TABLET_MODE_FILE, NULL);
+
+	if (!gtk_toggle_button_get_active (button)) {
+		if (g_file_test (file, G_FILE_TEST_EXISTS)) {
+			gchar *cmd = g_strdup_printf ("/bin/rm -rf %s", file);
+			g_spawn_command_line_sync (cmd, NULL, NULL, NULL, NULL);
+			g_clear_pointer (&cmd, g_free);
+		}
+		goto out;
+	}
+
+	if (!g_file_set_contents (file, "", -1, &error)) {
+		if (error) {
+			g_warning ("[LoginWindow] Unable to create %s: %s", file, error->message);
+			g_clear_error (&error);
+		} else {
+			g_warning ("[LoginWindow] Unable to create %s", file);
+		}
+	}
+
+out:
+	g_clear_pointer (&file, g_free);
+}
+
+static gboolean
+update_clean_mode_state (gpointer user_data)
+{
+	GError *error = NULL;
+	GKeyFile *keyfile = NULL;
+	GreeterWindow *window = GREETER_WINDOW (user_data);
+	GreeterWindowPrivate *priv = window->priv;
+
+	gtk_widget_set_sensitive (priv->chk_clean_mode, TRUE);
+
+	keyfile = g_key_file_new ();
+	g_key_file_load_from_file (keyfile, AGENT_CONF, G_KEY_FILE_NONE, &error);
+	if (error && !g_error_matches (error, G_FILE_ERROR, G_FILE_ERROR_NOENT)) {
+		g_warning ("[LoginWindow] Failed to load %s: %s", AGENT_CONF, error->message);
+		g_clear_error (&error);
+		goto out;
+	}
+
+	if (g_key_file_has_group (keyfile, "CLIENTJOB")) {
+		gchar *cleanmode = g_key_file_get_string (keyfile, "CLIENTJOB", "CLEAN_MODE", NULL);
+		if (cleanmode && g_str_equal (cleanmode, "disable")) {
+			gtk_widget_set_sensitive (priv->chk_clean_mode, FALSE);
+		}
+		g_clear_pointer (&cleanmode, g_free);
+	}
+
+
+out:
+	g_key_file_free (keyfile);
+
+	return FALSE;
+}
+
+static void
+agent_conf_file_changed_cb (GFileMonitor      *monitor,
+                            GFile             *file,
+                            GFile             *other_file,
+                            GFileMonitorEvent  event_type,
+                            gpointer           user_data)
+{
+	GreeterWindow *window = GREETER_WINDOW (user_data);
+
+	switch (event_type)
+	{
+		case G_FILE_MONITOR_EVENT_CHANGED:
+		case G_FILE_MONITOR_EVENT_DELETED:
+		case G_FILE_MONITOR_EVENT_CREATED:
+		{
+			g_idle_add ((GSourceFunc)update_clean_mode_state, window);
+			break;
+		}
+		default:
+			break;
+	}
+}
+
+static void
+clean_mode_init (GreeterWindow *window)
+{
+	GError *error = NULL;
+	GKeyFile *keyfile = NULL;
+	GFile *agent_conf_file  = NULL;
+	GFileMonitor *monitor = NULL;
+	GreeterWindowPrivate *priv = window->priv;
+
+	if (g_file_test (CLEAN_MODE_HOME_DIR, G_FILE_TEST_EXISTS)) {
+		gchar *cmd = g_strdup_printf ("/bin/rm -rf %s", CLEAN_MODE_HOME_DIR);
+		g_spawn_command_line_sync (cmd, NULL, NULL, NULL, NULL);
+		g_clear_pointer (&cmd, g_free);
+	}
+
+	if (!g_file_test (PAM_CLEAN_AUTH, G_FILE_TEST_EXISTS)) {
+		gtk_widget_hide (priv->chk_clean_mode);
 		return;
 	}
 
-	g_file_get_contents (AGENT_CONF, &contents, NULL, NULL);
-	
-	if (contents) {
-		gchar **lines = g_strsplit (contents, "\n" , -1);
-		for (i = 0; lines[i] != NULL; i++) {
-			if (g_str_has_prefix (lines[i], "CLEAN_MODE")) {
-				gchar **tokens = g_strsplit (lines[i], "=", -1);
-				if (tokens[1]) {
-					g_strstrip (tokens[1]);
-					if (g_strcmp0 (tokens[1], "disable") == 0) {
-						cm_enable = FALSE;
-					}
-				}
-				g_strfreev (tokens);
-				break;
-			}
-		}
-		g_strfreev (lines);
-	}
-	
-	if (!cm_enable) {
-		gtk_widget_set_sensitive (GTK_WIDGET (priv->cleanmode_switch), FALSE);
+	gtk_widget_show (priv->chk_clean_mode);
+
+	/* Not registered with GPMS */
+	if (!g_file_test (GPMS_CONF, G_FILE_TEST_EXISTS)) {
+		gtk_widget_set_sensitive (priv->chk_clean_mode, TRUE);
+		g_debug ("[LoginWindow] Not registered GPMS");
+		return;
 	}
 
-	g_free (contents);
+	update_clean_mode_state (window);
+
+	/* Monitoring Agent.conf file */
+	agent_conf_file = g_file_new_for_path (AGENT_CONF);
+	monitor = g_file_monitor_file (agent_conf_file, G_FILE_MONITOR_NONE, NULL, &error);
+	if (!error) {
+		g_signal_connect (monitor, "changed", G_CALLBACK (agent_conf_file_changed_cb), window);
+	} else {
+		g_warning ("[LoginWindow] Failed to monitor %s: %s", AGENT_CONF, error->message);
+		g_clear_error (&error);
+	}
+	g_object_unref (agent_conf_file);
+}
+
+static void
+tablet_mode_init (GreeterWindow *window)
+{
+	GreeterWindowPrivate *priv = window->priv;
+
+	if (is_tablet_mode (window)) {
+		g_signal_handlers_block_by_func (priv->chk_tablet_mode, tablet_mode_toggled_cb, window);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->chk_tablet_mode), TRUE);
+		g_signal_handlers_unblock_by_func (priv->chk_tablet_mode, tablet_mode_toggled_cb, window);
+	}
 }
 
 static void
@@ -1926,53 +2049,53 @@ show_command_dialog (GtkWidget *parent,
 static void
 shutdown_button_clicked_cb (GtkButton *button, gpointer user_data)
 {
-	const char *img, *title, *msg;
+	const char *icon, *title, *msg;
 	GreeterWindow *window = GREETER_WINDOW (user_data);
 
-	img = "system-shutdown-symbolic";
+	icon = "greeter-system-shutdown-symbolic";
 	title = _("System Shutdown");
 	msg = _("Are you sure you want to close all programs and shut down the computer?");
 
-	show_command_dialog (GTK_WIDGET (window), img, title, msg, SYSTEM_SHUTDOWN);
+	show_command_dialog (GTK_WIDGET (window), icon, title, msg, SYSTEM_SHUTDOWN);
 }
 
 static void
 restart_button_clicked_cb (GtkButton *button, gpointer user_data)
 {
-	const char *img, *title, *msg;
+	const char *icon, *title, *msg;
 	GreeterWindow *window = GREETER_WINDOW (user_data);
 
-	img = "system-restart-symbolic";
+	icon = "greeter-system-reboot-symbolic";
 	title = _("System Restart");
 	msg = _("Are you sure you want to close all programs and restart the computer?");
 
-	show_command_dialog (GTK_WIDGET (window), img, title, msg, SYSTEM_RESTART);
+	show_command_dialog (GTK_WIDGET (window), icon, title, msg, SYSTEM_RESTART);
 }
 
 static void
 suspend_button_clicked_cb (GtkButton *button, gpointer user_data)
 {
-	const char *img, *title, *msg;
+	const char *icon, *title, *msg;
 	GreeterWindow *window = GREETER_WINDOW (user_data);
 
-	img = "system-suspend-symbolic";
+	icon = "greeter-system-suspend-symbolic";
 	title = _("System Suspend");
 	msg = _("Are you sure you want to suspend the computer?");
 
-	show_command_dialog (GTK_WIDGET (window), img, title, msg, SYSTEM_SUSPEND);
+	show_command_dialog (GTK_WIDGET (window), icon, title, msg, SYSTEM_SUSPEND);
 }
 
 static void
 hibernate_button_clicked_cb (GtkButton *button, gpointer user_data)
 {
-	const char *img, *title, *msg;
+	const char *icon, *title, *msg;
 	GreeterWindow *window = GREETER_WINDOW (user_data);
 
-	img = "system-hibernate-symbolic";
+	icon = "greeter-system-hibernate-symbolic";
 	title = _("System Hibernate");
 	msg = _("Are you sure you want to hibernate the computer?");
 
-	show_command_dialog (GTK_WIDGET (window), img, title, msg, SYSTEM_HIBERNATE);
+	show_command_dialog (GTK_WIDGET (window), icon, title, msg, SYSTEM_HIBERNATE);
 }
 
 static void
@@ -2008,10 +2131,10 @@ lightdm_greeter_init (GreeterWindow *window)
                       G_CALLBACK (authentication_complete_cb), window);
 //	g_signal_connect (greeter, "autologin-timer-expired", G_CALLBACK (timed_autologin_cb), window);
 
+	lightdm_greeter_connect_sync (priv->lightdm, NULL);
+
 	/* set default session */
 	set_session (window, lightdm_greeter_get_default_session_hint (priv->lightdm));
-
-	lightdm_greeter_connect_sync (priv->lightdm, NULL);
 }
 
 static void
@@ -2057,21 +2180,28 @@ greeter_window_init (GreeterWindow *window)
 	priv->up_client = NULL;
 	priv->changing_password_step = 0;
 
+	gtk_overlay_add_overlay (GTK_OVERLAY (priv->pw_overlay), priv->login_button);
+	gtk_overlay_set_overlay_pass_through (GTK_OVERLAY (priv->pw_overlay), priv->login_button, TRUE);
+	gtk_widget_set_halign (priv->login_button, GTK_ALIGN_END);
+	gtk_widget_set_valign (priv->login_button, GTK_ALIGN_CENTER);
+	gtk_widget_set_sensitive (priv->login_button, FALSE);
+
 	lightdm_greeter_init (window);
 
 	load_power_command (window);
 	load_indicators (window);
 
-	gtk_widget_set_sensitive (priv->login_button, FALSE);
-
-	gtk_widget_show (GTK_WIDGET (priv->cm_box));
-	clean_mode_sw_set_sensitive (window);
+	clean_mode_init (window);
+	tablet_mode_init (window);
 
 	g_signal_connect (priv->id_entry, "changed", G_CALLBACK (id_entry_changed_cb), window);
 	g_signal_connect (priv->id_entry, "key-press-event", G_CALLBACK (id_entry_key_press_cb), window);
 	g_signal_connect (priv->pw_entry, "activate", G_CALLBACK (pw_entry_activate_cb), window);
+	g_signal_connect (priv->pw_entry, "focus-in-event", G_CALLBACK (pw_entry_focus_in_cb), window);
+	g_signal_connect (priv->pw_entry, "focus-out-event", G_CALLBACK (pw_entry_focus_out_cb), window);
 	g_signal_connect (priv->login_button, "clicked", G_CALLBACK (login_button_clicked_cb), window);
-	g_signal_connect (priv->cleanmode_switch, "state-set", G_CALLBACK (cleanmode_flag_state_set_cb), window);
+	g_signal_connect (priv->chk_clean_mode, "toggled", G_CALLBACK (clean_mode_toggled_cb), window);
+	g_signal_connect (priv->chk_tablet_mode, "toggled", G_CALLBACK (tablet_mode_toggled_cb), window);
 
 	g_idle_add ((GSourceFunc)grab_focus_idle, priv->id_entry);
 }
@@ -2100,6 +2230,7 @@ greeter_window_class_init (GreeterWindowClass *klass)
 	gtk_widget_class_bind_template_child_private (widget_class, GreeterWindow, spinner);
 	gtk_widget_class_bind_template_child_private (widget_class, GreeterWindow, id_entry);
 	gtk_widget_class_bind_template_child_private (widget_class, GreeterWindow, pw_entry);
+	gtk_widget_class_bind_template_child_private (widget_class, GreeterWindow, pw_overlay);
 	gtk_widget_class_bind_template_child_private (widget_class, GreeterWindow, login_button);
 	gtk_widget_class_bind_template_child_private (widget_class, GreeterWindow, panel_box);
 	gtk_widget_class_bind_template_child_private (widget_class, GreeterWindow, indicator_box);
@@ -2107,8 +2238,8 @@ greeter_window_class_init (GreeterWindowClass *klass)
 	gtk_widget_class_bind_template_child_private (widget_class, GreeterWindow, btn_restart);
 	gtk_widget_class_bind_template_child_private (widget_class, GreeterWindow, btn_suspend);
 	gtk_widget_class_bind_template_child_private (widget_class, GreeterWindow, btn_hibernate);
-	gtk_widget_class_bind_template_child_private (widget_class, GreeterWindow, cm_box);
-	gtk_widget_class_bind_template_child_private (widget_class, GreeterWindow, cleanmode_switch);
+	gtk_widget_class_bind_template_child_private (widget_class, GreeterWindow, chk_clean_mode);
+	gtk_widget_class_bind_template_child_private (widget_class, GreeterWindow, chk_tablet_mode);
 }
 
 GtkWidget *

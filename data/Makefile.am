@@ -3,12 +3,12 @@ SUBDIRS = images
 xgreetersdir = $(datadir)/xgreeters
 dist_xgreeters_DATA = gooroom-greeter.desktop
 
-libexec_SCRIPTS = \
-	gis-user-delete-script
+greeter_scriptsdir = $(pkglibexecdir)
+greeter_scripts_SCRIPTS = gis-user-delete-script
 
-configdir = $(sysconfdir)/lightdm
+configdir = $(pkgdatadir)
 dist_config_DATA = gooroom-greeter.conf
 
-lightdm_confdir = $(datadir)/lightdm/lightdm.conf.d
-lightdm_conf_DATA = \
+lightdm_datadir = $(datadir)/lightdm/lightdm.conf.d
+lightdm_data_DATA = \
 	99_gooroom-greeter.conf
