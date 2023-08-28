@@ -137,23 +137,6 @@ pam_message_finalize (PAMConversationMessage *message)
 	g_free (message);
 }
 
-static gchar *
-get_id (GtkWidget *id_entry)
-{
-	int i = 0;
-	const gchar *text;
-
-	text = gtk_entry_get_text (GTK_ENTRY (id_entry));
-	if (strlen (text) == 0)
-		return g_strdup ("");
-
-	for (i = 0; text[i] != '\0'; i++)
-		if (!isdigit (text[i]))
-			return g_strdup (text);
-
-	return g_strdup_printf ("kepco-%s", text); 
-}
-
 static gboolean
 is_valid_session (GList       *items,
                   const gchar *session)
@@ -504,7 +487,7 @@ show_splash (GreeterWindow *window, GtkWidget *parent)
 
 static gboolean
 showing_splash_timeout_cb (gpointer user_data)
-{   
+{
 	GreeterWindow *window = GREETER_WINDOW (user_data);
 	GreeterWindowPrivate *priv = window->priv;
 
@@ -1130,16 +1113,9 @@ authentication_complete_cb (LightDMGreeter *greeter,
 static void
 try_to_login_system (GreeterWindow *window)
 {
-	gchar *id = NULL, *pw = NULL;
 	GreeterWindowPrivate *priv = window->priv;
 
-	id = get_id (priv->id_entry);
-	pw = g_strdup (gtk_entry_get_text (GTK_ENTRY (priv->pw_entry)));
-
-	if (strlen (id) == 0)
-		goto out;
-
-	start_authentication (window, id);
+	start_authentication (window, priv->id);
 
 	while (!priv->prompted)
 		gtk_main_iteration ();
@@ -1149,9 +1125,9 @@ try_to_login_system (GreeterWindow *window)
 
 	if (lightdm_greeter_get_in_authentication (priv->lightdm)) {
 #ifdef HAVE_LIBLIGHTDMGOBJECT_1_19_2
-		lightdm_greeter_respond (priv->lightdm, pw, NULL);
+		lightdm_greeter_respond (priv->lightdm, priv->pw, NULL);
 #else
-		lightdm_greeter_respond (priv->lightdm, pw);
+		lightdm_greeter_respond (priv->lightdm, priv->pw);
 #endif
         /* If we have questions pending, then we continue processing
          * those, until we are done. (Otherwise, authentication will
@@ -1160,10 +1136,6 @@ try_to_login_system (GreeterWindow *window)
 			process_prompts (window);
 		}
 	}
-
-out:
-	g_free (id);
-	g_free (pw);
 }
 
 static void
@@ -1187,19 +1159,11 @@ login_button_clicked_cb (GtkButton *widget,
 static gboolean
 cleanmode_flag_state_set_cb (GtkSwitch *sw_clean, gboolean state, gpointer user_data)
 {
-	GreeterWindow *window = GREETER_WINDOW (user_data);
-	GreeterWindowPrivate *priv = window->priv;
-	char *cleanmode_flag = NULL;
-	cleanmode_flag = g_strdup_printf ("/tmp/.cleanmode");
-
 	if (state)
-	{
-		priv->cleanmode_switch = TRUE;
-		g_mkdir_with_parents (cleanmode_flag, 0700);
-	} else {
-		priv->cleanmode_switch = FALSE;
+		g_mkdir_with_parents ("/tmp/.cleanmode", 0700);
+	else
 		g_spawn_command_line_sync ("/bin/rm -rf /tmp/.cleanmode", NULL, NULL, NULL, NULL);
-	}
+
 	return FALSE;
 }
 
@@ -1821,7 +1785,7 @@ clean_mode_sw_set_sensitive (GreeterWindow *window)
 	}
 
 	g_file_get_contents (AGENT_CONF, &contents, NULL, NULL);
-	
+
 	if (contents) {
 		gchar **lines = g_strsplit (contents, "\n" , -1);
 		for (i = 0; lines[i] != NULL; i++) {
@@ -1839,7 +1803,7 @@ clean_mode_sw_set_sensitive (GreeterWindow *window)
 		}
 		g_strfreev (lines);
 	}
-	
+
 	if (!cm_enable) {
 		gtk_widget_set_sensitive (GTK_WIDGET (priv->cleanmode_switch), FALSE);
 	}
@@ -2019,7 +1983,7 @@ greeter_window_finalize (GObject *object)
 {
 	GreeterWindow *window = GREETER_WINDOW (object);
 	GreeterWindowPrivate *priv = window->priv;
- 
+
 	g_clear_pointer (&priv->devices, g_ptr_array_unref);
 	g_clear_object (&priv->up_client);
 
