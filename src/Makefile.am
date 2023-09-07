@@ -31,6 +31,7 @@ AM_CPPFLAGS = \
 	-DINDICATOR_DIR=\"$(INDICATORDIR)\" \
 	-DGOOROOM_SPLASH=\"$(libdir)/gooroom-splash/gooroom-splash\" \
 	-DGOOROOM_NOTIFYD=\"$(libdir)/gooroom-notifyd/gooroom-notifyd\" \
+	-DTABLET_MODE_CHANGE_HELPER=\"$(libexecdir)/gooroom-integration-applet/tablet-mode-change-helper\" \
 	$(WARN_CFLAGS)
 
 gooroom_greeter_CFLAGS = \

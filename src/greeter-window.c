@@ -40,12 +40,12 @@
 #include "greeter-password-settings-dialog.h"
 
 #define LOGIN_TIMEOUT        60
-#define TABLET_MODE_FILE     ".tablet-mode"
 #define CLEAN_MODE_HOME_DIR  "/tmp/.cleanmode"
+#define TABLET_MODE_FILE     "/etc/gooroom/.tablet-mode"
 #define TABLET_MODE_SESSION  "i3-gnome-flashback"
 #define	PAM_CLEAN_AUTH       "/lib/x86_64-linux-gnu/security/pam_clean_auth.so"
-#define	AGENT_CONF	         "/etc/gooroom/agent/Agent.conf"
-#define	GPMS_CONF	         "/etc/gooroom/gooroom-client-server-register/gcsr.conf"
+#define	AGENT_CONF	     "/etc/gooroom/agent/Agent.conf"
+#define	GPMS_CONF	     "/etc/gooroom/gooroom-client-server-register/gcsr.conf"
 
 enum {
 	SYSTEM_SHUTDOWN,
@@ -154,22 +154,7 @@ is_valid_session (GList       *items,
 static gboolean
 is_tablet_mode (GreeterWindow *window)
 {
-	gchar *file = NULL;
-	gboolean ret = FALSE;
-
-	file = g_build_filename (g_get_home_dir (), TABLET_MODE_FILE, NULL);
-	ret = g_file_test (file, G_FILE_TEST_EXISTS);
-	g_clear_pointer (&file, g_free);
-
-//	if (g_file_test (file, G_FILE_TEST_EXISTS)) {
-//		g_file_get_contents (file, &contents, NULL, NULL);
-//		if (contents)
-//			ret = g_str_equal (contents, TABLET_MODE_SESSION);
-//	}
-//	g_clear_pointer (&file, g_free);
-//	g_clear_pointer (&contents, g_free);
-
-	return ret;
+	return g_file_test (TABLET_MODE_FILE, G_FILE_TEST_EXISTS);
 }
 
 static void
@@ -1832,31 +1817,27 @@ clean_mode_toggled_cb (GtkToggleButton *button, gpointer user_data)
 static void
 tablet_mode_toggled_cb (GtkToggleButton *button, gpointer user_data)
 {
-	gchar *file = NULL;
 	GError *error = NULL;
+    gchar *pkexec, *cmdline;
 
-	file = g_build_filename (g_get_home_dir (), TABLET_MODE_FILE, NULL);
+    pkexec = g_find_program_in_path ("pkexec");
 
-	if (!gtk_toggle_button_get_active (button)) {
-		if (g_file_test (file, G_FILE_TEST_EXISTS)) {
-			gchar *cmd = g_strdup_printf ("/bin/rm -rf %s", file);
-			g_spawn_command_line_sync (cmd, NULL, NULL, NULL, NULL);
-			g_clear_pointer (&cmd, g_free);
-		}
-		goto out;
+	if (gtk_toggle_button_get_active (button)) {
+		cmdline = g_strdup_printf ("%s %s", pkexec, TABLET_MODE_CHANGE_HELPER);
+	} else {
+		cmdline = g_strdup_printf ("%s %s -d", pkexec, TABLET_MODE_CHANGE_HELPER);
 	}
 
-	if (!g_file_set_contents (file, "", -1, &error)) {
+	if (!g_spawn_command_line_sync (cmdline, NULL, NULL, NULL, &error)) {
 		if (error) {
-			g_warning ("[LoginWindow] Unable to create %s: %s", file, error->message);
-			g_clear_error (&error);
+			g_warning ("[LoginWindow] Error attempting to execute command: %s: %s", cmdline, error->message);
+			g_error_free (error);
 		} else {
-			g_warning ("[LoginWindow] Unable to create %s", file);
+			g_warning ("[LoginWindow] Error attempting to execute command: %s", cmdline);
 		}
 	}
 
-out:
-	g_clear_pointer (&file, g_free);
+	g_clear_pointer (&cmdline, g_free);
 }
 
 static gboolean
