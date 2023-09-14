@@ -498,20 +498,6 @@ show_splash (GreeterWindow *window, GtkWidget *parent)
 	splash_window_show (priv->splash);
 }
 
-static gboolean
-showing_splash_timeout_cb (gpointer user_data)
-{   
-	GreeterWindow *window = GREETER_WINDOW (user_data);
-	GreeterWindowPrivate *priv = window->priv;
-
-	hide_splash (window);
-
-	g_clear_handle_id (&priv->splash_timeout_id, g_source_remove);
-	priv->splash_timeout_id = 0;
-
-	return FALSE;
-}
-
 static void
 post_login (GreeterWindow *window)
 {
@@ -529,6 +515,14 @@ post_login (GreeterWindow *window)
 	gtk_widget_grab_focus (priv->pw_entry);
 
 	g_signal_handlers_unblock_by_func (window->priv->login_button, login_button_clicked_cb, window);
+}
+
+static gboolean
+showing_splash_timeout_cb (gpointer user_data)
+{
+	post_login (GREETER_WINDOW (user_data));
+
+	return FALSE;
 }
 
 static void
