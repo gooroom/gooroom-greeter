@@ -375,6 +375,7 @@ main (int argc, char **argv)
 	/* LP: #1024482 */
 	g_setenv ("GDK_CORE_DEVICE_EVENTS", "1", TRUE);
 	g_setenv ("GTK_MODULES", "atk-bridge", FALSE);
+	g_setenv ("SHELL", "/bin/bash", TRUE);
 
 	/* Make nm-applet hide items the user does not have permissions to interact with */
 	g_setenv ("NM_APPLET_HIDE_POLICY_ITEMS", "1", TRUE);

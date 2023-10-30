@@ -42,3 +42,17 @@ Action=org.freedesktop.NetworkManager.network-control
 ResultActive=yes
 ResultInactive=no
 ResultAny=no
+
+[Control Systemd Units]
+Identity=unix-user:lightdm
+Action=org.freedesktop.systemd1.manage-units
+ResultActive=yes
+ResultInactive=no
+ResultAny=no
+
+[Control Systemd Units]
+Identity=unix-user:lightdm
+Action=kr.gooroom.integration.applet.tablet-mode-change-helper
+ResultActive=yes
+ResultInactive=no
+ResultAny=no

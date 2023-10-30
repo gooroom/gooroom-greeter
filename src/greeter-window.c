@@ -42,10 +42,10 @@
 #define LOGIN_TIMEOUT        60
 #define CLEAN_MODE_HOME_DIR  "/tmp/.cleanmode"
 #define TABLET_MODE_FILE     "/etc/gooroom/.tablet-mode"
-#define TABLET_MODE_SESSION  "i3-gnome-flashback"
+#define TABLET_MODE_SESSION  "i3-gnome-flashback-session"
 #define	PAM_CLEAN_AUTH       "/lib/x86_64-linux-gnu/security/pam_clean_auth.so"
-#define	AGENT_CONF	     "/etc/gooroom/agent/Agent.conf"
-#define	GPMS_CONF	     "/etc/gooroom/gooroom-client-server-register/gcsr.conf"
+#define	AGENT_CONF	         "/etc/gooroom/agent/Agent.conf"
+#define	GPMS_CONF	         "/etc/gooroom/gooroom-client-server-register/gcsr.conf"
 
 enum {
 	SYSTEM_SHUTDOWN,
@@ -157,6 +157,42 @@ is_tablet_mode (GreeterWindow *window)
 	return g_file_test (TABLET_MODE_FILE, G_FILE_TEST_EXISTS);
 }
 
+static gboolean
+start_systemd_service_for_tablet_mode (gboolean start)
+{
+	guint i = 0;
+	gchar **argv;
+	gboolean ret;
+	gchar *systemd_run, *cmd;
+	const gchar *action;
+	GError *error = NULL;
+	const gchar *systemd_services[] = {
+		"iio-sensor-proxy.service",
+		"auto-rotate.service",
+		NULL
+	};
+
+	action = start ? "restart" : "stop";
+	systemd_run = g_find_program_in_path ("systemd-run");
+
+	for (i = 0; systemd_services[i] != NULL; i++) {
+		cmd = g_strdup_printf ("%s systemctl %s %s", systemd_run, action, systemd_services[i]);
+
+		g_shell_parse_argv (cmd, NULL, &argv, NULL);
+
+		ret = g_spawn_async (NULL, argv, NULL, G_SPAWN_DO_NOT_REAP_CHILD, NULL, NULL, NULL, &error);
+		if (!ret) {
+			g_warning ("[LoginWindow] Couldn't spawn %s: %s", cmd, error->message);
+			g_error_free (error);
+		}
+
+		g_free (cmd);
+		g_strfreev (argv);
+	}
+
+	return ret;
+}
+
 static void
 set_session (GreeterWindow *window, const gchar *session)
 {
@@ -194,6 +230,7 @@ set_language (GreeterWindow *window, const gchar *language)
 static void
 start_authentication (GreeterWindow *window, const gchar *username)
 {
+	gboolean istm = FALSE;
 	GreeterWindowPrivate *priv = window->priv;
 	LightDMGreeter *greeter = priv->lightdm;
 
@@ -241,8 +278,11 @@ start_authentication (GreeterWindow *window, const gchar *username)
 			set_language (window, NULL);
 		}
 
-		if (is_tablet_mode (window))
+		istm = is_tablet_mode (window);
+		if (istm)
 			set_session (window, TABLET_MODE_SESSION);
+
+		start_systemd_service_for_tablet_mode (istm);
 
 #ifdef HAVE_LIBLIGHTDMGOBJECT_1_19_2
 		lightdm_greeter_authenticate (greeter, username, NULL);
@@ -1942,6 +1982,15 @@ tablet_mode_init (GreeterWindow *window)
 		g_signal_handlers_block_by_func (priv->chk_tablet_mode, tablet_mode_toggled_cb, window);
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->chk_tablet_mode), TRUE);
 		g_signal_handlers_unblock_by_func (priv->chk_tablet_mode, tablet_mode_toggled_cb, window);
+
+		/* TODO: Show error message */
+		if (start_systemd_service_for_tablet_mode (TRUE)) {
+		}
+		return;
+	}
+
+	/* TODO: Show error message */
+	if (start_systemd_service_for_tablet_mode (FALSE)) {
 	}
 }
 

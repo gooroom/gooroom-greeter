@@ -3,7 +3,7 @@ SUBDIRS = images
 xgreetersdir = $(datadir)/xgreeters
 dist_xgreeters_DATA = gooroom-greeter.desktop
 
-greeter_scriptsdir = $(pkglibexecdir)
+greeter_scriptsdir = $(pkglibdir)
 greeter_scripts_SCRIPTS = gis-user-delete-script
 
 configdir = $(pkgdatadir)
