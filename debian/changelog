@@ -1,3 +1,10 @@
+gooroom-greeter (0.4.4+grm3u1) unstable; urgency=medium
+
+  [ cjheo ]
+  * [9c7c9160] Cleanup source code
+
+ -- Gooroom Autobuilder <jenkins@gooroom.kr>  Mon, 13 Nov 2023 16:25:50 +0900
+
 gooroom-greeter (0.4.3+grm3u1) unstable; urgency=medium
 
   [ boyeon.choi ]
