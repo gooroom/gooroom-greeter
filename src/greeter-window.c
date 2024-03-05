@@ -621,8 +621,8 @@ process_prompts (GreeterWindow *window)
 		priv->pending_questions = g_slist_remove (priv->pending_questions, (gconstpointer) message);
 
 		const gchar *filter_msg_000 = "You are required to change your password immediately";
-		const gchar *filter_msg_010 = g_dgettext("Linux-PAM", "You are required to change your password immediately (administrator enforced)");
-		const gchar *filter_msg_020 = g_dgettext("Linux-PAM", "You are required to change your password immediately (password expired)");
+		const gchar *filter_msg_010 = g_dgettext("Linux-PAM", "You are required to change your password immediately (administrator enforced).");
+		const gchar *filter_msg_020 = g_dgettext("Linux-PAM", "You are required to change your password immediately (password expired).");
 		const gchar *filter_msg_030 = "Temporary Password";
 		const gchar *filter_msg_040 = "Password Maxday Warning";
 		const gchar *filter_msg_050 = "Account Expiration Warning";
