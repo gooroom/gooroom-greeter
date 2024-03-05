@@ -1978,6 +1978,18 @@ tablet_mode_init (GreeterWindow *window)
 {
 	GreeterWindowPrivate *priv = window->priv;
 
+	const gchar *TBL_MODE_CHK_FILE_1 = "/usr/libexec/i3-gnome-flashback-session";
+	const gchar *TBL_MODE_CHK_FILE_2 = "/usr/share/xsessions/i3-gnome-flashback-session.desktop";
+	const gchar *TBL_MODE_CHK_FILE_3 = "/usr/share/gnome-session/sessions/i3-gnome-flashback.session";
+
+	if (g_file_test (TBL_MODE_CHK_FILE_1, G_FILE_TEST_EXISTS) &&
+        g_file_test (TBL_MODE_CHK_FILE_2, G_FILE_TEST_EXISTS) &&
+        g_file_test (TBL_MODE_CHK_FILE_3, G_FILE_TEST_EXISTS)) {
+		gtk_widget_show (priv->chk_tablet_mode);
+	} else {
+		gtk_widget_hide (priv->chk_tablet_mode);
+	}
+
 	if (is_tablet_mode (window)) {
 		g_signal_handlers_block_by_func (priv->chk_tablet_mode, tablet_mode_toggled_cb, window);
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->chk_tablet_mode), TRUE);
