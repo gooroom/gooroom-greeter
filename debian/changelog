@@ -1,3 +1,15 @@
+gooroom-greeter (4.0.0+grm4u1) unstable; urgency=medium
+
+  [ cjheo ]
+  * [7cf07534] Rebase to debian 12
+  * [b4cc27dd] Added function to use tablet mode
+  * [04307149] Fixed bug
+  * [f215b27a] Enhanced Tablet Mode functions
+  * [b7453f07] [Bug:5519,5607]Update translation issues related to login logic
+  * [6c917dc8] Add condition to display Tablet Mode UI
+
+ -- Gooroom Autobuilder <jenkins@gooroom.kr>  Mon, 11 Mar 2024 12:01:53 +0900
+
 gooroom-greeter (0.4.3+grm3u1) unstable; urgency=medium
 
   [ boyeon.choi ]
