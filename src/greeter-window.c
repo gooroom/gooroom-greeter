@@ -1825,6 +1825,81 @@ other_indicator_application_start (void)
 }
 
 static void
+virtual_keyboard_on (gboolean on)
+{
+	const gchar *cmd;
+	GSettings *settings;
+	gchar **argv = NULL, **envp = NULL;
+
+	if (!on) {
+		cmd = "/usr/bin/killall onboard";
+		goto done;
+	}
+
+	cmd = "/usr/bin/onboard";
+
+	settings = g_settings_new ("org.gnome.desktop.a11y.applications");
+	g_settings_set_boolean (settings, "screen-keyboard-enabled", TRUE);
+	g_object_unref (settings);
+
+	settings = g_settings_new ("org.gnome.desktop.a11y.keyboard");
+	g_settings_set_boolean (settings, "enable", TRUE);
+	g_object_unref (settings);
+
+	settings = g_settings_new ("org.gnome.desktop.interface");
+	g_settings_set_boolean (settings, "toolkit-accessibility", TRUE);
+	g_object_unref (settings);
+
+	settings = g_settings_new ("org.onboard");
+	g_settings_set_boolean (settings, "show-tooltips", FALSE);
+	g_settings_set_boolean (settings, "show-status-icon", FALSE);
+	g_settings_set_boolean (settings, "start-minimized", FALSE);
+	g_settings_set_boolean (settings, "xembed-onboard", TRUE);
+	g_settings_set_string (settings, "layout", "/usr/share/onboard/layouts/Compact.onboard");
+	g_settings_set_string (settings, "theme", "/usr/share/onboard/themes/Nightshade.theme");
+	g_object_unref (settings);
+
+	settings = g_settings_new ("org.onboard.auto-show");
+	g_settings_set_boolean (settings, "enabled", TRUE);
+	g_settings_set_enum (settings, "reposition-method-floating", 2); // reduce-travel
+	g_settings_set_boolean (settings, "hide-on-key-press", TRUE);
+	g_settings_set_double (settings, "hide-on-key-press-pause", 0);
+	g_settings_set_boolean (settings, "tablet-mode-detection-enabled", FALSE);
+	g_settings_set_boolean (settings, "keyboard-device-detection-enabled", FALSE);
+	g_object_unref (settings);
+
+	settings = g_settings_new ("org.onboard.window");
+	g_settings_set_boolean (settings, "force-to-top", TRUE);
+	g_settings_set_boolean (settings, "window-decoration", TRUE);
+	g_settings_set_boolean (settings, "window-state-sticky", TRUE);
+	g_object_unref (settings);
+
+	settings = g_settings_new ("org.onboard.keyboard");
+	g_settings_set_boolean (settings, "audio-feedback-enabled", TRUE);
+	g_settings_set_enum (settings, "default-key-action", 0);
+
+	GVariantBuilder *b;
+	GVariant *dict;
+	b = g_variant_builder_new (G_VARIANT_TYPE ("a{ss}"));
+	g_variant_builder_add (b, "{ss}", "button3", g_variant_new_string ("SHIFT"));
+	g_variant_builder_add (b, "{ss}", "all", g_variant_new_string ("latch"));
+	dict = g_variant_builder_end (b);
+
+	g_settings_set_value (settings, "sticky-key-behavior", dict);
+	g_settings_set_enum (settings, "touch-input", 1);
+	g_object_unref (settings);
+
+done:
+	g_shell_parse_argv (cmd, NULL, &argv, NULL);
+	envp = g_get_environ ();
+
+	g_spawn_async (NULL, argv, envp, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, NULL);
+
+	g_strfreev (argv);
+	g_strfreev (envp);
+}
+
+static void
 load_indicators (GreeterWindow *window)
 {
 	load_clock_indicator (window);
@@ -1846,6 +1921,16 @@ clean_mode_toggled_cb (GtkToggleButton *button, gpointer user_data)
 		g_spawn_command_line_sync (cmd, NULL, NULL, NULL, NULL);
 		g_clear_pointer (&cmd, g_free);
 	}
+}
+
+static gboolean
+on_or_off_virtual_keyboard_cb (gpointer user_data)
+{
+	GreeterWindow *window = GREETER_WINDOW (user_data);
+
+	virtual_keyboard_on (is_tablet_mode (window));
+
+	return FALSE;
 }
 
 static void
@@ -1872,6 +1957,8 @@ tablet_mode_toggled_cb (GtkToggleButton *button, gpointer user_data)
 	}
 
 	g_clear_pointer (&cmdline, g_free);
+
+	g_timeout_add (100, (GSourceFunc)on_or_off_virtual_keyboard_cb, user_data);
 }
 
 static gboolean
@@ -1998,6 +2085,10 @@ tablet_mode_init (GreeterWindow *window)
 		/* TODO: Show error message */
 		if (start_systemd_service_for_tablet_mode (TRUE)) {
 		}
+
+		// start virtual keyboard (eg: onboard)
+		virtual_keyboard_on (TRUE);
+
 		return;
 	}
 
