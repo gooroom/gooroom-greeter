@@ -50,7 +50,7 @@ ResultActive=yes
 ResultInactive=no
 ResultAny=no
 
-[Control Systemd Units]
+[Change Tablet Mode]
 Identity=unix-user:lightdm
 Action=kr.gooroom.integration.applet.tablet-mode-change-helper
 ResultActive=yes

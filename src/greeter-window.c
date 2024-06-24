@@ -42,7 +42,6 @@
 #define LOGIN_TIMEOUT        60
 #define CLEAN_MODE_HOME_DIR  "/tmp/.cleanmode"
 #define TABLET_MODE_FILE     "/etc/gooroom/.tablet-mode"
-#define TABLET_MODE_SESSION  "i3-gnome-flashback-session"
 #define	PAM_CLEAN_AUTH       "/lib/x86_64-linux-gnu/security/pam_clean_auth.so"
 #define	AGENT_CONF	         "/etc/gooroom/agent/Agent.conf"
 #define	GPMS_CONF	         "/etc/gooroom/gooroom-client-server-register/gcsr.conf"
@@ -230,7 +229,6 @@ set_language (GreeterWindow *window, const gchar *language)
 static void
 start_authentication (GreeterWindow *window, const gchar *username)
 {
-	gboolean istm = FALSE;
 	GreeterWindowPrivate *priv = window->priv;
 	LightDMGreeter *greeter = priv->lightdm;
 
@@ -278,11 +276,7 @@ start_authentication (GreeterWindow *window, const gchar *username)
 			set_language (window, NULL);
 		}
 
-		istm = is_tablet_mode (window);
-		if (istm)
-			set_session (window, TABLET_MODE_SESSION);
-
-		start_systemd_service_for_tablet_mode (istm);
+		start_systemd_service_for_tablet_mode (is_tablet_mode (window));
 
 #ifdef HAVE_LIBLIGHTDMGOBJECT_1_19_2
 		lightdm_greeter_authenticate (greeter, username, NULL);
@@ -1958,6 +1952,10 @@ tablet_mode_toggled_cb (GtkToggleButton *button, gpointer user_data)
 
 	g_clear_pointer (&cmdline, g_free);
 
+	/* TODO: Show error message */
+	if (start_systemd_service_for_tablet_mode (TRUE)) {
+	}
+
 	g_timeout_add (100, (GSourceFunc)on_or_off_virtual_keyboard_cb, user_data);
 }
 
@@ -2060,39 +2058,61 @@ clean_mode_init (GreeterWindow *window)
 	g_object_unref (agent_conf_file);
 }
 
+static gboolean
+is_package_installed (const gchar *package_name)
+{
+	gchar *cmd = NULL;
+	GError *error = NULL;
+	gchar *output = NULL;
+	gboolean ret = FALSE;
+
+	cmd = g_strdup_printf ("%s %s", QUERY_PACKAGE_INSTALL, package_name);
+	g_spawn_command_line_sync (cmd, &output, NULL, NULL, &error);
+	if (error) {
+		g_warning ("[LoginWindow] Failed to run '%s': %s", QUERY_PACKAGE_INSTALL, error->message);
+		g_clear_error (&error);
+		goto done;
+	}
+
+	g_debug ("[LoginWindow] The result of '%s': %s", cmd, output);
+
+	if (output) {
+		ret = (strstr (output, "1") != NULL) ? TRUE : FALSE;
+	}
+
+
+done:
+	g_clear_pointer (&cmd, g_free);
+	g_clear_pointer (&output, g_free);
+
+	return ret;
+}
+
 static void
 tablet_mode_init (GreeterWindow *window)
 {
 	GreeterWindowPrivate *priv = window->priv;
 
-	const gchar *TBL_MODE_CHK_FILE_1 = "/usr/libexec/i3-gnome-flashback-session";
-	const gchar *TBL_MODE_CHK_FILE_2 = "/usr/share/xsessions/i3-gnome-flashback-session.desktop";
-	const gchar *TBL_MODE_CHK_FILE_3 = "/usr/share/gnome-session/sessions/i3-gnome-flashback.session";
-
-	if (g_file_test (TBL_MODE_CHK_FILE_1, G_FILE_TEST_EXISTS) &&
-        g_file_test (TBL_MODE_CHK_FILE_2, G_FILE_TEST_EXISTS) &&
-        g_file_test (TBL_MODE_CHK_FILE_3, G_FILE_TEST_EXISTS)) {
+	if (is_package_installed ("gooroom-tabletmode-setting")) {
 		gtk_widget_show (priv->chk_tablet_mode);
-	} else {
-		gtk_widget_hide (priv->chk_tablet_mode);
-	}
 
-	if (is_tablet_mode (window)) {
-		g_signal_handlers_block_by_func (priv->chk_tablet_mode, tablet_mode_toggled_cb, window);
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->chk_tablet_mode), TRUE);
-		g_signal_handlers_unblock_by_func (priv->chk_tablet_mode, tablet_mode_toggled_cb, window);
+		if (is_tablet_mode (window)) {
+			g_signal_handlers_block_by_func (priv->chk_tablet_mode, tablet_mode_toggled_cb, window);
+			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->chk_tablet_mode), TRUE);
+			g_signal_handlers_unblock_by_func (priv->chk_tablet_mode, tablet_mode_toggled_cb, window);
 
-		/* TODO: Show error message */
-		if (start_systemd_service_for_tablet_mode (TRUE)) {
+			/* TODO: Show error message */
+			if (start_systemd_service_for_tablet_mode (TRUE)) {
+			}
+
+			// start virtual keyboard (eg: onboard)
+			virtual_keyboard_on (TRUE);
 		}
-
-		// start virtual keyboard (eg: onboard)
-		virtual_keyboard_on (TRUE);
-
 		return;
 	}
 
-	/* TODO: Show error message */
+	gtk_widget_hide (priv->chk_tablet_mode);
+
 	if (start_systemd_service_for_tablet_mode (FALSE)) {
 	}
 }
