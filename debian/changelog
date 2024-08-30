@@ -1,3 +1,11 @@
+gooroom-greeter (4.2.0+grm4u1) unstable; urgency=medium
+
+  [ cjheo ]
+  * [06332fce] Popup virtual keyboard (eg:onboard) when tablet mode
+  * [b636a377] Change window manager for tablet mode
+
+ -- Gooroom Autobuilder <jenkins@gooroom.kr>  Fri, 30 Aug 2024 15:06:30 +0900
+
 gooroom-greeter (4.1.0+grm4u1) unstable; urgency=medium
 
   [ cjheo ]
